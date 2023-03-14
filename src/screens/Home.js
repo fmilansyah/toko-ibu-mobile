@@ -12,6 +12,7 @@ import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { COLOR_SETTINGS } from '../database/AppData';
 
 const Home = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -72,7 +73,7 @@ const Home = ({ navigation }) => {
                 position: 'absolute',
                 width: '20%',
                 height: '24%',
-                backgroundColor: COLOURS.green,
+                backgroundColor: COLOR_SETTINGS.PRIMARY,
                 top: 0,
                 left: 0,
                 borderTopLeftRadius: 10,
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
   },
   showAll: {
     fontSize: 14,
-    color: COLOURS.blue,
+    color: COLOR_SETTINGS.PRIMARY,
     fontWeight: '400',
   },
   productList: {
