@@ -187,7 +187,8 @@ const ProductInfo = ({route, navigation}) => {
                         opacity,
                         marginHorizontal: 4,
                         borderRadius: 100,
-                      }}></Animated.View>
+                      }}
+                    />
                   );
                 })
               : null}

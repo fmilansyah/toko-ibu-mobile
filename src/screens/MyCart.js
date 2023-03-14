@@ -259,7 +259,7 @@ const MyCart = ({navigation}) => {
             }}>
             Order Details
           </Text>
-          <View></View>
+          <View />
         </View>
         <Text
           style={{

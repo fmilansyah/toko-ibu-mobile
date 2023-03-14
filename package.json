@@ -1,11 +1,13 @@
 {
-  "name": "TokoIbu",
+  "name": "toko-ibu-mobile",
   "version": "0.0.1",
   "private": true,
+  "description": "Mobile Aplikasi Toko Ibu untuk tugas Proyek Teknologi Informasi (minor)",
+  "author": "fmilansyah",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "start": "react-native start",
     "test": "jest"
   },
