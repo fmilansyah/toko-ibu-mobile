@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
+  StyleSheet,
   View,
   Text,
   StatusBar,
@@ -7,12 +8,12 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {COLOURS, Items} from '../database/Database';
+import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [accessory, setAccessory] = useState([]);
 
@@ -44,10 +45,12 @@ const Home = ({navigation}) => {
 
   //create an product reusable card
 
-  const ProductCard = ({data}) => {
+  const ProductCard = ({ data }) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('ProductInfo', {productID: data.id})}
+        onPress={() =>
+          navigation.navigate('ProductInfo', { productID: data.id })
+        }
         style={{
           width: '48%',
           marginVertical: 14,
@@ -159,181 +162,34 @@ const Home = ({navigation}) => {
   };
 
   return (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: COLOURS.white,
-      }}>
+    <View style={styles.container}>
       <StatusBar backgroundColor={COLOURS.white} barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 16,
-          }}>
+        <View style={styles.headerContainer}>
           <TouchableOpacity>
-            <Entypo
-              name="shopping-bag"
-              style={{
-                fontSize: 18,
-                color: COLOURS.backgroundMedium,
-                padding: 12,
-                borderRadius: 10,
-                backgroundColor: COLOURS.backgroundLight,
-              }}
-            />
+            <Text style={styles.accountLink}>Hai, Febri Milansyah</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
-            <MaterialCommunityIcons
-              name="cart"
-              style={{
-                fontSize: 18,
-                color: COLOURS.backgroundMedium,
-                padding: 12,
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: COLOURS.backgroundLight,
-              }}
-            />
+            <MaterialCommunityIcons name="cart" style={styles.iconBtn} />
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            marginBottom: 10,
-            padding: 16,
-          }}>
-          <Text
-            style={{
-              fontSize: 26,
-              color: COLOURS.black,
-              fontWeight: '500',
-              letterSpacing: 1,
-              marginBottom: 10,
-            }}>
-            Toko Ibu
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              color: COLOURS.black,
-              fontWeight: '400',
-              letterSpacing: 1,
-              lineHeight: 24,
-            }}>
-            Audio shop on Rustaveli Ave 57.
-            {'\n'}This shop offers both products and services
+        <View style={styles.heroContainer}>
+          <Text style={styles.homeAppTitle}>Toko Ibu</Text>
+          <Text style={styles.homeAppDescription}>
+            In do laborum reprehenderit deserunt ex officia consectetur
+            excepteur quis veniam.
           </Text>
         </View>
-        <View
-          style={{
-            padding: 16,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: COLOURS.black,
-                  fontWeight: '500',
-                  letterSpacing: 1,
-                }}>
-                Products
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: COLOURS.black,
-                  fontWeight: '400',
-                  opacity: 0.5,
-                  marginLeft: 10,
-                }}>
-                41
-              </Text>
+        <View style={styles.paddingContainer}>
+          <View style={styles.categories}>
+            <View style={styles.categoryTitle}>
+              <Text style={styles.categoryName}>Fashion</Text>
+              <Text style={styles.countProduct}>41</Text>
             </View>
-            <Text
-              style={{
-                fontSize: 14,
-                color: COLOURS.blue,
-                fontWeight: '400',
-              }}>
-              SeeAll
-            </Text>
+            <Text style={styles.showAll}>Lihat Semua</Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-around',
-            }}>
+          <View style={styles.productList}>
             {products.map(data => {
-              return <ProductCard data={data} key={data.id} />;
-            })}
-          </View>
-        </View>
-
-        <View
-          style={{
-            padding: 16,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: COLOURS.black,
-                  fontWeight: '500',
-                  letterSpacing: 1,
-                }}>
-                Accessories
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: COLOURS.black,
-                  fontWeight: '400',
-                  opacity: 0.5,
-                  marginLeft: 10,
-                }}>
-                78
-              </Text>
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                color: COLOURS.blue,
-                fontWeight: '400',
-              }}>
-              SeeAll
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-around',
-            }}>
-            {accessory.map(data => {
               return <ProductCard data={data} key={data.id} />;
             })}
           </View>
@@ -342,5 +198,86 @@ const Home = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  paddingContainer: {
+    padding: 16,
+  },
+  container: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: COLOURS.white,
+  },
+  headerContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  accountLink: {
+    fontSize: 18,
+    color: COLOURS.black,
+    fontWeight: '600',
+  },
+  iconBtn: {
+    fontSize: 18,
+    color: COLOURS.backgroundDark,
+    padding: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLOURS.backgroundLight,
+  },
+  homeAppTitle: {
+    fontSize: 26,
+    color: COLOURS.black,
+    fontWeight: '500',
+    letterSpacing: 1,
+    marginBottom: 10,
+  },
+  heroContainer: {
+    marginBottom: 10,
+    padding: 16,
+  },
+  homeAppDescription: {
+    fontSize: 14,
+    color: COLOURS.black,
+    fontWeight: '400',
+    letterSpacing: 1,
+    lineHeight: 24,
+  },
+  categories: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  categoryTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryName: {
+    fontSize: 18,
+    color: COLOURS.black,
+    fontWeight: '500',
+    letterSpacing: 1,
+  },
+  countProduct: {
+    fontSize: 14,
+    color: COLOURS.black,
+    fontWeight: '400',
+    opacity: 0.5,
+    marginLeft: 10,
+  },
+  showAll: {
+    fontSize: 14,
+    color: COLOURS.blue,
+    fontWeight: '400',
+  },
+  productList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+});
 
 export default Home;

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,13 +11,13 @@ import {
   Animated,
   ToastAndroid,
 } from 'react-native';
-import {COLOURS, Items} from '../database/Database';
+import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProductInfo = ({route, navigation}) => {
-  const {productID} = route.params;
+const ProductInfo = ({ route, navigation }) => {
+  const { productID } = route.params;
 
   const [product, setProduct] = useState({});
 
@@ -82,7 +82,7 @@ const ProductInfo = ({route, navigation}) => {
   };
 
   //product horizontal scroll product card
-  const renderProduct = ({item, index}) => {
+  const renderProduct = ({ item, index }) => {
     return (
       <View
         style={{
@@ -157,8 +157,8 @@ const ProductInfo = ({route, navigation}) => {
             snapToInterval={width}
             bounces={false}
             onScroll={Animated.event(
-              [{nativeEvent: {contentOffset: {x: scrollX}}}],
-              {useNativeDriver: false},
+              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+              { useNativeDriver: false },
             )}
           />
           <View

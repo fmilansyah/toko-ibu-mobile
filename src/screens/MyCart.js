@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,10 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {COLOURS, Items} from '../database/Database';
+import { COLOURS, Items } from '../database/Database';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const MyCart = ({navigation}) => {
+const MyCart = ({ navigation }) => {
   const [product, setProduct] = useState();
   const [total, setTotal] = useState(null);
 
@@ -89,7 +89,9 @@ const MyCart = ({navigation}) => {
     return (
       <TouchableOpacity
         key={data.key}
-        onPress={() => navigation.navigate('ProductInfo', {productID: data.id})}
+        onPress={() =>
+          navigation.navigate('ProductInfo', { productID: data.id })
+        }
         style={{
           width: '100%',
           height: 100,
@@ -273,7 +275,7 @@ const MyCart = ({navigation}) => {
           }}>
           My Cart
         </Text>
-        <View style={{paddingHorizontal: 16}}>
+        <View style={{ paddingHorizontal: 16 }}>
           {product ? product.map(renderProducts) : null}
         </View>
         <View>
@@ -345,7 +347,7 @@ const MyCart = ({navigation}) => {
               </View>
               <MaterialCommunityIcons
                 name="chevron-right"
-                style={{fontSize: 22, color: COLOURS.black}}
+                style={{ fontSize: 22, color: COLOURS.black }}
               />
             </View>
           </View>
@@ -419,7 +421,7 @@ const MyCart = ({navigation}) => {
               </View>
               <MaterialCommunityIcons
                 name="chevron-right"
-                style={{fontSize: 22, color: COLOURS.black}}
+                style={{ fontSize: 22, color: COLOURS.black }}
               />
             </View>
           </View>
