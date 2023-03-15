@@ -7,12 +7,15 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  TextInput,
+  Button,
 } from 'react-native';
 import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { COLOR_SETTINGS } from '../database/AppData';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
 
 const Home = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -162,17 +165,52 @@ const Home = ({ navigation }) => {
     );
   };
 
+  const [clicked, setClicked] = useState(false);
+
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLOURS.white} barStyle="dark-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity>
-            <Text style={styles.accountLink}>Hai, Febri Milansyah</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
-            <MaterialCommunityIcons name="cart" style={styles.iconBtn} />
-          </TouchableOpacity>
+          <View
+            style={
+              true ? styles.searchBar__clicked : styles.searchBar__unclicked
+            }>
+            {/* search Icon */}
+            <Feather
+              name="search"
+              size={20}
+              color="black"
+              style={{ marginLeft: 1 }}
+            />
+            {/* Input field */}
+            <TextInput
+              style={styles.input}
+              placeholder="Search"
+              onFocus={() => {
+                setClicked(true);
+              }}
+            />
+            {/* cross Icon, depending on whether the search bar is clicked or not */}
+            {clicked && (
+              <Entypo
+                name="cross"
+                size={20}
+                color="black"
+                style={{ padding: 1 }}
+              />
+            )}
+          </View>
+          {/* cancel button, depending on whether the search bar is clicked or not */}
+          {clicked && (
+            <View>
+              <Button
+                title="Cancel"
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setClicked(false);
+                }}></Button>
+            </View>
+          )}
         </View>
         <View style={styles.heroContainer}>
           <Text style={styles.homeAppTitle}>Toko Ibu</Text>
@@ -210,12 +248,19 @@ const styles = StyleSheet.create({
     backgroundColor: COLOURS.white,
   },
   headerContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: 15,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 16,
+    flexDirection: 'row',
+    backgroundColor: COLOR_SETTINGS.PRIMARY,
   },
+  // headerContainer: {
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   padding: 16,
+  // },
   accountLink: {
     fontSize: 18,
     color: COLOURS.black,
@@ -235,6 +280,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 1,
     marginBottom: 10,
+    fontFamily: 'OpenSans-SemiBold',
   },
   heroContainer: {
     marginBottom: 10,
@@ -243,9 +289,9 @@ const styles = StyleSheet.create({
   homeAppDescription: {
     fontSize: 14,
     color: COLOURS.black,
-    fontWeight: '400',
-    letterSpacing: 1,
+    // fontWeight: '400',
     lineHeight: 24,
+    fontFamily: 'Montserrat-Regular',
   },
   categories: {
     flexDirection: 'row',
@@ -278,6 +324,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+  },
+  searchBar__unclicked: {
+    padding: 10,
+    flexDirection: 'row',
+    width: '95%',
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    alignItems: 'center',
+  },
+  searchBar__clicked: {
+    padding: 10,
+    flexDirection: 'row',
+    width: '80%',
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  input: {
+    fontSize: 14,
+    marginLeft: 10,
+    width: '90%',
+    backgroundColor: COLOR_SETTINGS.WHITE,
+    padding: 0,
   },
 });
 
