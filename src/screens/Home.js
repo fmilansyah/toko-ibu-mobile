@@ -2,20 +2,36 @@ import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   StatusBar,
   ScrollView,
   TouchableOpacity,
   Image,
   TextInput,
   Button,
+  Dimensions,
 } from 'react-native';
+import { SliderItem, Text } from '../components/Basic';
 import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLOR_SETTINGS } from '../database/AppData';
+import { APP_NAME, COLOR_SETTINGS } from '../database/AppData';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import { Carousel } from 'react-native-snap-carousel-v4';
+
+const { width: viewportWidth, height: viewportHeight } =
+  Dimensions.get('window');
+
+function wp(percentage) {
+  const value = (percentage * viewportWidth) / 100;
+  return Math.round(value);
+}
+
+const itemHorizontalMargin = wp(2);
+
+export const sliderWidth = viewportWidth;
+const slideWidth = wp(75);
+export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 const Home = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -167,50 +183,107 @@ const Home = ({ navigation }) => {
 
   const [clicked, setClicked] = useState(false);
 
+  const ENTRIES1 = [
+    {
+      title: 'Beautiful and dramatic Antelope Canyon',
+      subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+      illustration: 'https://i.imgur.com/UYiroysl.jpg',
+    },
+    {
+      title: 'Earlier this morning, NYC',
+      subtitle: 'Lorem ipsum dolor sit amet',
+      illustration: 'https://i.imgur.com/UPrs1EWl.jpg',
+    },
+    {
+      title: 'White Pocket Sunset',
+      subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
+      illustration: 'https://i.imgur.com/MABUbpDl.jpg',
+    },
+    {
+      title: 'Acrocorinth, Greece',
+      subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+      illustration: 'https://i.imgur.com/KZsmUi2l.jpg',
+    },
+    {
+      title: 'The lone tree, majestic landscape of New Zealand',
+      subtitle: 'Lorem ipsum dolor sit amet',
+      illustration: 'https://i.imgur.com/2nCt3Sbl.jpg',
+    },
+    {
+      title: 'Middle Earth, Germany',
+      subtitle: 'Lorem ipsum dolor sit amet',
+      illustration: 'https://i.imgur.com/lceHsT6l.jpg',
+    },
+  ];
+
+  const renderItem = ({ item, index }, parallaxProps) => {
+    return <SliderItem
+    data={item}
+    even={(index + 1) % 2 === 0}
+    parallax={true}
+    parallaxProps={parallaxProps}
+  />
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity>
+          <Feather name="search" style={styles.iconBtn} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={styles.appName}>{APP_NAME}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Feather name="log-in" style={styles.roundedBtn} />
+        </TouchableOpacity>
+      </View>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <View>
+          {/* <Carousel
+            data={ENTRIES1}
+            renderItem={renderItem}
+            sliderWidth={sliderWidth}
+            itemWidth={itemWidth}
+            containerCustomStyle={styles.slider}
+            contentContainerCustomStyle={styles.sliderContentContainer}
+            layout={'stack'}
+            loop={true}
+          /> */}
+          <Carousel
+            data={ENTRIES1}
+            renderItem={renderItem}
+            sliderWidth={sliderWidth}
+            itemWidth={itemWidth}
+            hasParallaxImages={true}
+            firstItem={1}
+            inactiveSlideScale={0.94}
+            inactiveSlideOpacity={0.7}
+            // inactiveSlideShift={20}
+            containerCustomStyle={styles.slider}
+            contentContainerCustomStyle={styles.sliderContentContainer}
+            loop={true}
+            loopClonesPerSide={2}
+            autoplay={true}
+            autoplayDelay={500}
+            autoplayInterval={3000}
+            // onSnapToItem={index => this.setState({ slider1ActiveSlide: index })}
+          />
+        </View>
+      </ScrollView>
+      {/* <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.headerContainer}>
-          <View
-            style={
-              true ? styles.searchBar__clicked : styles.searchBar__unclicked
-            }>
-            {/* search Icon */}
-            <Feather
-              name="search"
-              size={20}
-              color="black"
-              style={{ marginLeft: 1 }}
-            />
-            {/* Input field */}
-            <TextInput
-              style={styles.input}
-              placeholder="Search"
-              onFocus={() => {
-                setClicked(true);
-              }}
-            />
-            {/* cross Icon, depending on whether the search bar is clicked or not */}
-            {clicked && (
-              <Entypo
-                name="cross"
-                size={20}
-                color="black"
-                style={{ padding: 1 }}
-              />
-            )}
+          <View style={styles.searchBar}>
+            <Feather name="search" size={20} color={COLOR_SETTINGS.GRAY} />
+            <TextInput style={styles.inputSearch} placeholder="Cari Produk" />
           </View>
-          {/* cancel button, depending on whether the search bar is clicked or not */}
-          {clicked && (
-            <View>
-              <Button
-                title="Cancel"
-                onPress={() => {
-                  Keyboard.dismiss();
-                  setClicked(false);
-                }}></Button>
-            </View>
-          )}
+          <View style={styles.accountMenu}>
+            <MaterialCommunityIcons
+              name="account-circle-outline"
+              size={35}
+              color={COLOR_SETTINGS.WHITE}
+            />
+          </View>
         </View>
         <View style={styles.heroContainer}>
           <Text style={styles.homeAppTitle}>Toko Ibu</Text>
@@ -233,7 +306,7 @@ const Home = ({ navigation }) => {
             })}
           </View>
         </View>
-      </ScrollView>
+      </ScrollView> */}
     </View>
   );
 };
@@ -248,31 +321,26 @@ const styles = StyleSheet.create({
     backgroundColor: COLOURS.white,
   },
   headerContainer: {
-    padding: 15,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    width: '100%',
     flexDirection: 'row',
-    backgroundColor: COLOR_SETTINGS.PRIMARY,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
   },
-  // headerContainer: {
-  //   width: '100%',
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   padding: 16,
-  // },
-  accountLink: {
-    fontSize: 18,
-    color: COLOURS.black,
-    fontWeight: '600',
+  appName: {
+    fontSize: 22,
+    color: COLOR_SETTINGS.BLACK,
   },
   iconBtn: {
-    fontSize: 18,
-    color: COLOURS.backgroundDark,
-    padding: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: COLOURS.backgroundLight,
+    fontSize: 22,
+    color: COLOR_SETTINGS.BLACK,
+  },
+  roundedBtn: {
+    fontSize: 22,
+    color: COLOR_SETTINGS.WHITE,
+    backgroundColor: COLOR_SETTINGS.PRIMARY,
+    padding: 10,
+    borderRadius: 100,
   },
   homeAppTitle: {
     fontSize: 26,
@@ -333,21 +401,12 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
   },
-  searchBar__clicked: {
-    padding: 10,
-    flexDirection: 'row',
-    width: '80%',
-    backgroundColor: '#ffffff',
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
+  slider: {
+    marginTop: 15,
+    overflow: 'visible', // for custom animations
   },
-  input: {
-    fontSize: 14,
-    marginLeft: 10,
-    width: '90%',
-    backgroundColor: COLOR_SETTINGS.WHITE,
-    padding: 0,
+  sliderContentContainer: {
+    paddingVertical: 10, // for custom animation
   },
 });
 
