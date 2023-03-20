@@ -1,5 +1,5 @@
 const ProductCard = () => {
-  return ''
-}
+  return '';
+};
 
-export default ProductCard
+export default ProductCard;

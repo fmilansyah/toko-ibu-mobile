@@ -1,55 +1,56 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Text } from '../components/Basic';
-import { APP_NAME, COLOR_SETTINGS } from '../database/AppData';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { SliderItem, Text } from '../components/Basic';
+import { APP_NAME } from '../database/AppData';
 import Feather from 'react-native-vector-icons/Feather';
+import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
+import HomeStyle from '../styles/Home.style';
+import { Carousel } from 'react-native-snap-carousel-v4';
+import { SliderData } from '../database/Database';
 
-const Home = ({ navigation }) => {
+const renderSliderItem = ({ item, index }, parallaxProps) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity>
-          <Feather name="search" style={styles.iconBtn} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.appName}>{APP_NAME}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Feather name="log-in" style={styles.roundedBtn} />
-        </TouchableOpacity>
-      </View>
-    </View>
+    <SliderItem data={item} parallax={true} parallaxProps={parallaxProps} />
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: COLOR_SETTINGS.WHITE,
-  },
-  headerContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-  },
-  appName: {
-    fontSize: 22,
-    color: COLOR_SETTINGS.BLACK,
-  },
-  iconBtn: {
-    fontSize: 22,
-    color: COLOR_SETTINGS.BLACK,
-  },
-  roundedBtn: {
-    fontSize: 22,
-    color: COLOR_SETTINGS.WHITE,
-    backgroundColor: COLOR_SETTINGS.PRIMARY,
-    padding: 10,
-    borderRadius: 100,
-  },
-});
+const Home = ({ navigation }) => {
+  return (
+    <View style={globalStyle.container}>
+      <View style={HomeStyle.headerContainer}>
+        <TouchableOpacity>
+          <Feather name="search" style={globalStyle.iconBtn} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text style={HomeStyle.appName}>{APP_NAME}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Feather name="log-in" style={globalStyle.roundedBtn} />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View>
+          <Carousel
+            data={SliderData}
+            renderItem={renderSliderItem}
+            sliderWidth={sliderWidth}
+            itemWidth={itemWidth}
+            containerCustomStyle={HomeStyle.slider}
+            contentContainerCustomStyle={HomeStyle.sliderContentContainer}
+            hasParallaxImages={true}
+            inactiveSlideScale={0.94}
+            inactiveSlideOpacity={0.7}
+            inactiveSlideShift={20}
+            loop={true}
+            autoplay={false}
+            autoplayDelay={4000}
+            autoplayInterval={7000}
+          />
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
 
 export default Home;
