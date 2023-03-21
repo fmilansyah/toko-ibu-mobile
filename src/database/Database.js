@@ -130,3 +130,26 @@ export const SliderData = [
     illustration: 'https://i.imgur.com/lceHsT6l.jpg',
   },
 ];
+
+export const Categories = [
+  {
+    title: 'Fashion Pria',
+    illustration:
+      'https://img.freepik.com/free-photo/guy-dressed-brown-outfit-wearing-sunglasses-poses-with-backpack_197531-26761.jpg?w=740&t=st=1679387568~exp=1679388168~hmac=5217254ff87c18f704cf35aa664e0eaabcef1e4d6e7432800e2e88fe81507735',
+  },
+  {
+    title: 'Fashion Wanita',
+    illustration:
+      'https://img.freepik.com/free-photo/perky-girl-stylish-glasses-stares-amazement-walking-pink-wall-brunette-culottes-orange-blouse-posing-with-red-handbag_197531-14254.jpg?w=740&t=st=1679387663~exp=1679388263~hmac=3e3306f7a54fee52447c75eaa6c391d691f171cef621d9a84bcde26698fdd484',
+  },
+  {
+    title: 'Outer Wear',
+    illustration:
+      'https://img.freepik.com/free-photo/fascinating-woman-winter-fur-coat-posing_273443-4008.jpg?w=740&t=st=1679390897~exp=1679391497~hmac=0bf384fb41af4bc1d95c248a3c00174375e5eb5b98f4bb6f6e364c720b6a8e11',
+  },
+  {
+    title: 'Makanan',
+    illustration:
+      'https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209262.jpg?t=st=1679387698~exp=1679388298~hmac=5fbaae28a9680f4a0c9043608b844a8d41a34fbeca26db83055ca645dd76ea86',
+  },
+];

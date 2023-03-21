@@ -6,7 +6,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import { SliderData } from '../database/Database';
+import { Categories, SliderData } from '../database/Database';
+import { CategoryItem } from '../components/Category';
 
 const renderSliderItem = ({ item, index }, parallaxProps) => {
   return (
@@ -48,8 +49,25 @@ const Home = ({ navigation }) => {
             autoplayInterval={7000}
           />
         </View>
+
+        <View style={HomeStyle.sectionContainer}>
+          <View style={globalStyle.paddingContainer}>
+            <View style={HomeStyle.sectionTitleContainer}>
+              <Text style={HomeStyle.sectionTitle}>Kategori</Text>
+            </View>
+          </View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {Categories.map((item, index) => (
+              <CategoryItem
+                key={index}
+                data={item}
+                isLastItem={index === Categories.length - 1}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
-      <Footer />
+      {/* <Footer /> */}
     </View>
   );
 };

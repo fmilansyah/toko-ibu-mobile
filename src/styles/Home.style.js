@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../database/AppData';
+import { marginContainer, paddingContainer } from './global.style';
 
 export default StyleSheet.create({
   headerContainer: {
@@ -7,7 +8,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: paddingContainer,
   },
   appName: {
     fontSize: 22,
@@ -19,5 +20,17 @@ export default StyleSheet.create({
   },
   sliderContentContainer: {
     paddingVertical: 10,
+  },
+  sectionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    color: COLOR_SETTINGS.BLACK,
+    fontWeight: '700',
+  },
+  sectionContainer: {
+    marginTop: marginContainer,
   },
 });

@@ -15,7 +15,11 @@ export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 export const slideHeight = viewportHeight * 0.25;
 
-const borderRadius = 8;
+export const borderRadius = 8;
+
+export const paddingContainer = 16;
+
+export const marginContainer = 16;
 
 export default StyleSheet.create({
   container: {
@@ -33,5 +37,8 @@ export default StyleSheet.create({
     backgroundColor: COLOR_SETTINGS.PRIMARY,
     padding: 10,
     borderRadius: 100,
+  },
+  paddingContainer: {
+    padding: 16,
   },
 });
