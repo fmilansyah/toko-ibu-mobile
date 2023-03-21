@@ -49,8 +49,17 @@ const Home = ({ navigation }) => {
           />
         </View>
       </ScrollView>
+      <Footer />
     </View>
   );
 };
 
 export default Home;
+
+export function Footer() {
+  return (
+    <View>
+      <Text>2023</Text>
+    </View>
+  );
+}
