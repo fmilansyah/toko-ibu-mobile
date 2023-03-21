@@ -11,7 +11,7 @@ import { CategoryItem } from '../components/Category';
 
 const renderSliderItem = ({ item, index }, parallaxProps) => {
   return (
-    <SliderItem data={item} parallax={true} parallaxProps={parallaxProps} />
+    <SliderItem data={item} parallax={false} parallaxProps={parallaxProps} />
   );
 };
 
@@ -38,13 +38,11 @@ const Home = ({ navigation }) => {
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
             containerCustomStyle={HomeStyle.slider}
-            contentContainerCustomStyle={HomeStyle.sliderContentContainer}
-            hasParallaxImages={true}
-            inactiveSlideScale={0.94}
+            hasParallaxImages={false}
+            inactiveSlideScale={0.95}
             inactiveSlideOpacity={0.7}
-            inactiveSlideShift={20}
             loop={true}
-            autoplay={false}
+            autoplay={true}
             autoplayDelay={4000}
             autoplayInterval={7000}
           />

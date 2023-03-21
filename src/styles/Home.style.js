@@ -15,11 +15,8 @@ export default StyleSheet.create({
     color: COLOR_SETTINGS.BLACK,
   },
   slider: {
-    marginTop: 15,
+    marginTop: marginContainer,
     overflow: 'visible',
-  },
-  sliderContentContainer: {
-    paddingVertical: 10,
   },
   sectionTitleContainer: {
     flexDirection: 'row',

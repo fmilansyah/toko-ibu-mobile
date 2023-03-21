@@ -12,11 +12,11 @@ export default StyleSheet.create({
     flex: 1,
     marginBottom: -1, // Prevent a random Android rendering issue
     backgroundColor: COLOR_SETTINGS.WHITE,
-    borderRadius,
   },
   image: {
     ...StyleSheet.absoluteFillObject,
     resizeMode: 'cover',
+    borderRadius: borderRadius,
     overflow: 'hidden',
   },
   slideInnerContainer: {
