@@ -9,10 +9,8 @@ import { Carousel } from 'react-native-snap-carousel-v4';
 import { Categories, SliderData } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 
-const renderSliderItem = ({ item, index }, parallaxProps) => {
-  return (
-    <SliderItem data={item} parallax={false} parallaxProps={parallaxProps} />
-  );
+const renderSliderItem = ({ item }) => {
+  return <SliderItem data={item} />;
 };
 
 const Home = ({ navigation }) => {
@@ -38,9 +36,7 @@ const Home = ({ navigation }) => {
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
             containerCustomStyle={HomeStyle.slider}
-            hasParallaxImages={false}
             inactiveSlideScale={0.95}
-            inactiveSlideOpacity={0.7}
             loop={true}
             autoplay={true}
             autoplayDelay={4000}
