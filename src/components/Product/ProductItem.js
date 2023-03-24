@@ -4,6 +4,7 @@ import { COLOR_SETTINGS } from '../../database/AppData';
 import ProductItemStyle from '../../styles/ProductItem.style';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { marginContainer } from '../../styles/global.style';
+import { rupiahFormatter } from '../../helpers/formatter';
 
 const ProductCard = ({ data, isLastItem = false }) => {
   return (
@@ -24,10 +25,11 @@ const ProductCard = ({ data, isLastItem = false }) => {
             </View>
           ) : null}
           <Image
-            source={data.productImage}
+            source={{ uri: data.productImage }}
             style={ProductItemStyle.productImage}
           />
         </View>
+        <View style={ProductItemStyle.productInfo}>
         <Text style={ProductItemStyle.productName}>{data.productName}</Text>
         <View style={ProductItemStyle.productStockContainer}>
           <FontAwesome
@@ -36,7 +38,9 @@ const ProductCard = ({ data, isLastItem = false }) => {
               ProductItemStyle.productStockStatus,
               {
                 marginRight: 6,
-                color: COLOR_SETTINGS.GREEN,
+                color: data?.isAvailable
+                  ? COLOR_SETTINGS.GREEN
+                  : COLOR_SETTINGS.RED,
               },
             ]}
           />
@@ -44,13 +48,16 @@ const ProductCard = ({ data, isLastItem = false }) => {
             style={[
               ProductItemStyle.productStockStatus,
               {
-                color: COLOR_SETTINGS.GREEN,
+                color: data?.isAvailable
+                  ? COLOR_SETTINGS.GREEN
+                  : COLOR_SETTINGS.RED,
               },
             ]}>
             {data?.isAvailable ? 'Masih Ada' : 'Stok Habis'}
           </Text>
         </View>
-        <Text>Rp. {data.productPrice}</Text>
+        <Text style={ProductItemStyle.productPrice}>{rupiahFormatter(data?.productPrice)}</Text>
+        </View>
       </TouchableOpacity>
     </React.Fragment>
   );

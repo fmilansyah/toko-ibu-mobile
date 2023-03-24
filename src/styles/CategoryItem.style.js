@@ -16,10 +16,11 @@ export default StyleSheet.create({
     height: 100,
   },
   categoryName: {
-    fontSize: 16,
+    fontSize: 14,
     color: COLOR_SETTINGS.BLACK,
     textAlign: 'center',
     paddingTop: 10,
     paddingBottom: 10,
+    fontFamily: 'Lora-Regular',
   },
 });

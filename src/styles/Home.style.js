@@ -11,9 +11,9 @@ export default StyleSheet.create({
     padding: paddingContainer,
   },
   appName: {
-    fontSize: 22,
+    fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontWeight: '700',
+    fontFamily: 'Lora-Regular',
   },
   slider: {
     marginTop: marginContainer,
@@ -24,9 +24,9 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     color: COLOR_SETTINGS.BLACK,
-    fontWeight: '700',
+    fontFamily: 'Lora-SemiBold',
   },
   sectionContainer: {
     marginTop: marginContainer,
@@ -42,10 +42,11 @@ export default StyleSheet.create({
     fontWeight: '400',
     opacity: 0.5,
     marginLeft: 10,
+    fontFamily: 'Lora-Regular',
   },
   sectionShowAll: {
     fontSize: 16,
     color: COLOR_SETTINGS.PRIMARY,
-    fontWeight: '400',
+    fontFamily: 'Lora-Medium',
   },
 });

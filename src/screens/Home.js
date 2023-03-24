@@ -1,12 +1,17 @@
 import React from 'react';
-import { View, TouchableOpacity, ScrollView } from 'react-native';
-import { SliderItem, Text } from '../components/Basic';
+import { View, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { SliderItem } from '../components/Basic';
 import { APP_NAME } from '../database/AppData';
 import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import { Categories, Items, SliderData } from '../database/Database';
+import {
+  Categories,
+  MaleFashion,
+  SliderData,
+  Foods,
+} from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
 
@@ -75,11 +80,40 @@ const Home = ({ navigation }) => {
             <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {Items.map((item, index) => (
+            {MaleFashion.map((item, index) => (
               <ProductItem
                 key={index}
                 data={item}
-                isLastItem={index === Items.length - 1}
+                isLastItem={index === MaleFashion.length - 1}
+              />
+            ))}
+          </ScrollView>
+        </View>
+
+        <View
+          style={[
+            HomeStyle.sectionContainer,
+            {
+              marginBottom: 16, // for last item only
+            },
+          ]}>
+          <View
+            style={[
+              globalStyle.paddingContainer,
+              HomeStyle.categoryTitleContainer,
+            ]}>
+            <View style={HomeStyle.sectionTitleContainer}>
+              <Text style={HomeStyle.sectionTitle}>Makanan</Text>
+              <Text style={HomeStyle.sectionCount}>17</Text>
+            </View>
+            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
+          </View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {Foods.map((item, index) => (
+              <ProductItem
+                key={index}
+                data={item}
+                isLastItem={index === Foods.length - 1}
               />
             ))}
           </ScrollView>

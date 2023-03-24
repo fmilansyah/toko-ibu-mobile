@@ -7,4 +7,5 @@ export const COLOR_SETTINGS = {
   BLACK: '#212b2a',
   GRAY: '#a9a9a9',
   GREEN: '#00AC76',
+  RED: '#C04345',
 };

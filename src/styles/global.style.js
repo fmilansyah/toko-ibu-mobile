@@ -28,11 +28,11 @@ export default StyleSheet.create({
     backgroundColor: COLOR_SETTINGS.WHITE,
   },
   iconBtn: {
-    fontSize: 22,
+    fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
   },
   roundedBtn: {
-    fontSize: 22,
+    fontSize: 20,
     color: COLOR_SETTINGS.WHITE,
     backgroundColor: COLOR_SETTINGS.PRIMARY,
     padding: 10,

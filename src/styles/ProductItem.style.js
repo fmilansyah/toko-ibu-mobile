@@ -6,15 +6,13 @@ export default StyleSheet.create({
   productBox: {
     width: 150,
     marginLeft: marginContainer,
-    borderRadius: borderRadius,
-    overflow: 'hidden',
+    borderColor: COLOR_SETTINGS.GRAY,
+    borderRadius: 8,
     borderWidth: 1,
-    // borderColor: 'transparent',
   },
   productImageContainer: {
     width: '100%',
     height: 100,
-    borderRadius: borderRadius,
     backgroundColor: COLOR_SETTINGS.WHITE,
     position: 'relative',
     justifyContent: 'center',
@@ -28,25 +26,29 @@ export default StyleSheet.create({
     backgroundColor: COLOR_SETTINGS.PRIMARY,
     top: 0,
     left: 0,
-    borderTopLeftRadius: 10,
-    borderBottomRightRadius: 10,
+    borderTopLeftRadius: borderRadius,
+    borderBottomRightRadius: borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 2,
   },
   productDiscPercent: {
     fontSize: 12,
     color: COLOR_SETTINGS.WHITE,
-    fontWeight: 'bold',
+    fontFamily: 'Lora-Bold',
   },
   productImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
+    zIndex: 1,
+    borderTopRightRadius: borderRadius,
+    borderTopLeftRadius: borderRadius,
   },
   productName: {
-    fontSize: 12,
+    fontSize: 14,
     color: COLOR_SETTINGS.BLACK,
-    fontWeight: '600',
+    fontFamily: 'Lora-Medium',
     marginBottom: 2,
   },
   productStockContainer: {
@@ -55,5 +57,14 @@ export default StyleSheet.create({
   },
   productStockStatus: {
     fontSize: 12,
+    fontFamily: 'Lora-Medium',
+  },
+  productPrice: {
+    fontFamily: 'Lora-Medium',
+  },
+  productInfo: {
+    paddingLeft: 8,
+    paddingRight: 8,
+    marginBottom: 8,
   },
 });

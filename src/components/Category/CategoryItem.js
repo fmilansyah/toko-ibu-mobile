@@ -1,7 +1,6 @@
-import { View, Image } from 'react-native';
+import { View, Image, Text } from 'react-native';
 import CategoryItemStyle from '../../styles/CategoryItem.style';
 import { marginContainer } from '../../styles/global.style';
-import { Text } from '../Basic';
 
 const CategoryItem = ({ data, isLastItem }) => {
   return (
