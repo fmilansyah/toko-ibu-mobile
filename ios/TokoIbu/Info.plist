@@ -53,7 +53,7 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Lora.ttf</string>
+		<string>Lora-VariableFont_wght.ttf</string>
 	</array>
 </dict>
 </plist>

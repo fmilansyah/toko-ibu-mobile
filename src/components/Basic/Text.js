@@ -6,7 +6,7 @@ const BasicText = ({ children, style = {} }) => {
 
 const styles = StyleSheet.create({
   text: {
-    fontFamily: 'Lora',
+    fontFamily: 'Lora-VariableFont_wght',
   },
 });
 

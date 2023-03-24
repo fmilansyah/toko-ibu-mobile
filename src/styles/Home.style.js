@@ -13,6 +13,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 22,
     color: COLOR_SETTINGS.BLACK,
+    fontWeight: '700',
   },
   slider: {
     marginTop: marginContainer,
@@ -29,5 +30,22 @@ export default StyleSheet.create({
   },
   sectionContainer: {
     marginTop: marginContainer,
+  },
+  categoryTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sectionCount: {
+    fontSize: 16,
+    color: COLOR_SETTINGS.BLACK,
+    fontWeight: '400',
+    opacity: 0.5,
+    marginLeft: 10,
+  },
+  sectionShowAll: {
+    fontSize: 16,
+    color: COLOR_SETTINGS.PRIMARY,
+    fontWeight: '400',
   },
 });

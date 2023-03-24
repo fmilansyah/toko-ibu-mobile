@@ -1,3 +1,3 @@
-import ProductCard from './ProductCard';
+import ProductItem from './ProductItem';
 
-export { ProductCard };
+export { ProductItem };

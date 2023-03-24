@@ -6,8 +6,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import { Categories, SliderData } from '../database/Database';
+import { Categories, Items, SliderData } from '../database/Database';
 import { CategoryItem } from '../components/Category';
+import { ProductItem } from '../components/Product';
 
 const renderSliderItem = ({ item }) => {
   return <SliderItem data={item} />;
@@ -56,6 +57,29 @@ const Home = ({ navigation }) => {
                 key={index}
                 data={item}
                 isLastItem={index === Categories.length - 1}
+              />
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={HomeStyle.sectionContainer}>
+          <View
+            style={[
+              globalStyle.paddingContainer,
+              HomeStyle.categoryTitleContainer,
+            ]}>
+            <View style={HomeStyle.sectionTitleContainer}>
+              <Text style={HomeStyle.sectionTitle}>Fashion Pria</Text>
+              <Text style={HomeStyle.sectionCount}>41</Text>
+            </View>
+            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
+          </View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {Items.map((item, index) => (
+              <ProductItem
+                key={index}
+                data={item}
+                isLastItem={index === Items.length - 1}
               />
             ))}
           </ScrollView>
