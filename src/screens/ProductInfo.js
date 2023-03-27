@@ -16,6 +16,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductInfoStyle from '../styles/ProductInfo.style';
+import { COLOR_SETTINGS } from '../database/AppData';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ProductInfo = ({ route, navigation }) => {
   const { productID } = route.params;
@@ -107,36 +109,10 @@ const ProductInfo = ({ route, navigation }) => {
   return (
     <View style={ProductInfoStyle.container}>
       <ScrollView>
-        <View
-          style={{
-            width: '100%',
-            backgroundColor: COLOURS.backgroundLight,
-            borderBottomRightRadius: 20,
-            borderBottomLeftRadius: 20,
-            position: 'relative',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: 4,
-          }}>
-          <View
-            style={{
-              width: '100%',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingTop: 16,
-              paddingLeft: 16,
-            }}>
+        <View style={ProductInfoStyle.productImageContainer}>
+          <View style={ProductInfoStyle.backContainer}>
             <TouchableOpacity onPress={() => navigation.goBack('Home')}>
-              <Entypo
-                name="chevron-left"
-                style={{
-                  fontSize: 18,
-                  color: COLOURS.backgroundDark,
-                  padding: 12,
-                  backgroundColor: COLOURS.white,
-                  borderRadius: 10,
-                }}
-              />
+              <Entypo name="chevron-left" style={ProductInfoStyle.backBtn} />
             </TouchableOpacity>
           </View>
           <FlatList
@@ -321,34 +297,23 @@ const ProductInfo = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          height: '8%',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+      <View style={ProductInfoStyle.addToCartContainer}>
         <TouchableOpacity
           onPress={() => (product.isAvailable ? addToCart(product.id) : null)}
-          style={{
-            width: '86%',
-            height: '90%',
-            backgroundColor: COLOURS.blue,
-            borderRadius: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '500',
-              letterSpacing: 1,
-              color: COLOURS.white,
-              textTransform: 'uppercase',
-            }}>
-            {product.isAvailable ? 'Add to cart' : 'Not Avialable'}
+          style={[
+            ProductInfoStyle.addToCartBtn,
+            {
+              backgroundColor: product?.isAvailable
+                ? COLOR_SETTINGS.PRIMARY
+                : COLOR_SETTINGS.GRAY,
+            },
+          ]}>
+          <MaterialCommunityIcons
+            name="cart-arrow-down"
+            style={ProductInfoStyle.addToCartIcon}
+          />
+          <Text style={ProductInfoStyle.addToCartLabel}>
+            {product.isAvailable ? 'Tambah Ke Keranjang' : 'Stok Habis'}
           </Text>
         </TouchableOpacity>
       </View>
