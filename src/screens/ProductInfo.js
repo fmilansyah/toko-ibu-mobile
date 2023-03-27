@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductInfoStyle from '../styles/ProductInfo.style';
 import { COLOR_SETTINGS } from '../database/AppData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { sliderWidth } from '../styles/global.style';
 
 const ProductInfo = ({ route, navigation }) => {
   const { productID } = route.params;
@@ -84,24 +85,10 @@ const ProductInfo = ({ route, navigation }) => {
     }
   };
 
-  //product horizontal scroll product card
-  const renderProduct = ({ item, index }) => {
+  const renderProductImage = ({ item }) => {
     return (
-      <View
-        style={{
-          width: width,
-          height: 240,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Image
-          source={item}
-          style={{
-            width: '100%',
-            height: '100%',
-            resizeMode: 'contain',
-          }}
-        />
+      <View style={ProductInfoStyle.imageContainer}>
+        <Image source={item} style={ProductInfoStyle.productImage} />
       </View>
     );
   };
@@ -111,34 +98,31 @@ const ProductInfo = ({ route, navigation }) => {
       <ScrollView>
         <View style={ProductInfoStyle.productImageContainer}>
           <View style={ProductInfoStyle.backContainer}>
-            <TouchableOpacity onPress={() => navigation.goBack('Home')}>
-              <Entypo name="chevron-left" style={ProductInfoStyle.backBtn} />
+            <TouchableOpacity
+              style={ProductInfoStyle.backBtn}
+              onPress={() => navigation.goBack('Home')}>
+              <Entypo
+                name="chevron-left"
+                style={ProductInfoStyle.backBtnIcon}
+              />
             </TouchableOpacity>
           </View>
           <FlatList
-            data={product.productImageList ? product.productImageList : null}
+            data={product?.productImageList ?? null}
             horizontal
-            renderItem={renderProduct}
+            renderItem={renderProductImage}
             showsHorizontalScrollIndicator={false}
             decelerationRate={0.8}
-            snapToInterval={width}
+            snapToInterval={sliderWidth}
             bounces={false}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
               { useNativeDriver: false },
             )}
           />
-          <View
-            style={{
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 16,
-              marginTop: 32,
-            }}>
-            {product.productImageList
-              ? product.productImageList.map((data, index) => {
+          <View style={ProductInfoStyle.productIndicatorContainer}>
+            {product?.productImageList
+              ? product?.productImageList?.map((data, index) => {
                   let opacity = position.interpolate({
                     inputRange: [index - 1, index, index + 1],
                     outputRange: [0.2, 1, 0.2],
@@ -147,134 +131,33 @@ const ProductInfo = ({ route, navigation }) => {
                   return (
                     <Animated.View
                       key={index}
-                      style={{
-                        width: '16%',
-                        height: 2.4,
-                        backgroundColor: COLOURS.black,
-                        opacity,
-                        marginHorizontal: 4,
-                        borderRadius: 100,
-                      }}
+                      style={[
+                        ProductInfoStyle.productIndicator,
+                        {
+                          opacity,
+                        },
+                      ]}
                     />
                   );
                 })
               : null}
           </View>
         </View>
-        <View
-          style={{
-            paddingHorizontal: 16,
-            marginTop: 6,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: 14,
-            }}>
-            <Entypo
-              name="shopping-cart"
-              style={{
-                fontSize: 18,
-                color: COLOURS.blue,
-                marginRight: 6,
-              }}
-            />
-            <Text
-              style={{
-                fontSize: 12,
-                color: COLOURS.black,
-              }}>
-              Shopping
+
+        <View style={ProductInfoStyle.productDescContainer}>
+          <View style={ProductInfoStyle.productCategory}>
+            <Text style={ProductInfoStyle.productCategoryName}>
+              {product?.category}
             </Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginVertical: 4,
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '600',
-                letterSpacing: 0.5,
-                marginVertical: 4,
-                color: COLOURS.black,
-                maxWidth: '84%',
-              }}>
-              {product.productName}
+          <View style={ProductInfoStyle.productNameContainer}>
+            <Text style={ProductInfoStyle.productName}>
+              {product?.productName}
             </Text>
-            <Ionicons
-              name="link-outline"
-              style={{
-                fontSize: 24,
-                color: COLOURS.blue,
-                backgroundColor: COLOURS.blue + 10,
-                padding: 8,
-                borderRadius: 100,
-              }}
-            />
           </View>
-          <Text
-            style={{
-              fontSize: 12,
-              color: COLOURS.black,
-              fontWeight: '400',
-              letterSpacing: 1,
-              opacity: 0.5,
-              lineHeight: 20,
-              maxWidth: '85%',
-              maxHeight: 44,
-              marginBottom: 18,
-            }}>
-            {product.description}
+          <Text style={ProductInfoStyle.productDescription}>
+            {product?.description}
           </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginVertical: 14,
-              borderBottomColor: COLOURS.backgroundLight,
-              borderBottomWidth: 1,
-              paddingBottom: 20,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '80%',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  color: COLOURS.blue,
-                  backgroundColor: COLOURS.backgroundLight,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 12,
-                  borderRadius: 100,
-                  marginRight: 10,
-                }}>
-                <Entypo
-                  name="location-pin"
-                  style={{
-                    fontSize: 16,
-                    color: COLOURS.blue,
-                  }}
-                />
-              </View>
-              <Text> Rustaveli Ave 57,{'\n'}17-001, Batume</Text>
-            </View>
-            <Entypo
-              name="chevron-right"
-              style={{
-                fontSize: 22,
-                color: COLOURS.backgroundDark,
-              }}
-            />
-          </View>
           <View
             style={{
               paddingHorizontal: 16,
@@ -288,10 +171,6 @@ const ProductInfo = ({ route, navigation }) => {
                 marginBottom: 4,
               }}>
               &#8377; {product.productPrice}.00
-            </Text>
-            <Text>
-              Tax Rate 2%~ &#8377;{product.productPrice / 20} (&#8377;
-              {product.productPrice + product.productPrice / 20})
             </Text>
           </View>
         </View>
@@ -309,11 +188,11 @@ const ProductInfo = ({ route, navigation }) => {
             },
           ]}>
           <MaterialCommunityIcons
-            name="cart-arrow-down"
+            name="plus"
             style={ProductInfoStyle.addToCartIcon}
           />
           <Text style={ProductInfoStyle.addToCartLabel}>
-            {product.isAvailable ? 'Tambah Ke Keranjang' : 'Stok Habis'}
+            {product.isAvailable ? 'Keranjang' : 'Stok Habis'}
           </Text>
         </TouchableOpacity>
       </View>

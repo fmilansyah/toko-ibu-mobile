@@ -31,7 +31,7 @@ export default StyleSheet.create({
   sectionContainer: {
     marginTop: marginContainer,
   },
-  categoryTitleContainer: {
+  categoryNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

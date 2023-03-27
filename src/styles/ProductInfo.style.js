@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../database/AppData';
-import { borderRadius, paddingContainer } from './global.style';
+import { borderRadius, marginContainer, paddingContainer, sliderWidth } from './global.style';
 
 export default StyleSheet.create({
   container: {
@@ -41,8 +41,6 @@ export default StyleSheet.create({
   },
   productImageContainer: {
     width: '100%',
-    borderBottomRightRadius: borderRadius,
-    borderBottomLeftRadius: borderRadius,
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
@@ -56,10 +54,68 @@ export default StyleSheet.create({
     paddingLeft: paddingContainer,
   },
   backBtn: {
+    borderRadius: borderRadius,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: COLOR_SETTINGS.GRAY,
+  },
+  backBtnIcon: {
     fontSize: 18,
     color: COLOR_SETTINGS.GRAY,
-    padding: 12,
-    backgroundColor: COLOR_SETTINGS.WHITE,
-    borderRadius: borderRadius,
+  },
+  imageContainer: {
+    width: sliderWidth,
+    height: 240,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  productIndicatorContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: marginContainer,
+    marginTop: marginContainer * 2,
+  },
+  productIndicator: {
+    width: '5%',
+    height: 2.4,
+    backgroundColor: COLOR_SETTINGS.BLACK,
+    marginHorizontal: 4,
+    borderRadius: 100,
+  },
+  productDescContainer: {
+    paddingHorizontal: paddingContainer,
+  },
+  productCategory: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 14,
+  },
+  productCategoryName: {
+    fontSize: 12,
+    color: COLOR_SETTINGS.BLACK,
+  },
+  productNameContainer: {
+    flexDirection: 'row',
+    marginVertical: 4,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  productName: {
+    fontSize: 20,
+    fontFamily: 'Lora-Bold',
+    color: COLOR_SETTINGS.BLACK,
+  },
+  productDescription: {
+    fontSize: 12,
+    lineHeight: 20,
+    marginBottom: 18,
+    fontFamily: 'Lora-Medium',
   },
 });

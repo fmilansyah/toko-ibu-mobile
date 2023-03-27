@@ -71,7 +71,7 @@ const Home = ({ navigation }) => {
           <View
             style={[
               globalStyle.paddingContainer,
-              HomeStyle.categoryTitleContainer,
+              HomeStyle.categoryNameContainer,
             ]}>
             <View style={HomeStyle.sectionTitleContainer}>
               <Text style={HomeStyle.sectionTitle}>Fashion Pria</Text>
@@ -100,7 +100,7 @@ const Home = ({ navigation }) => {
           <View
             style={[
               globalStyle.paddingContainer,
-              HomeStyle.categoryTitleContainer,
+              HomeStyle.categoryNameContainer,
             ]}>
             <View style={HomeStyle.sectionTitleContainer}>
               <Text style={HomeStyle.sectionTitle}>Makanan</Text>
