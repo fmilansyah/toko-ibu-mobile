@@ -21,4 +21,3 @@ See [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/doc
 - [ ] Account Settings
 - [ ] Checkout
 - [ ] Search
-- [ ] Product By Category
