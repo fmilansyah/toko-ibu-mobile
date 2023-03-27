@@ -5,8 +5,10 @@ import ProductItemStyle from '../../styles/ProductItem.style';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { marginContainer } from '../../styles/global.style';
 import { rupiahFormatter } from '../../helpers/formatter';
+import { useNavigation } from '@react-navigation/native';
 
 const ProductCard = ({ data, isLastItem = false }) => {
+  const navigation = useNavigation();
   return (
     <React.Fragment>
       <TouchableOpacity
@@ -15,7 +17,10 @@ const ProductCard = ({ data, isLastItem = false }) => {
           {
             marginRight: isLastItem ? marginContainer : 0,
           },
-        ]}>
+        ]}
+        onPress={() =>
+          navigation.navigate('ProductInfo', { productID: data.id })
+        }>
         <View style={ProductItemStyle.productImageContainer}>
           {data.isOff ? (
             <View style={ProductItemStyle.productDisc}>
@@ -30,33 +35,35 @@ const ProductCard = ({ data, isLastItem = false }) => {
           />
         </View>
         <View style={ProductItemStyle.productInfo}>
-        <Text style={ProductItemStyle.productName}>{data.productName}</Text>
-        <View style={ProductItemStyle.productStockContainer}>
-          <FontAwesome
-            name="circle"
-            style={[
-              ProductItemStyle.productStockStatus,
-              {
-                marginRight: 6,
-                color: data?.isAvailable
-                  ? COLOR_SETTINGS.GREEN
-                  : COLOR_SETTINGS.RED,
-              },
-            ]}
-          />
-          <Text
-            style={[
-              ProductItemStyle.productStockStatus,
-              {
-                color: data?.isAvailable
-                  ? COLOR_SETTINGS.GREEN
-                  : COLOR_SETTINGS.RED,
-              },
-            ]}>
-            {data?.isAvailable ? 'Masih Ada' : 'Stok Habis'}
+          <Text style={ProductItemStyle.productName}>{data.productName}</Text>
+          <View style={ProductItemStyle.productStockContainer}>
+            <FontAwesome
+              name="circle"
+              style={[
+                ProductItemStyle.productStockStatus,
+                {
+                  marginRight: 6,
+                  color: data?.isAvailable
+                    ? COLOR_SETTINGS.GREEN
+                    : COLOR_SETTINGS.RED,
+                },
+              ]}
+            />
+            <Text
+              style={[
+                ProductItemStyle.productStockStatus,
+                {
+                  color: data?.isAvailable
+                    ? COLOR_SETTINGS.GREEN
+                    : COLOR_SETTINGS.RED,
+                },
+              ]}>
+              {data?.isAvailable ? 'Masih Ada' : 'Stok Habis'}
+            </Text>
+          </View>
+          <Text style={ProductItemStyle.productPrice}>
+            {rupiahFormatter(data?.productPrice)}
           </Text>
-        </View>
-        <Text style={ProductItemStyle.productPrice}>{rupiahFormatter(data?.productPrice)}</Text>
         </View>
       </TouchableOpacity>
     </React.Fragment>

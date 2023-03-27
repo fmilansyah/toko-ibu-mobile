@@ -15,6 +15,7 @@ import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProductInfoStyle from '../styles/ProductInfo.style';
 
 const ProductInfo = ({ route, navigation }) => {
   const { productID } = route.params;
@@ -104,17 +105,7 @@ const ProductInfo = ({ route, navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        backgroundColor: COLOURS.white,
-        position: 'relative',
-      }}>
-      <StatusBar
-        backgroundColor={COLOURS.backgroundLight}
-        barStyle="dark-content"
-      />
+    <View style={ProductInfoStyle.container}>
       <ScrollView>
         <View
           style={{
