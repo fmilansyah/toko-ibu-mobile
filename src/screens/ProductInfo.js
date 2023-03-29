@@ -19,6 +19,7 @@ import ProductInfoStyle from '../styles/ProductInfo.style';
 import { COLOR_SETTINGS } from '../database/AppData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { sliderWidth } from '../styles/global.style';
+import { rupiahFormatter } from '../helpers/formatter';
 
 const ProductInfo = ({ route, navigation }) => {
   const { productID } = route.params;
@@ -155,24 +156,24 @@ const ProductInfo = ({ route, navigation }) => {
               {product?.productName}
             </Text>
           </View>
+          <View style={ProductInfoStyle.productPriceContainer}>
+            <Text style={ProductInfoStyle.productPrice}>
+              {rupiahFormatter(product.productPrice)}
+            </Text>
+            {product?.isOff && (
+              <>
+                <Text style={ProductInfoStyle.productPriceOffPercent}>
+                  {product?.offPercentage}%
+                </Text>
+                <Text style={ProductInfoStyle.productPriceOffNominal}>
+                  {rupiahFormatter(2500)}
+                </Text>
+              </>
+            )}
+          </View>
           <Text style={ProductInfoStyle.productDescription}>
             {product?.description}
           </Text>
-          <View
-            style={{
-              paddingHorizontal: 16,
-            }}>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '500',
-                maxWidth: '85%',
-                color: COLOURS.black,
-                marginBottom: 4,
-              }}>
-              &#8377; {product.productPrice}.00
-            </Text>
-          </View>
         </View>
       </ScrollView>
 

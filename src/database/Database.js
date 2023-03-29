@@ -16,7 +16,7 @@ export const Items = [
     productName: 'MI Super Bass Bluetooth Wireless Headphones',
     productPrice: 1799,
     description:
-      'Up to 20 hours battery life | Super powerful Bass | 40mm dynamic driver | Pressure less ear muffs | Bluetooth 5.0 | Voice control',
+      'Dolore ex magna duis ea Lorem magna enim nulla cupidatat ea minim sint. Consequat nulla ex sunt do ullamco. Sunt magna nostrud nisi id exercitation est commodo Lorem. Sunt culpa in incididunt dolore. Velit ex quis ut et cillum.',
     isOff: true,
     offPercentage: 10,
     productImage: 'https://img.freepik.com/free-photo/blond-man-with-shopping-bags-looking-camera_23-2148316520.jpg?w=740&t=st=1679678475~exp=1679679075~hmac=b0edafe64eb40be264f9c3045a04fcf1f2ba8d97b196c0c06f7cc9d47a425ff4',

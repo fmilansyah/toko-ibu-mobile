@@ -103,7 +103,7 @@ export default StyleSheet.create({
   },
   productNameContainer: {
     flexDirection: 'row',
-    marginVertical: 4,
+    marginBottom: 14,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -117,5 +117,34 @@ export default StyleSheet.create({
     lineHeight: 20,
     marginBottom: 18,
     fontFamily: 'Lora-Medium',
+  },
+  productPriceContainer: {
+    flexDirection: 'row',
+    verticalAlign: 'middle',
+    marginBottom: 14,
+  },
+  productPrice: {
+    fontSize: 18,
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-SemiBold',
+    marginRight: 5,
+  },
+  productPriceOffPercent: {
+    fontSize: 14,
+    color: COLOR_SETTINGS.RED,
+    fontFamily: 'Lora-Medium',
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    backgroundColor: '#FFDBE2',
+  },
+  productPriceOffNominal: {
+    fontSize: 14,
+    color: COLOR_SETTINGS.GRAY,
+    fontFamily: 'Lora-Medium',
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    textDecorationLine: 'line-through',
+    textDecorationColor: COLOR_SETTINGS.GRAY,
+    textDecorationStyle: 'solid',
   },
 });
