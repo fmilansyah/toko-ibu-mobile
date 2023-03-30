@@ -45,6 +45,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 4,
+    height: 325,
   },
   backContainer: {
     width: '100%',
@@ -52,12 +53,17 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: paddingContainer,
     paddingLeft: paddingContainer,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 2,
   },
   backBtn: {
     borderRadius: borderRadius,
     padding: 12,
     borderWidth: 1,
     borderColor: COLOR_SETTINGS.GRAY,
+    backgroundColor: COLOR_SETTINGS.WHITE,
   },
   backBtnIcon: {
     fontSize: 18,
@@ -65,14 +71,15 @@ export default StyleSheet.create({
   },
   imageContainer: {
     width: sliderWidth,
-    height: 240,
+    height: 325,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: COLOR_SETTINGS.RED,
   },
   productImage: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   productIndicatorContainer: {
     width: '100%',
@@ -81,6 +88,8 @@ export default StyleSheet.create({
     justifyContent: 'center',
     marginBottom: marginContainer,
     marginTop: marginContainer * 2,
+    position: 'absolute',
+    bottom: 0,
   },
   productIndicator: {
     width: '5%',

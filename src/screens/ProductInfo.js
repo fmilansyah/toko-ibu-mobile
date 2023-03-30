@@ -89,7 +89,7 @@ const ProductInfo = ({ route, navigation }) => {
   const renderProductImage = ({ item }) => {
     return (
       <View style={ProductInfoStyle.imageContainer}>
-        <Image source={item} style={ProductInfoStyle.productImage} />
+        <Image source={{ uri: item }} style={ProductInfoStyle.productImage} />
       </View>
     );
   };
@@ -166,7 +166,7 @@ const ProductInfo = ({ route, navigation }) => {
                   {product?.offPercentage}%
                 </Text>
                 <Text style={ProductInfoStyle.productPriceOffNominal}>
-                  {rupiahFormatter(2500)}
+                  {rupiahFormatter(product?.offNominal)}
                 </Text>
               </>
             )}
