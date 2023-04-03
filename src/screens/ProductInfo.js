@@ -12,7 +12,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { COLOURS, Items } from '../database/Database';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductInfoStyle from '../styles/ProductInfo.style';
@@ -102,10 +102,7 @@ const ProductInfo = ({ route, navigation }) => {
             <TouchableOpacity
               style={ProductInfoStyle.backBtn}
               onPress={() => navigation.goBack('Home')}>
-              <Entypo
-                name="chevron-left"
-                style={ProductInfoStyle.backBtnIcon}
-              />
+              <Feather name="arrow-left" style={ProductInfoStyle.backBtnIcon} />
             </TouchableOpacity>
           </View>
           <FlatList

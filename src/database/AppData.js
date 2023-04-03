@@ -8,4 +8,5 @@ export const COLOR_SETTINGS = {
   GRAY: '#a9a9a9',
   GREEN: '#00AC76',
   RED: '#C04345',
+  BG_LIGHT: '#F0F0F3',
 };

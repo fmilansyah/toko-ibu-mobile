@@ -1,4 +1,4 @@
-import Text from './Text';
 import SliderItem from './SliderItem';
+import Divider from './Divider';
 
-export { Text, SliderItem };
+export { SliderItem, Divider };
