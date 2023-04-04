@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StatusBar,
   ScrollView,
   TouchableOpacity,
   FlatList,
@@ -11,9 +10,8 @@ import {
   Animated,
   ToastAndroid,
 } from 'react-native';
-import { COLOURS, Items } from '../database/Database';
+import { Items } from '../database/Database';
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductInfoStyle from '../styles/ProductInfo.style';
 import { COLOR_SETTINGS } from '../database/AppData';

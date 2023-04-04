@@ -1,6 +1,10 @@
 import { StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../database/AppData';
-import { borderRadius, marginContainer, paddingContainer } from './global.style';
+import {
+  borderRadius,
+  marginContainer,
+  paddingContainer,
+} from './global.style';
 
 export default StyleSheet.create({
   container: {
@@ -19,7 +23,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Regular',
+    fontFamily: 'Lora-Medium',
     marginLeft: 10,
   },
   payBtnContainer: {
@@ -99,7 +103,7 @@ export default StyleSheet.create({
   },
   expandIcon: {
     fontSize: 22,
-    color: COLOR_SETTINGS.BLACK
+    color: COLOR_SETTINGS.BLACK,
   },
   summaryItem: {
     flexDirection: 'row',

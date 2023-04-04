@@ -1,6 +1,11 @@
 import { StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../database/AppData';
-import { borderRadius, marginContainer, paddingContainer, sliderWidth } from './global.style';
+import {
+  borderRadius,
+  marginContainer,
+  paddingContainer,
+  sliderWidth,
+} from './global.style';
 
 export default StyleSheet.create({
   container: {

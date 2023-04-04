@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 import { TouchableOpacity, View, Image, Text } from 'react-native';
 import ProductCartItemStyle from '../../styles/ProductCartItem.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

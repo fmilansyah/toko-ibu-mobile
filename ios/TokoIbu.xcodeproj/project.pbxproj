@@ -19,7 +19,7 @@
 		A366CCF3E6934C0294C2A299 /* Lora-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25F6EADE9AE24DAD88FDC61F /* Lora-Italic.ttf */; };
 		81222E3C8BA3447486AF1E47 /* Lora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A1A534669BC43DFA9248011 /* Lora-Medium.ttf */; };
 		B64CFCF901624798AA8E133A /* Lora-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C1461FF0617E4C3F8FE5EC8A /* Lora-MediumItalic.ttf */; };
-		48BB3DB894D84930B9CFA8E9 /* Lora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54428B62876E45B6B54EEB67 /* Lora-Regular.ttf */; };
+		48BB3DB894D84930B9CFA8E9 /* Lora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54428B62876E45B6B54EEB67 /* Lora-Medium.ttf */; };
 		CE9201099ED0496B936DBC25 /* Lora-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D839262D9182453E874A0630 /* Lora-SemiBold.ttf */; };
 		E1D1DD861A2B45F79EB587D3 /* Lora-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1943B88D21A740A2B736D9E2 /* Lora-SemiBoldItalic.ttf */; };
 /* End PBXBuildFile section */
@@ -57,7 +57,7 @@
 		25F6EADE9AE24DAD88FDC61F /* Lora-Italic.ttf */ = {isa = PBXFileReference; name = "Lora-Italic.ttf"; path = "../assets/fonts/Lora-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		9A1A534669BC43DFA9248011 /* Lora-Medium.ttf */ = {isa = PBXFileReference; name = "Lora-Medium.ttf"; path = "../assets/fonts/Lora-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		C1461FF0617E4C3F8FE5EC8A /* Lora-MediumItalic.ttf */ = {isa = PBXFileReference; name = "Lora-MediumItalic.ttf"; path = "../assets/fonts/Lora-MediumItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		54428B62876E45B6B54EEB67 /* Lora-Regular.ttf */ = {isa = PBXFileReference; name = "Lora-Regular.ttf"; path = "../assets/fonts/Lora-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		54428B62876E45B6B54EEB67 /* Lora-Medium.ttf */ = {isa = PBXFileReference; name = "Lora-Medium.ttf"; path = "../assets/fonts/Lora-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D839262D9182453E874A0630 /* Lora-SemiBold.ttf */ = {isa = PBXFileReference; name = "Lora-SemiBold.ttf"; path = "../assets/fonts/Lora-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		1943B88D21A740A2B736D9E2 /* Lora-SemiBoldItalic.ttf */ = {isa = PBXFileReference; name = "Lora-SemiBoldItalic.ttf"; path = "../assets/fonts/Lora-SemiBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
@@ -173,7 +173,7 @@
 				25F6EADE9AE24DAD88FDC61F /* Lora-Italic.ttf */,
 				9A1A534669BC43DFA9248011 /* Lora-Medium.ttf */,
 				C1461FF0617E4C3F8FE5EC8A /* Lora-MediumItalic.ttf */,
-				54428B62876E45B6B54EEB67 /* Lora-Regular.ttf */,
+				54428B62876E45B6B54EEB67 /* Lora-Medium.ttf */,
 				D839262D9182453E874A0630 /* Lora-SemiBold.ttf */,
 				1943B88D21A740A2B736D9E2 /* Lora-SemiBoldItalic.ttf */,
 			);
@@ -282,7 +282,7 @@
 				A366CCF3E6934C0294C2A299 /* Lora-Italic.ttf in Resources */,
 				81222E3C8BA3447486AF1E47 /* Lora-Medium.ttf in Resources */,
 				B64CFCF901624798AA8E133A /* Lora-MediumItalic.ttf in Resources */,
-				48BB3DB894D84930B9CFA8E9 /* Lora-Regular.ttf in Resources */,
+				48BB3DB894D84930B9CFA8E9 /* Lora-Medium.ttf in Resources */,
 				CE9201099ED0496B936DBC25 /* Lora-SemiBold.ttf in Resources */,
 				E1D1DD861A2B45F79EB587D3 /* Lora-SemiBoldItalic.ttf in Resources */,
 			);
