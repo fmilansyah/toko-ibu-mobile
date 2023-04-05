@@ -42,7 +42,7 @@ const ProductInfo = ({ route, navigation }) => {
 
   const getDataFromDB = async () => {
     for (let index = 0; index < Items.length; index++) {
-      if (Items[index].id == productID) {
+      if (Items[index].id === productID) {
         await setProduct(Items[index]);
         return;
       }

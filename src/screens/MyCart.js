@@ -4,11 +4,10 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLOURS, Items } from '../database/Database';
+import { Items } from '../database/Database';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MyCartStyle from '../styles/MyCart.style';
 import globalStyle from '../styles/global.style';
@@ -51,12 +50,12 @@ const MyCart = ({ navigation }) => {
 
   //get total price of all items in the cart
   const getTotal = productData => {
-    let total = 0;
+    let newTotal = 0;
     for (let index = 0; index < productData.length; index++) {
       let productPrice = productData[index].productPrice;
-      total = total + productPrice;
+      newTotal += productPrice;
     }
-    setTotal(total);
+    setTotal(newTotal);
   };
 
   //remove data from Cart
@@ -67,7 +66,7 @@ const MyCart = ({ navigation }) => {
     if (itemArray) {
       let array = itemArray;
       for (let index = 0; index < array.length; index++) {
-        if (array[index] == id) {
+        if (array[index] === id) {
           array.splice(index, 1);
         }
 
