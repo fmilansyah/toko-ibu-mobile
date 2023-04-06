@@ -16,7 +16,7 @@ See [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/doc
 - [x] Home
 - [x] Cart
 - [x] Product Detail
-- [ ] Login and Register
+- [x] Login and Register
 - [ ] Order List
 - [ ] Account Settings
 - [ ] Checkout

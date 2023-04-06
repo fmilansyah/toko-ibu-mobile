@@ -19,3 +19,13 @@ export function passwordValidator(password) {
   }
   return '';
 }
+
+export function confirmPasswordValidator(confirmPassword, password) {
+  if (!confirmPassword) {
+    return 'Kata sandi tidak boleh kosong';
+  }
+  if (confirmPassword !== password) {
+    return 'Kata sandi tidak cocok';
+  }
+  return '';
+}

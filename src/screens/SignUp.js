@@ -6,22 +6,35 @@ import {
   KeyboardAvoidingView,
   Image,
 } from 'react-native';
-import { emailValidator, passwordValidator } from '../helpers/validation';
+import {
+  confirmPasswordValidator,
+  emailValidator,
+  passwordValidator,
+} from '../helpers/validation';
 import SignInStyle from '../styles/SignIn.style';
 import { TextInput } from '../components/Form';
 import globalStyle from '../styles/global.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function SignIn({ navigation }) {
+export default function SignUp({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
+  const [confirmPassword, setConfirmPassword] = useState({
+    value: '',
+    error: '',
+  });
 
   const handleLogin = () => {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
-    if (emailError || passwordError) {
+    const confirmPasswordError = confirmPasswordValidator(
+      confirmPassword.value,
+      password.value,
+    );
+    if (emailError || passwordError || confirmPasswordError) {
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
+      setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
       return;
     }
     navigation.reset({
@@ -46,7 +59,7 @@ export default function SignIn({ navigation }) {
           source={require('../../assets/images/logo.jpg')}
           style={SignInStyle.logo}
         />
-        <Text style={SignInStyle.title}>Masuk Ke Akun Anda</Text>
+        <Text style={SignInStyle.title}>Buat Akun Baru</Text>
 
         <TextInput
           label="Email"
@@ -62,34 +75,37 @@ export default function SignIn({ navigation }) {
         />
         <TextInput
           label="Kata Sandi"
-          returnKeyType="done"
+          returnKeyType="next"
           value={password.value}
           onChangeText={text => setPassword({ value: text, error: '' })}
           error={!!password.error}
           errorText={password.error}
           secureTextEntry
         />
-
-        <View style={SignInStyle.forgotPassword}>
-          <TouchableOpacity>
-            <Text style={globalStyle.link}>Lupa Kata Sandi?</Text>
-          </TouchableOpacity>
-        </View>
+        <TextInput
+          label="Konfirmasi Kata Sandi"
+          returnKeyType="done"
+          value={confirmPassword.value}
+          onChangeText={text => setConfirmPassword({ value: text, error: '' })}
+          error={!!confirmPassword.error}
+          errorText={confirmPassword.error}
+          secureTextEntry
+        />
 
         <TouchableOpacity style={SignInStyle.submitBtn} onPress={handleLogin}>
           <MaterialCommunityIcons
             name="login"
             style={SignInStyle.submitBtnIcon}
           />
-          <Text style={SignInStyle.submitBtnText}>Masuk</Text>
+          <Text style={SignInStyle.submitBtnText}>Buat Akun</Text>
         </TouchableOpacity>
 
         <View style={globalStyle.row}>
           <Text style={[globalStyle.descLink, SignInStyle.createAccount]}>
-            Belum punya akun?
+            Sudah punya akun?
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={globalStyle.link}>Buat Akun</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <Text style={globalStyle.link}>Masuk</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
