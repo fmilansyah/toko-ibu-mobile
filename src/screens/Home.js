@@ -29,7 +29,7 @@ const Home = ({ navigation }) => {
         <TouchableOpacity>
           <Text style={HomeStyle.appName}>{APP_NAME}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+        <TouchableOpacity onPress={() => navigation.navigate('OrderList')}>
           <Feather name="log-in" style={globalStyle.roundedBtn} />
         </TouchableOpacity>
       </View>
