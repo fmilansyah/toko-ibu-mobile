@@ -53,4 +53,10 @@ export default StyleSheet.create({
   row: {
     flexDirection: 'row',
   },
+  justifyContentEnd: {
+    justifyContent: 'flex-end',
+  },
+  flex: {
+    flex: 1,
+  },
 });

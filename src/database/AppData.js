@@ -9,4 +9,7 @@ export const COLOR_SETTINGS = {
   GREEN: '#00AC76',
   RED: '#C04345',
   BG_LIGHT: '#F0F0F3',
+  BG_GREEN: 'rgb(214, 255, 222)',
+  BG_ORANGE: '#fff7e6',
+  ORANGE: '#d46b08',
 };
