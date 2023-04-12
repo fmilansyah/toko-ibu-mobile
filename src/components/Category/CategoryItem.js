@@ -1,6 +1,7 @@
 import { View, Image, Text } from 'react-native';
 import CategoryItemStyle from '../../styles/CategoryItem.style';
 import { marginContainer } from '../../styles/global.style';
+import { UPLOADS_DIR } from '../../config/app';
 
 const CategoryItem = ({ data, isLastItem }) => {
   return (
@@ -13,11 +14,11 @@ const CategoryItem = ({ data, isLastItem }) => {
       ]}>
       <Image
         source={{
-          uri: data?.illustration,
+          uri: UPLOADS_DIR + data?.foto,
         }}
         style={CategoryItemStyle.categoryImage}
       />
-      <Text style={CategoryItemStyle.categoryName}>{data?.title}</Text>
+      <Text style={CategoryItemStyle.categoryName}>{data?.nama}</Text>
     </View>
   );
 };

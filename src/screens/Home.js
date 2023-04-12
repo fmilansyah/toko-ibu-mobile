@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, ScrollView, Text } from 'react-native';
 import { SliderItem } from '../components/Basic';
 import { APP_NAME } from '../database/AppData';
@@ -7,19 +7,31 @@ import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
 import {
-  Categories,
   MaleFashion,
   SliderData,
   Foods,
 } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
+import api from '../config/api';
 
 const renderSliderItem = ({ item }) => {
   return <SliderItem data={item} />;
 };
 
 const Home = ({ navigation }) => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    getCategories()
+  }, []);
+
+  const getCategories = () => {
+    api
+      .get('/getkategori')
+      .then(({ data }) => setCategories(data?.Kategori ?? []));
+  };
+
   return (
     <View style={globalStyle.container}>
       <View style={HomeStyle.headerContainer}>
@@ -57,11 +69,11 @@ const Home = ({ navigation }) => {
             </View>
           </View>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {Categories.map((item, index) => (
+            {categories.map((item, index) => (
               <CategoryItem
                 key={index}
                 data={item}
-                isLastItem={index === Categories.length - 1}
+                isLastItem={index === categories.length - 1}
               />
             ))}
           </ScrollView>
