@@ -6,11 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import {
-  MaleFashion,
-  SliderData,
-  Foods,
-} from '../database/Database';
+import { MaleFashion, SliderData, Foods } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
 import api from '../config/api';
@@ -21,15 +17,23 @@ const renderSliderItem = ({ item }) => {
 
 const Home = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
+  const [categoryAndItem, setCategoryAndItem] = useState([]);
 
   useEffect(() => {
-    getCategories()
+    getCategories();
+    getCategoryAndItem();
   }, []);
 
   const getCategories = () => {
     api
       .get('/getkategori')
       .then(({ data }) => setCategories(data?.Kategori ?? []));
+  };
+
+  const getCategoryAndItem = () => {
+    api
+      .get('/getkategoridanbarang')
+      .then(({ data }) => setCategoryAndItem(data?.Kategori ?? []));
   };
 
   return (
@@ -79,57 +83,32 @@ const Home = ({ navigation }) => {
           </ScrollView>
         </View>
 
-        <View style={HomeStyle.sectionContainer}>
-          <View
-            style={[
-              globalStyle.paddingContainer,
-              HomeStyle.categoryNameContainer,
-            ]}>
-            <View style={HomeStyle.sectionTitleContainer}>
-              <Text style={HomeStyle.sectionTitle}>Fashion Pria</Text>
-              <Text style={HomeStyle.sectionCount}>41</Text>
+        {categoryAndItem.map((cat, i) => (
+          <View style={HomeStyle.sectionContainer} key={i}>
+            <View
+              style={[
+                globalStyle.paddingContainer,
+                HomeStyle.categoryNameContainer,
+              ]}>
+              <View style={HomeStyle.sectionTitleContainer}>
+                <Text style={HomeStyle.sectionTitle}>{cat?.nama}</Text>
+                <Text style={HomeStyle.sectionCount}>{cat?.jml_barang}</Text>
+              </View>
+              <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
             </View>
-            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {cat?.barang.map((item, j) => (
+                <ProductItem
+                  key={j}
+                  data={item}
+                  isLastItem={j === cat?.barang.length - 1}
+                />
+              ))}
+            </ScrollView>
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {MaleFashion.map((item, index) => (
-              <ProductItem
-                key={index}
-                data={item}
-                isLastItem={index === MaleFashion.length - 1}
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-        <View
-          style={[
-            HomeStyle.sectionContainer,
-            {
-              marginBottom: 16, // for last item only
-            },
-          ]}>
-          <View
-            style={[
-              globalStyle.paddingContainer,
-              HomeStyle.categoryNameContainer,
-            ]}>
-            <View style={HomeStyle.sectionTitleContainer}>
-              <Text style={HomeStyle.sectionTitle}>Makanan</Text>
-              <Text style={HomeStyle.sectionCount}>17</Text>
-            </View>
-            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
-          </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {Foods.map((item, index) => (
-              <ProductItem
-                key={index}
-                data={item}
-                isLastItem={index === Foods.length - 1}
-              />
-            ))}
-          </ScrollView>
-        </View>
+        ))}
       </ScrollView>
       {/* <Footer /> */}
     </View>

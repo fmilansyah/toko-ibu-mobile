@@ -18,11 +18,17 @@ import { COLOR_SETTINGS } from '../database/AppData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { sliderWidth } from '../styles/global.style';
 import { rupiahFormatter } from '../helpers/formatter';
+import api from '../config/api';
+import { nominalDiscount } from '../helpers/math';
 
 const ProductInfo = ({ route, navigation }) => {
-  const { productID } = route.params;
+  const { kd_barang, kd_detail_barang } = route.params;
 
-  const [product, setProduct] = useState({});
+  const [product, setProduct] = useState(null);
+  const [detailProduct, setDetailProduct] = useState([]);
+  const [selectedDetail, setSelectedDetail] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const width = Dimensions.get('window').width;
 
@@ -40,13 +46,24 @@ const ProductInfo = ({ route, navigation }) => {
 
   //get product data by productID
 
-  const getDataFromDB = async () => {
-    for (let index = 0; index < Items.length; index++) {
-      if (Items[index].id === productID) {
-        await setProduct(Items[index]);
-        return;
-      }
-    }
+  const getDataFromDB = () => {
+    const formData = new FormData();
+    formData.append('kd_barang', kd_barang);
+    api
+      .post('/getdetailbarang', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) => {
+        setProduct(data?.barang);
+        setFiles(data?.file_barang);
+        setDetailProduct(data?.detail_barang);
+        setCategories(data?.kategori_barang);
+
+        const newSelectedDetail = data?.detail_barang.find(
+          obj => obj.kd_detail_barang === kd_detail_barang,
+        );
+        setSelectedDetail(newSelectedDetail);
+      });
   };
 
   //add to cart
@@ -87,7 +104,10 @@ const ProductInfo = ({ route, navigation }) => {
   const renderProductImage = ({ item }) => {
     return (
       <View style={ProductInfoStyle.imageContainer}>
-        <Image source={{ uri: item }} style={ProductInfoStyle.productImage} />
+        <Image
+          source={{ uri: item?.file }}
+          style={ProductInfoStyle.productImage}
+        />
       </View>
     );
   };
@@ -99,12 +119,12 @@ const ProductInfo = ({ route, navigation }) => {
           <View style={ProductInfoStyle.backContainer}>
             <TouchableOpacity
               style={ProductInfoStyle.backBtn}
-              onPress={() => navigation.goBack('Home')}>
+              onPress={() => navigation.goBack()}>
               <Feather name="arrow-left" style={ProductInfoStyle.backBtnIcon} />
             </TouchableOpacity>
           </View>
           <FlatList
-            data={product?.productImageList ?? null}
+            data={files ?? null}
             horizontal
             renderItem={renderProductImage}
             showsHorizontalScrollIndicator={false}
@@ -117,8 +137,8 @@ const ProductInfo = ({ route, navigation }) => {
             )}
           />
           <View style={ProductInfoStyle.productIndicatorContainer}>
-            {product?.productImageList
-              ? product?.productImageList?.map((data, index) => {
+            {files
+              ? files?.map((data, index) => {
                   let opacity = position.interpolate({
                     inputRange: [index - 1, index, index + 1],
                     outputRange: [0.2, 1, 0.2],
@@ -143,44 +163,48 @@ const ProductInfo = ({ route, navigation }) => {
         <View style={ProductInfoStyle.productDescContainer}>
           <View style={ProductInfoStyle.productCategory}>
             <Text style={ProductInfoStyle.productCategoryName}>
-              {product?.category}
+              {categories.map(item => item.nama).join(', ')}
             </Text>
           </View>
           <View style={ProductInfoStyle.productNameContainer}>
-            <Text style={ProductInfoStyle.productName}>
-              {product?.productName}
-            </Text>
+            <Text style={ProductInfoStyle.productName}>{product?.nama}</Text>
           </View>
           <View style={ProductInfoStyle.productPriceContainer}>
             <Text style={ProductInfoStyle.productPrice}>
-              {rupiahFormatter(product.productPrice)}
+              {rupiahFormatter(selectedDetail?.harga)}
             </Text>
-            {product?.isOff && (
+            {product?.diskon && (
               <>
                 <Text style={ProductInfoStyle.productPriceOffPercent}>
-                  {product?.offPercentage}%
+                  {product?.diskon}%
                 </Text>
                 <Text style={ProductInfoStyle.productPriceOffNominal}>
-                  {rupiahFormatter(product?.offNominal)}
+                  {rupiahFormatter(
+                    nominalDiscount(selectedDetail?.harga, product?.diskon)
+                      .afterDiscount,
+                  )}
                 </Text>
               </>
             )}
           </View>
           <Text style={ProductInfoStyle.productDescription}>
-            {product?.description}
+            {product?.deskripsi}
           </Text>
         </View>
       </ScrollView>
 
       <View style={ProductInfoStyle.addToCartContainer}>
         <TouchableOpacity
-          onPress={() => (product.isAvailable ? addToCart(product.id) : null)}
+          onPress={() =>
+            selectedDetail?.stok > 0 ? addToCart(product.id) : null
+          }
           style={[
             ProductInfoStyle.addToCartBtn,
             {
-              backgroundColor: product?.isAvailable
-                ? COLOR_SETTINGS.PRIMARY
-                : COLOR_SETTINGS.GRAY,
+              backgroundColor:
+                selectedDetail?.stok > 0
+                  ? COLOR_SETTINGS.PRIMARY
+                  : COLOR_SETTINGS.GRAY,
             },
           ]}>
           <MaterialCommunityIcons
@@ -188,7 +212,7 @@ const ProductInfo = ({ route, navigation }) => {
             style={ProductInfoStyle.addToCartIcon}
           />
           <Text style={ProductInfoStyle.addToCartLabel}>
-            {product.isAvailable ? 'Keranjang' : 'Stok Habis'}
+            {selectedDetail?.stok > 0 ? 'Keranjang' : 'Stok Habis'}
           </Text>
         </TouchableOpacity>
       </View>
