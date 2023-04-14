@@ -10,7 +10,6 @@ import {
   Animated,
   ToastAndroid,
 } from 'react-native';
-import { Items } from '../database/Database';
 import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductInfoStyle from '../styles/ProductInfo.style';
@@ -20,6 +19,7 @@ import { sliderWidth } from '../styles/global.style';
 import { rupiahFormatter } from '../helpers/formatter';
 import api from '../config/api';
 import { nominalDiscount } from '../helpers/math';
+import { VariantItem } from '../components/Product';
 
 const ProductInfo = ({ route, navigation }) => {
   const { kd_barang, kd_detail_barang } = route.params;
@@ -68,7 +68,7 @@ const ProductInfo = ({ route, navigation }) => {
 
   //add to cart
 
-  const addToCart = async id => {
+  const addToCart = async () => {
     let itemArray = await AsyncStorage.getItem('cartItems');
     itemArray = JSON.parse(itemArray);
     if (itemArray) {
@@ -167,25 +167,50 @@ const ProductInfo = ({ route, navigation }) => {
             </Text>
           </View>
           <View style={ProductInfoStyle.productNameContainer}>
-            <Text style={ProductInfoStyle.productName}>{product?.nama}</Text>
+            <Text style={ProductInfoStyle.productName}>
+              {product?.nama} - {selectedDetail?.varian}
+            </Text>
           </View>
           <View style={ProductInfoStyle.productPriceContainer}>
             <Text style={ProductInfoStyle.productPrice}>
-              {rupiahFormatter(selectedDetail?.harga)}
+              {rupiahFormatter(
+                nominalDiscount(selectedDetail?.harga, product?.diskon)
+                  .afterDiscount,
+              )}
             </Text>
-            {product?.diskon && (
+            {product?.diskon !== null && product?.diskon > 0 && (
               <>
                 <Text style={ProductInfoStyle.productPriceOffPercent}>
                   {product?.diskon}%
                 </Text>
                 <Text style={ProductInfoStyle.productPriceOffNominal}>
-                  {rupiahFormatter(
-                    nominalDiscount(selectedDetail?.harga, product?.diskon)
-                      .afterDiscount,
-                  )}
+                  {rupiahFormatter(selectedDetail?.harga)}
                 </Text>
               </>
             )}
+          </View>
+          <View style={ProductInfoStyle.productVariant}>
+            <View style={ProductInfoStyle.productVariantTitleContainer}>
+              <Text style={ProductInfoStyle.productVariantTitle}>
+                Pilih Varian :
+              </Text>
+            </View>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {detailProduct.map((item, j) => (
+                <VariantItem
+                  key={j}
+                  data={item}
+                  isLastItem={j === detailProduct.length - 1}
+                  isFirstItem={j === 0}
+                  isSelected={
+                    item?.kd_detail_barang === selectedDetail?.kd_detail_barang
+                  }
+                  onPress={data => setSelectedDetail(data)}
+                />
+              ))}
+            </ScrollView>
           </View>
           <Text style={ProductInfoStyle.productDescription}>
             {product?.deskripsi}
@@ -195,9 +220,7 @@ const ProductInfo = ({ route, navigation }) => {
 
       <View style={ProductInfoStyle.addToCartContainer}>
         <TouchableOpacity
-          onPress={() =>
-            selectedDetail?.stok > 0 ? addToCart(product.id) : null
-          }
+          onPress={() => (selectedDetail?.stok > 0 ? addToCart() : null)}
           style={[
             ProductInfoStyle.addToCartBtn,
             {

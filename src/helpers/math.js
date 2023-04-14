@@ -1,5 +1,5 @@
 export function nominalDiscount(nominal, percentage) {
-  if (nominal && percentage) {
+  if (nominal && percentage && percentage > 0) {
     const totalDiscount = (percentage / 100) * nominal;
     const afterDiscount = nominal - totalDiscount;
     return {
@@ -9,6 +9,6 @@ export function nominalDiscount(nominal, percentage) {
   }
   return {
     totalDiscount: 0,
-    afterDiscount: 0,
+    afterDiscount: nominal,
   };
 }
