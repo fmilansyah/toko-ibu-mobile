@@ -6,25 +6,39 @@ import {
   KeyboardAvoidingView,
   Image,
 } from 'react-native';
-import { emailValidator, passwordValidator } from '../helpers/validation';
+import { numberValidator, cantEmpty } from '../helpers/validation';
 import SignInStyle from '../styles/SignIn.style';
 import { TextInput } from '../components/Form';
 import globalStyle from '../styles/global.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import api from '../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignIn({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' });
+  const [phone, setPhone] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
 
   const handleLogin = () => {
-    const emailError = emailValidator(email.value);
-    const passwordError = passwordValidator(password.value);
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError });
+    const phoneError = numberValidator(phone.value);
+    const passwordError = cantEmpty(password.value);
+    if (phoneError || passwordError) {
+      setPhone({ ...phone, error: phoneError });
       setPassword({ ...password, error: passwordError });
       return;
     }
-    navigation.reset({
+    const formData = new FormData();
+    formData.append('no_telepon', phone.value);
+    formData.append('password', password.value);
+    api
+      .post('/login', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) => updateUserData(data));
+  };
+
+  const updateUserData = async data => {
+    await AsyncStorage.setItem('user_id', String(data?.User?.kd_user));
+    await navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],
     });
@@ -49,16 +63,13 @@ export default function SignIn({ navigation }) {
         <Text style={SignInStyle.title}>Masuk Ke Akun Anda</Text>
 
         <TextInput
-          label="Email"
+          label="No. Telepon"
           returnKeyType="next"
-          value={email.value}
-          onChangeText={text => setEmail({ value: text, error: '' })}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
+          value={phone.value}
+          onChangeText={text => setPhone({ value: text, error: '' })}
+          error={!!phone.error}
+          errorText={phone.error}
+          keyboardType="numeric"
         />
         <TextInput
           label="Kata Sandi"

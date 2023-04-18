@@ -7,17 +7,20 @@ import {
   Image,
 } from 'react-native';
 import {
+  cantEmpty,
   confirmPasswordValidator,
-  emailValidator,
-  passwordValidator,
+  numberValidator,
 } from '../helpers/validation';
 import SignInStyle from '../styles/SignIn.style';
 import { TextInput } from '../components/Form';
 import globalStyle from '../styles/global.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import api from '../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignUp({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' });
+  const [name, setName] = useState({ value: '', error: '' });
+  const [phone, setPhone] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
   const [confirmPassword, setConfirmPassword] = useState({
     value: '',
@@ -25,19 +28,34 @@ export default function SignUp({ navigation }) {
   });
 
   const handleLogin = () => {
-    const emailError = emailValidator(email.value);
-    const passwordError = passwordValidator(password.value);
+    const nameError = cantEmpty(name.value);
+    const phoneError = numberValidator(phone.value);
+    const passwordError = cantEmpty(password.value);
     const confirmPasswordError = confirmPasswordValidator(
       confirmPassword.value,
       password.value,
     );
-    if (emailError || passwordError || confirmPasswordError) {
-      setEmail({ ...email, error: emailError });
+    if (nameError || phoneError || passwordError || confirmPasswordError) {
+      setName({ ...name, error: nameError });
+      setPhone({ ...phone, error: phoneError });
       setPassword({ ...password, error: passwordError });
       setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
       return;
     }
-    navigation.reset({
+    const formData = new FormData();
+    formData.append('nama', name.value);
+    formData.append('no_telepon', phone.value);
+    formData.append('password', psassword.value);
+    api
+      .post('/daftaruser', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) => updateUserData(data));
+  };
+
+  const updateUserData = async data => {
+    await AsyncStorage.setItem('user_id', data?.data);
+    await navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],
     });
@@ -62,16 +80,22 @@ export default function SignUp({ navigation }) {
         <Text style={SignInStyle.title}>Buat Akun Baru</Text>
 
         <TextInput
-          label="Email"
+          label="Nama Lengkap"
           returnKeyType="next"
-          value={email.value}
-          onChangeText={text => setEmail({ value: text, error: '' })}
-          error={!!email.error}
-          errorText={email.error}
+          value={name.value}
+          onChangeText={text => setName({ value: text, error: '' })}
+          error={!!name.error}
+          errorText={name.error}
+        />
+        <TextInput
+          label="No. Handphone"
+          returnKeyType="next"
+          value={phone.value}
+          onChangeText={text => setPhone({ value: text, error: '' })}
+          error={!!phone.error}
+          errorText={phone.error}
           autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
+          keyboardType="numeric"
         />
         <TextInput
           label="Kata Sandi"

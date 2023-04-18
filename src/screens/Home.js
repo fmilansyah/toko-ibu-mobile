@@ -10,6 +10,7 @@ import { MaleFashion, SliderData, Foods } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
 import api from '../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const renderSliderItem = ({ item }) => {
   return <SliderItem data={item} />;
@@ -22,6 +23,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     getCategories();
     getCategoryAndItem();
+    getData();
   }, []);
 
   const getCategories = () => {
@@ -36,6 +38,17 @@ const Home = ({ navigation }) => {
       .then(({ data }) => setCategoryAndItem(data?.Kategori ?? []));
   };
 
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user_id');
+      if (value !== null) {
+        console.log(value);
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
   return (
     <View style={globalStyle.container}>
       <View style={HomeStyle.headerContainer}>
@@ -45,7 +58,7 @@ const Home = ({ navigation }) => {
         <TouchableOpacity>
           <Text style={HomeStyle.appName}>{APP_NAME}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
           <Feather name="log-in" style={globalStyle.roundedBtn} />
         </TouchableOpacity>
       </View>
