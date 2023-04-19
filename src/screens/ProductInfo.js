@@ -69,36 +69,19 @@ const ProductInfo = ({ route, navigation }) => {
   //add to cart
 
   const addToCart = async () => {
-    let itemArray = await AsyncStorage.getItem('cartItems');
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      array.push(id);
-
-      try {
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        ToastAndroid.show(
-          'Item Added Successfully to cart',
-          ToastAndroid.SHORT,
-        );
-        navigation.navigate('Home');
-      } catch (error) {
-        return error;
-      }
-    } else {
-      let array = [];
-      array.push(id);
-      try {
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        ToastAndroid.show(
-          'Item Added Successfully to cart',
-          ToastAndroid.SHORT,
-        );
-        navigation.navigate('Home');
-      } catch (error) {
-        return error;
-      }
-    }
+    let userId = await AsyncStorage.getItem('user_id');
+    const formData = new FormData();
+    formData.append('kd_user', userId);
+    formData.append('kd_detail_barang', selectedDetail?.kd_detail_barang);
+    formData.append('jumlah_barang', 1);
+    await api.post('/tambahkeranjang', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    await ToastAndroid.show(
+      'Item Added Successfully to cart',
+      ToastAndroid.SHORT,
+    );
+    await navigation.navigate('Home');
   };
 
   const renderProductImage = ({ item }) => {

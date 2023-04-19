@@ -45,7 +45,7 @@ export default function SignUp({ navigation }) {
     const formData = new FormData();
     formData.append('nama', name.value);
     formData.append('no_telepon', phone.value);
-    formData.append('password', psassword.value);
+    formData.append('password', password.value);
     api
       .post('/daftaruser', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
