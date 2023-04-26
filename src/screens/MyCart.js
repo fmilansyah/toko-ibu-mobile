@@ -15,10 +15,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import { ProductCartItem } from '../components/Product';
 import { rupiahFormatter } from '../helpers/formatter';
 import { Divider } from '../components/Basic';
+import api from '../config/api';
 
 const MyCart = ({ navigation }) => {
-  const [product, setProduct] = useState();
-  const [total, setTotal] = useState(null);
+  const [carts, setCarts] = useState([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -28,66 +30,66 @@ const MyCart = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  //get data from local DB by ID
+  useEffect(() => {
+      calcTotal();
+  }, [carts]);
+
   const getDataFromDB = async () => {
-    let items = await AsyncStorage.getItem('cartItems');
-    items = JSON.parse(items);
-    let productData = [];
-    if (items) {
-      Items.forEach(data => {
-        if (items.includes(data.id)) {
-          productData.push(data);
-          return;
-        }
-      });
-      setProduct(productData);
-      getTotal(productData);
-    } else {
-      setProduct(false);
-      getTotal(false);
+    let userId = await AsyncStorage.getItem('user_id');
+    if (userId !== null) {
+      const formData = new FormData();
+      formData.append('kd_user', userId);
+      api
+        .post('/getdatakeranjang', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(({ data }) =>
+          setCarts(
+            data?.Keranjang
+              ?? [],
+          ),
+        );
     }
   };
-
-  //get total price of all items in the cart
-  const getTotal = productData => {
-    let newTotal = 0;
-    for (let index = 0; index < productData.length; index++) {
-      let productPrice = productData[index].productPrice;
-      newTotal += productPrice;
-    }
-    setTotal(newTotal);
-  };
-
-  //remove data from Cart
 
   const removeItemFromCart = async id => {
-    let itemArray = await AsyncStorage.getItem('cartItems');
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      for (let index = 0; index < array.length; index++) {
-        if (array[index] === id) {
-          array.splice(index, 1);
-        }
-
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        getDataFromDB();
-      }
-    }
+    const formData = new FormData();
+    formData.append('kd_keranjang', id);
+    await api.post('/hapuskeranjang', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    await getDataFromDB();
   };
 
-  //checkout
-
   const checkOut = async () => {
-    try {
-      await AsyncStorage.removeItem('cartItems');
-    } catch (error) {
-      return error;
-    }
-
     ToastAndroid.show('Items will be Deliverd SOON!', ToastAndroid.SHORT);
 
     navigation.navigate('Home');
+  };
+
+  const calcTotal = () => {
+    const newSubTotal = carts.reduce(
+      (a, b) => a + (parseInt(b.harga_total) || 0),
+      0,
+    );
+    const newGrandTotal = carts.reduce(
+      (a, b) => a + (parseInt(b.harga_total) || 0),
+      0,
+    );
+    setSubTotal(newSubTotal);
+    setGrandTotal(newGrandTotal);
+  };
+
+  const updateCart = async (kd_detail_barang, qty) => {
+    let userId = await AsyncStorage.getItem('user_id');
+    const formData = new FormData();
+    formData.append('kd_user', userId);
+    formData.append('kd_detail_barang', kd_detail_barang);
+    formData.append('jumlah_barang', qty);
+    await api.post('/tambahkeranjang', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    await getDataFromDB();
   };
 
   return (
@@ -104,9 +106,14 @@ const MyCart = ({ navigation }) => {
         <View style={MyCartStyle.sectionContainer}>
           <Text style={MyCartStyle.sectionTitle}>Daftar Barang</Text>
           <View>
-            {product
-              ? product.map((data, index) => (
-                  <ProductCartItem key={index} data={data} />
+            {carts
+              ? carts.map((data, index) => (
+                  <ProductCartItem
+                    key={index}
+                    data={data}
+                    onDelete={removeItemFromCart}
+                    onUpdateQty={updateCart}
+                  />
                 ))
               : null}
           </View>
@@ -163,7 +170,7 @@ const MyCart = ({ navigation }) => {
           <View style={MyCartStyle.summaryItem}>
             <Text style={MyCartStyle.summaryTitle}>Subtotal</Text>
             <Text style={MyCartStyle.summaryTotal}>
-              {rupiahFormatter(200000)}
+              {rupiahFormatter(subTotal)}
             </Text>
           </View>
           <View style={MyCartStyle.summaryItem}>
@@ -182,7 +189,7 @@ const MyCart = ({ navigation }) => {
                   fontSize: 14,
                 },
               ]}>
-              {rupiahFormatter(210000)}
+              {rupiahFormatter(grandTotal)}
             </Text>
           </View>
         </View>
