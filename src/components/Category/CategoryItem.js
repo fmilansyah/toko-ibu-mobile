@@ -1,11 +1,10 @@
-import { View, Image, Text } from 'react-native';
+import { TouchableOpacity, Image, Text } from 'react-native';
 import CategoryItemStyle from '../../styles/CategoryItem.style';
 import { marginContainer } from '../../styles/global.style';
-import { UPLOADS_DIR } from '../../config/app';
 
 const CategoryItem = ({ data, isLastItem }) => {
   return (
-    <View
+    <TouchableOpacity
       style={[
         CategoryItemStyle.categoryBox,
         {
@@ -14,12 +13,12 @@ const CategoryItem = ({ data, isLastItem }) => {
       ]}>
       <Image
         source={{
-          uri: UPLOADS_DIR + data?.foto,
+          uri: data?.foto,
         }}
         style={CategoryItemStyle.categoryImage}
       />
       <Text style={CategoryItemStyle.categoryName}>{data?.nama}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
