@@ -66,22 +66,37 @@ const ProductInfo = ({ route, navigation }) => {
       });
   };
 
-  //add to cart
-
   const addToCart = async () => {
-    let userId = await AsyncStorage.getItem('user_id');
-    const formData = new FormData();
-    formData.append('kd_user', userId);
-    formData.append('kd_detail_barang', selectedDetail?.kd_detail_barang);
-    formData.append('jumlah_barang', 1);
-    await api.post('/tambahkeranjang', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    await ToastAndroid.show(
-      'Item Added Successfully to cart',
-      ToastAndroid.SHORT,
-    );
-    await navigation.navigate('Home');
+    let userData = await AsyncStorage.getItem('user_data');
+    if (userData !== null) {
+      const user = JSON.parse(userData);
+      const formData = new FormData();
+      formData.append('kd_user', user.kd_user);
+      formData.append('kd_detail_barang', selectedDetail?.kd_detail_barang);
+      formData.append('jumlah_barang', 1);
+      formData.append(
+        'harga_barang',
+        nominalDiscount(selectedDetail?.harga, product?.diskon).afterDiscount,
+      );
+      await api
+        .post('/tambahkeranjang', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(() =>
+          ToastAndroid.show(
+            'Produk Berhasil Ditambahkan Ke Keranjang',
+            ToastAndroid.SHORT,
+          ),
+        )
+        .catch(() =>
+          ToastAndroid.show(
+            'Gagal Menambahkan Produk Ke Keranjang',
+            ToastAndroid.SHORT,
+          ),
+        );
+    } else {
+      await navigation.navigate('SignIn');
+    }
   };
 
   const renderProductImage = ({ item }) => {

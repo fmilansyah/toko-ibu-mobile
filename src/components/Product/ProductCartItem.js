@@ -5,10 +5,10 @@ import { rupiahFormatter } from '../../helpers/formatter';
 
 const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
   return (
-    <TouchableOpacity style={ProductCartItemStyle.productContainer}>
+    <View style={ProductCartItemStyle.productContainer}>
       <View style={ProductCartItemStyle.productImageContainer}>
         <Image
-          source={{ uri: data?.productImage }}
+          source={{ uri: data?.file }}
           style={ProductCartItemStyle.productImage}
         />
       </View>
@@ -53,7 +53,7 @@ const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 

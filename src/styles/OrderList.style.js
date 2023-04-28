@@ -131,4 +131,71 @@ export default StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Lora-Medium',
   },
+  sectionTitleContainer: {
+    paddingHorizontal: paddingContainer,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 17,
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-SemiBold',
+  },
+  userContainer: {
+    width: '100%',
+    height: 75,
+    margin: marginContainer,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userPictureContainer: {
+    width: 75,
+    height: 75,
+    marginRight: marginContainer,
+  },
+  userPicture: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 75 / 2,
+  },
+  userDetailContainer: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'space-around',
+  },
+  userTitle: {
+    fontSize: 14,
+    maxWidth: '100%',
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-Bold',
+  },
+  userSubtitle: {
+    fontSize: 14,
+    maxWidth: '100%',
+    color: COLOR_SETTINGS.PRIMARY,
+    fontFamily: 'Lora-Medium',
+  },
+  logout: {
+    fontSize: 14,
+    maxWidth: '100%',
+    color: COLOR_SETTINGS.RED,
+    fontFamily: 'Lora-SemiBold',
+    marginTop: 8,
+  },
+  menuContainer: {
+    paddingHorizontal: paddingContainer,
+    marginBottom: 8,
+  },
+  menuItem: {
+    fontSize: 14,
+    maxWidth: '100%',
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-Regular',
+    paddingVertical: 8,
+  },
+  menuIcon: {
+    fontSize: 16,
+    color: COLOR_SETTINGS.BLACK,
+  },
 });

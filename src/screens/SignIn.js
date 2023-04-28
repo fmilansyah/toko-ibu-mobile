@@ -5,6 +5,7 @@ import {
   View,
   KeyboardAvoidingView,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import { numberValidator, cantEmpty } from '../helpers/validation';
 import SignInStyle from '../styles/SignIn.style';
@@ -33,11 +34,17 @@ export default function SignIn({ navigation }) {
       .post('/login', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(({ data }) => updateUserData(data));
+      .then(({ data }) => updateUserData(data))
+      .catch(() =>
+        ToastAndroid.show(
+          'No. Telepon atau Kata Sandi Tidak Cocok',
+          ToastAndroid.SHORT,
+        ),
+      );
   };
 
   const updateUserData = async data => {
-    await AsyncStorage.setItem('user_id', String(data?.User?.kd_user));
+    await AsyncStorage.setItem('user_data', JSON.stringify(data?.User));
     await navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],

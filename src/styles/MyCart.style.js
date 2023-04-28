@@ -112,15 +112,15 @@ export default StyleSheet.create({
     marginVertical: 6,
   },
   summaryTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'Lora-Medium',
     maxWidth: '80%',
     color: COLOR_SETTINGS.BLACK,
     opacity: 0.7,
   },
   summaryTotal: {
-    fontSize: 12,
-    fontFamily: 'Lora-Medium',
+    fontSize: 14,
+    fontFamily: 'Lora-SemiBold',
     color: COLOR_SETTINGS.BLACK,
   },
 });

@@ -79,7 +79,15 @@ const Home = ({ navigation }) => {
             <Text style={HomeStyle.sectionTitle}>{item?.nama}</Text>
             <Text style={HomeStyle.sectionCount}>{item?.jml_barang}</Text>
           </View>
-          <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('ProductByCategory', {
+                id: item?.kd_kategori,
+                name: item?.nama,
+              })
+            }>
+            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
+          </TouchableOpacity>
         </View>
         <FlatList
           data={item?.barang ?? []}
@@ -101,28 +109,9 @@ const Home = ({ navigation }) => {
     );
   };
 
-  return (
-    <View style={globalStyle.container}>
-      <View style={HomeStyle.headerContainer}>
-        <TouchableOpacity>
-          <Feather name="search" style={globalStyle.iconBtn} />
-        </TouchableOpacity>
-        <View>
-          <Image
-            source={require('../../assets/images/logo.png')}
-            style={HomeStyle.logo}
-          />
-        </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate(loggedIn ? 'MyCart' : 'SignIn')}>
-          <Feather
-            name={loggedIn ? 'user' : 'log-in'}
-            style={globalStyle.roundedBtn}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView showsVerticalScrollIndicator={false}>
+  const renderHead = () => {
+    return (
+      <View>
         <View>
           <Carousel
             data={SliderData}
@@ -151,9 +140,38 @@ const Home = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
           />
         </View>
+      </View>
+    );
+  };
 
-        <FlatList data={categoryAndItem} renderItem={renderCategoryProduct} />
-      </ScrollView>
+  return (
+    <View style={globalStyle.container}>
+      <View style={HomeStyle.headerContainer}>
+        <TouchableOpacity>
+          <Feather name="search" style={globalStyle.iconBtn} />
+        </TouchableOpacity>
+        <View>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={HomeStyle.logo}
+          />
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate(loggedIn ? 'OrderList' : 'SignIn')
+          }>
+          <Feather
+            name={loggedIn ? 'user' : 'log-in'}
+            style={globalStyle.roundedBtn}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={categoryAndItem}
+        renderItem={renderCategoryProduct}
+        ListHeaderComponent={renderHead}
+      />
       {/* <Footer /> */}
     </View>
   );

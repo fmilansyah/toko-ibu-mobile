@@ -20,6 +20,7 @@ import api from '../config/api';
 const MyCart = ({ navigation }) => {
   const [carts, setCarts] = useState([]);
   const [subTotal, setSubTotal] = useState(0);
+  const [shippingCost, setShippingCost] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
 
   useEffect(() => {
@@ -31,24 +32,20 @@ const MyCart = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
-      calcTotal();
-  }, [carts]);
+    calcTotal();
+  }, [carts, shippingCost]);
 
   const getDataFromDB = async () => {
-    let userId = await AsyncStorage.getItem('user_id');
-    if (userId !== null) {
+    let userData = await AsyncStorage.getItem('user_data');
+    if (userData !== null) {
+      const user = JSON.parse(userData);
       const formData = new FormData();
-      formData.append('kd_user', userId);
+      formData.append('kd_user', user?.kd_user);
       api
         .post('/getdatakeranjang', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
-        .then(({ data }) =>
-          setCarts(
-            data?.Keranjang
-              ?? [],
-          ),
-        );
+        .then(({ data }) => setCarts(data?.Keranjang ?? []));
     }
   };
 
@@ -62,9 +59,7 @@ const MyCart = ({ navigation }) => {
   };
 
   const checkOut = async () => {
-    ToastAndroid.show('Items will be Deliverd SOON!', ToastAndroid.SHORT);
-
-    navigation.navigate('Home');
+    ToastAndroid.show('Coming Soon ...', ToastAndroid.SHORT);
   };
 
   const calcTotal = () => {
@@ -77,19 +72,22 @@ const MyCart = ({ navigation }) => {
       0,
     );
     setSubTotal(newSubTotal);
-    setGrandTotal(newGrandTotal);
+    setGrandTotal(newGrandTotal + shippingCost);
   };
 
   const updateCart = async (kd_detail_barang, qty) => {
-    let userId = await AsyncStorage.getItem('user_id');
-    const formData = new FormData();
-    formData.append('kd_user', userId);
-    formData.append('kd_detail_barang', kd_detail_barang);
-    formData.append('jumlah_barang', qty);
-    await api.post('/tambahkeranjang', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    await getDataFromDB();
+    let userData = await AsyncStorage.getItem('user_data');
+    if (userData !== null) {
+      const user = JSON.parse(userData);
+      const formData = new FormData();
+      formData.append('kd_user', user?.kd_user);
+      formData.append('kd_detail_barang', kd_detail_barang);
+      formData.append('jumlah_barang', qty);
+      await api.post('/tambahkeranjang', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      await getDataFromDB();
+    }
   };
 
   return (
@@ -98,24 +96,26 @@ const MyCart = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Feather name="arrow-left" style={globalStyle.iconBtn} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <View>
           <Text style={MyCartStyle.appName}>Keranjang</Text>
-        </TouchableOpacity>
+        </View>
       </View>
       <ScrollView>
         <View style={MyCartStyle.sectionContainer}>
-          <Text style={MyCartStyle.sectionTitle}>Daftar Barang</Text>
+          <Text style={MyCartStyle.sectionTitle}>Daftar Produk</Text>
           <View>
-            {carts
-              ? carts.map((data, index) => (
-                  <ProductCartItem
-                    key={index}
-                    data={data}
-                    onDelete={removeItemFromCart}
-                    onUpdateQty={updateCart}
-                  />
-                ))
-              : null}
+            {carts && carts.length > 0 ? (
+              carts.map((data, index) => (
+                <ProductCartItem
+                  key={index}
+                  data={data}
+                  onDelete={removeItemFromCart}
+                  onUpdateQty={updateCart}
+                />
+              ))
+            ) : (
+              <Text>Keranjang Kosong</Text>
+            )}
           </View>
         </View>
         <View style={MyCartStyle.sectionContainer}>
@@ -142,7 +142,7 @@ const MyCart = ({ navigation }) => {
             />
           </View>
         </View>
-        <View style={MyCartStyle.sectionContainer}>
+        {/* <View style={MyCartStyle.sectionContainer}>
           <Text style={MyCartStyle.sectionTitle}>Metode Pembayaran</Text>
           <View style={MyCartStyle.boxContainer}>
             <View style={MyCartStyle.boxContent}>
@@ -164,19 +164,21 @@ const MyCart = ({ navigation }) => {
               style={MyCartStyle.expandIcon}
             />
           </View>
-        </View>
+        </View> */}
         <View style={MyCartStyle.sectionContainer}>
           <Text style={MyCartStyle.sectionTitle}>Ringkasan Pembelian</Text>
           <View style={MyCartStyle.summaryItem}>
-            <Text style={MyCartStyle.summaryTitle}>Subtotal</Text>
+            <Text style={MyCartStyle.summaryTitle}>
+              Subtotal ({carts.length} produk)
+            </Text>
             <Text style={MyCartStyle.summaryTotal}>
               {rupiahFormatter(subTotal)}
             </Text>
           </View>
           <View style={MyCartStyle.summaryItem}>
-            <Text style={MyCartStyle.summaryTitle}>Ongkos Kirim</Text>
+            <Text style={MyCartStyle.summaryTitle}>Biaya Kirim</Text>
             <Text style={MyCartStyle.summaryTotal}>
-              {rupiahFormatter(10000)}
+              {rupiahFormatter(shippingCost)}
             </Text>
           </View>
           <Divider />
@@ -186,7 +188,7 @@ const MyCart = ({ navigation }) => {
               style={[
                 MyCartStyle.summaryTotal,
                 {
-                  fontSize: 14,
+                  fontFamily: 'Lora-Bold',
                 },
               ]}>
               {rupiahFormatter(grandTotal)}
@@ -197,7 +199,7 @@ const MyCart = ({ navigation }) => {
 
       <View style={MyCartStyle.payBtnContainer}>
         <TouchableOpacity
-          onPress={() => (total > 0 ? checkOut() : null)}
+          onPress={() => (grandTotal > 0 ? checkOut() : null)}
           style={MyCartStyle.payBtn}>
           <Feather name="credit-card" style={MyCartStyle.payBtnIcon} />
           <Text style={MyCartStyle.payBtnLabel}>BAYAR</Text>

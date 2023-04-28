@@ -27,7 +27,7 @@ export default function SignUp({ navigation }) {
     error: '',
   });
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     const nameError = cantEmpty(name.value);
     const phoneError = numberValidator(phone.value);
     const passwordError = cantEmpty(password.value);
@@ -50,11 +50,22 @@ export default function SignUp({ navigation }) {
       .post('/daftaruser', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
+      .then(({ data }) => handleLogin(data));
+  };
+
+  const handleLogin = () => {
+    const formData = new FormData();
+    formData.append('no_telepon', phone.value);
+    formData.append('password', password.value);
+    api
+      .post('/login', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
       .then(({ data }) => updateUserData(data));
   };
 
   const updateUserData = async data => {
-    await AsyncStorage.setItem('user_id', data?.data);
+    await AsyncStorage.setItem('user_data', JSON.stringify(data?.User));
     await navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],
@@ -116,7 +127,9 @@ export default function SignUp({ navigation }) {
           secureTextEntry
         />
 
-        <TouchableOpacity style={SignInStyle.submitBtn} onPress={handleLogin}>
+        <TouchableOpacity
+          style={SignInStyle.submitBtn}
+          onPress={handleRegister}>
           <MaterialCommunityIcons
             name="login"
             style={SignInStyle.submitBtnIcon}
