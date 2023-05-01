@@ -9,6 +9,7 @@ import SignUp from './src/screens/SignUp';
 import OrderList from './src/screens/OrderList';
 import ProductByCategory from './src/screens/ProductByCategory';
 import AccountDetails from './src/screens/AccountDetails';
+import PaymentView from './src/screens/PaymentView';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -27,6 +28,7 @@ const App = () => {
         <Stack.Screen name="OrderList" component={OrderList} />
         <Stack.Screen name="ProductByCategory" component={ProductByCategory} />
         <Stack.Screen name="AccountDetails" component={AccountDetails} />
+        <Stack.Screen name="PaymentView" component={PaymentView} />
       </Stack.Navigator>
     </NavigationContainer>
   );

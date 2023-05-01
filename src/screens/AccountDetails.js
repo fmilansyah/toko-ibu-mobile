@@ -79,7 +79,7 @@ export default function AccountDetails({ navigation }) {
     formData.append('alamat', address.value);
     formData.append('kode_pos', postalCode.value);
     if (photo !== null) {
-      formData.append('image', {
+      formData.append('foto_profil', {
         ...photo[0],
       });
     }
@@ -91,13 +91,13 @@ export default function AccountDetails({ navigation }) {
         ToastAndroid.show('Data Berhasil Disimpan', ToastAndroid.SHORT);
         updateUserData(data);
       })
-      .catch(() =>
-        ToastAndroid.show('Gagal Menyimpan Data', ToastAndroid.SHORT),
-      );
+      .catch(() => {
+        ToastAndroid.show('Gagal Menyimpan Data', ToastAndroid.SHORT);
+      });
   };
 
   const updateUserData = async data => {
-    await AsyncStorage.setItem('user_data', JSON.stringify(data?.User));
+    await AsyncStorage.setItem('user_data', JSON.stringify(data?.user));
     await navigation.goBack();
   };
 
@@ -151,7 +151,7 @@ export default function AccountDetails({ navigation }) {
           <TextInput
             label="Kode Pos"
             returnKeyType="next"
-            value={postalCode.value}
+            value={String(postalCode.value)}
             onChangeText={text => setPostalCode({ value: text, error: '' })}
             error={!!postalCode.error}
             errorText={postalCode.error}

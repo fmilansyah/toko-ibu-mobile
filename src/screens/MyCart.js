@@ -22,6 +22,7 @@ const MyCart = ({ navigation }) => {
   const [subTotal, setSubTotal] = useState(0);
   const [shippingCost, setShippingCost] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -39,6 +40,7 @@ const MyCart = ({ navigation }) => {
     let userData = await AsyncStorage.getItem('user_data');
     if (userData !== null) {
       const user = JSON.parse(userData);
+      setUserData(user);
       const formData = new FormData();
       formData.append('kd_user', user?.kd_user);
       api
@@ -58,8 +60,30 @@ const MyCart = ({ navigation }) => {
     await getDataFromDB();
   };
 
-  const checkOut = async () => {
-    ToastAndroid.show('Coming Soon ...', ToastAndroid.SHORT);
+  const checkOut = () => {
+    const orders = carts.map(item => ({
+      kd_detail_barang: item?.kd_detail_barang,
+      jumlah_barang: item?.jumlah_barang,
+      harga_total: item?.harga_total,
+    }));
+    const formData = new FormData();
+    formData.append('kd_user', userData?.kd_user);
+    formData.append('orders', JSON.stringify(orders));
+    formData.append('jenis_order', 'keranjang');
+    formData.append('jasa_pengiriman', 'JNE');
+    formData.append('jenis_pengiriman', 'Regular');
+    api
+      .post('/orderbarang', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) =>
+        navigation.navigate('PaymentView', {
+          token: data?.token,
+        }),
+      )
+      .catch(e => {
+        ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
+      });
   };
 
   const calcTotal = () => {
