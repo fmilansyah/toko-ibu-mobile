@@ -93,7 +93,8 @@ export default function OrderList({ navigation }) {
           <Text style={OrderListStyle.sectionTitle}>Menu</Text>
         </View>
         <View style={OrderListStyle.menuContainer}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AccountDetails')}>
             <Text style={OrderListStyle.menuItem}>
               <Feather name="settings" style={OrderListStyle.menuIcon} />{' '}
               Pengaturan Akun
