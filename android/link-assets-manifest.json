@@ -22,7 +22,7 @@
       "sha1": "e13875499470c43930048db1724d65c5ed86971a"
     },
     {
-      "path": "assets/fonts/Lora-Medium.ttf",
+      "path": "assets/fonts/Lora-Regular.ttf",
       "sha1": "d4178fd9d41a324df797c06803fb0aeba8fbacd4"
     },
     {
@@ -32,6 +32,18 @@
     {
       "path": "assets/fonts/Lora-SemiBoldItalic.ttf",
       "sha1": "27403b82ee87deac15f4fca41dd88e36383faadd"
+    },
+    {
+      "path": "assets/images/icon.png",
+      "sha1": "1a25eceb5e3a493523d82acca20240c7e09119e5"
+    },
+    {
+      "path": "assets/images/logo.jpg",
+      "sha1": "a308be44cc62d278349fbf89d840a9410ad5e18e"
+    },
+    {
+      "path": "assets/images/logo.png",
+      "sha1": "a92225dce70c51af18bd6b36256e16b9bae2bcf0"
     }
   ]
 }
