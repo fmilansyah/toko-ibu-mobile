@@ -14,7 +14,9 @@ const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
       </View>
       <View style={ProductCartItemStyle.productDetailContainer}>
         <View>
-          <Text style={ProductCartItemStyle.productName}>{data?.nama}</Text>
+          <Text style={ProductCartItemStyle.productName}>
+            {data?.nama} - {data?.varian}
+          </Text>
           <View style={ProductCartItemStyle.productPriceContainer}>
             <Text style={ProductCartItemStyle.productPrice}>
               {rupiahFormatter(data?.harga_total)}

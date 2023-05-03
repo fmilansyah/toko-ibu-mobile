@@ -13,17 +13,24 @@ import globalStyle from '../styles/global.style';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { rupiahFormatter } from '../helpers/formatter';
-import { Items } from '../database/Database';
 import { USER_PICTURE_DEFAULT } from '../database/AppData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../config/api';
+import dayjs from 'dayjs';
 
 export default function OrderList({ navigation }) {
   const [user, setUser] = useState(null);
-  const data = Items[0];
+  const [userOrder, setUserOrder] = useState([]);
 
   useEffect(() => {
     getUserData();
   }, []);
+
+  useEffect(() => {
+    if (user !== null) {
+      getUserOrder();
+    }
+  }, [user]);
 
   const getUserData = async () => {
     try {
@@ -56,6 +63,16 @@ export default function OrderList({ navigation }) {
     } catch (e) {
       ToastAndroid.show('Gagal Keluar', ToastAndroid.SHORT);
     }
+  };
+
+  const getUserOrder = () => {
+    const formData = new FormData();
+    formData.append('kd_user', user?.kd_user);
+    api
+      .post('/getuserorder', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) => setUserOrder(data?.listOrder ?? []));
   };
 
   return (
@@ -111,106 +128,74 @@ export default function OrderList({ navigation }) {
         <View style={OrderListStyle.sectionTitleContainer}>
           <Text style={OrderListStyle.sectionTitle}>Riwayat Transaksi</Text>
         </View>
-        <View style={OrderListStyle.card}>
-          <View style={OrderListStyle.headerCard}>
-            <View style={globalStyle.flex}>
-              <Text style={OrderListStyle.headerTitle}>Belanja</Text>
-              <Text style={OrderListStyle.headerDate}>03 Apr 2023</Text>
-            </View>
-            <View style={globalStyle.flex}>
-              <TouchableOpacity>
-                <Entypo
-                  name="dots-three-vertical"
-                  style={OrderListStyle.moreBtn}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={OrderListStyle.bodyCard}>
-            <TouchableOpacity style={OrderListStyle.productContainer}>
-              <View style={OrderListStyle.productImageContainer}>
-                <Image
-                  source={{ uri: data?.productImage }}
-                  style={OrderListStyle.productImage}
-                />
+        {userOrder.map((item, i) => (
+          <View key={i} style={OrderListStyle.card}>
+            <View style={OrderListStyle.headerCard}>
+              <View style={globalStyle.flex}>
+                <Text style={OrderListStyle.headerTitle}>Belanja</Text>
+                <Text style={OrderListStyle.headerDate}>
+                  {item?.created_at
+                    ? dayjs(item?.created_at, 'YYYY-MM-DD HH:mm:ss').format(
+                        'DD/MM/YYYY HH:mm:ss',
+                      )
+                    : '-'}
+                </Text>
               </View>
-              <View style={OrderListStyle.productDetailContainer}>
-                <View>
-                  <Text style={OrderListStyle.productName}>
-                    {data?.productName}
-                  </Text>
-                  <View style={OrderListStyle.productPriceContainer}>
-                    <Text style={OrderListStyle.productPrice}>
-                      2x {rupiahFormatter(data?.productPrice)}
+              <View style={globalStyle.flex}>
+                <TouchableOpacity>
+                  <Entypo
+                    name="dots-three-vertical"
+                    style={OrderListStyle.moreBtn}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={OrderListStyle.bodyCard}>
+              <TouchableOpacity style={OrderListStyle.productContainer}>
+                <View style={OrderListStyle.productImageContainer}>
+                  <Image
+                    source={{ uri: item?.barang?.file }}
+                    style={OrderListStyle.productImage}
+                  />
+                </View>
+                <View style={OrderListStyle.productDetailContainer}>
+                  <View>
+                    <Text style={OrderListStyle.productName}>
+                      {item?.barang?.name} - {item?.barang?.varian}
                     </Text>
+                    <View style={OrderListStyle.productPriceContainer}>
+                      <Text style={OrderListStyle.productPrice}>
+                        {item?.barang?.jumlah_barang}x{' '}
+                        {rupiahFormatter(item?.barang?.total_harga)}
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-            <Text style={OrderListStyle.productPrice}>+3 produk lainnya</Text>
-          </View>
-          <View style={OrderListStyle.footerCard}>
-            <View style={globalStyle.flex}>
-              <Text style={OrderListStyle.footerTitle}>Total Belanja</Text>
-              <Text style={OrderListStyle.footerNominal}>
-                {rupiahFormatter(120000)}
-              </Text>
-            </View>
-            <View style={globalStyle.flex}>
-              <Text style={OrderListStyle.successLabel}>Selesai</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={OrderListStyle.card}>
-          <View style={OrderListStyle.headerCard}>
-            <View style={globalStyle.flex}>
-              <Text style={OrderListStyle.headerTitle}>Belanja</Text>
-              <Text style={OrderListStyle.headerDate}>03 Mei 2023</Text>
-            </View>
-            <View style={globalStyle.flex}>
-              <TouchableOpacity>
-                <Entypo
-                  name="dots-three-vertical"
-                  style={OrderListStyle.moreBtn}
-                />
               </TouchableOpacity>
-            </View>
-          </View>
-          <View style={OrderListStyle.bodyCard}>
-            <TouchableOpacity style={OrderListStyle.productContainer}>
-              <View style={OrderListStyle.productImageContainer}>
-                <Image
-                  source={{ uri: data?.productImage }}
-                  style={OrderListStyle.productImage}
-                />
-              </View>
-              <View style={OrderListStyle.productDetailContainer}>
-                <View>
-                  <Text style={OrderListStyle.productName}>
-                    {data?.productName}
-                  </Text>
-                  <View style={OrderListStyle.productPriceContainer}>
-                    <Text style={OrderListStyle.productPrice}>
-                      2x {rupiahFormatter(data?.productPrice)}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={OrderListStyle.footerCard}>
-            <View style={globalStyle.flex}>
-              <Text style={OrderListStyle.footerTitle}>Total Belanja</Text>
-              <Text style={OrderListStyle.footerNominal}>
-                {rupiahFormatter(120000)}
+              <Text style={OrderListStyle.productPrice}>
+                +{item?.jumlah_produk} produk lainnya
               </Text>
             </View>
-            <View style={globalStyle.flex}>
-              <Text style={OrderListStyle.warningLabel}>Dikirim</Text>
+            <View style={OrderListStyle.footerCard}>
+              <View style={globalStyle.flex}>
+                <Text style={OrderListStyle.footerTitle}>Total Belanja</Text>
+                <Text style={OrderListStyle.footerNominal}>
+                  {rupiahFormatter(item?.total_akhir)}
+                </Text>
+              </View>
+              <View style={globalStyle.flex}>
+                <Text
+                  style={
+                    item?.status_order === 'MENUNGGU PEMBAYARAN'
+                      ? OrderListStyle.warningLabel
+                      : OrderListStyle.successLabel
+                  }>
+                  {item?.status_order}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
+        ))}
       </ScrollView>
     </View>
   );

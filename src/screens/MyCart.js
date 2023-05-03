@@ -7,7 +7,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Items } from '../database/Database';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MyCartStyle from '../styles/MyCart.style';
 import globalStyle from '../styles/global.style';
@@ -37,9 +36,9 @@ const MyCart = ({ navigation }) => {
   }, [carts, shippingCost]);
 
   const getDataFromDB = async () => {
-    let userData = await AsyncStorage.getItem('user_data');
-    if (userData !== null) {
-      const user = JSON.parse(userData);
+    let newUserData = await AsyncStorage.getItem('user_data');
+    if (newUserData !== null) {
+      const user = JSON.parse(newUserData);
       setUserData(user);
       const formData = new FormData();
       formData.append('kd_user', user?.kd_user);
@@ -68,17 +67,15 @@ const MyCart = ({ navigation }) => {
     }));
     const formData = new FormData();
     formData.append('kd_user', userData?.kd_user);
-    formData.append('orders', JSON.stringify(orders));
-    formData.append('jenis_order', 'keranjang');
-    formData.append('jasa_pengiriman', 'JNE');
-    formData.append('jenis_pengiriman', 'Regular');
+    formData.append('total', grandTotal);
     api
-      .post('/orderbarang', formData, {
+      .post('/midtrans-createtoken', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(({ data }) =>
         navigation.navigate('PaymentView', {
-          token: data?.token,
+          token: data?.data?.token,
+          order: JSON.stringify(orders),
         }),
       )
       .catch(e => {
@@ -100,18 +97,14 @@ const MyCart = ({ navigation }) => {
   };
 
   const updateCart = async (kd_detail_barang, qty) => {
-    let userData = await AsyncStorage.getItem('user_data');
-    if (userData !== null) {
-      const user = JSON.parse(userData);
-      const formData = new FormData();
-      formData.append('kd_user', user?.kd_user);
-      formData.append('kd_detail_barang', kd_detail_barang);
-      formData.append('jumlah_barang', qty);
-      await api.post('/tambahkeranjang', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      await getDataFromDB();
-    }
+    const formData = new FormData();
+    formData.append('kd_user', userData?.kd_user);
+    formData.append('kd_detail_barang', kd_detail_barang);
+    formData.append('jumlah_barang', qty);
+    await api.post('/tambahkeranjang', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    await getDataFromDB();
   };
 
   return (
