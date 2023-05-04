@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Text,
-  Image,
-  FlatList,
-} from 'react-native';
+import { View, TouchableOpacity, Text, Image, FlatList } from 'react-native';
 import { SliderItem } from '../components/Basic';
-import { APP_NAME } from '../database/AppData';
 import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import { MaleFashion, SliderData, Foods } from '../database/Database';
+import { SliderData } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
 import api from '../config/api';

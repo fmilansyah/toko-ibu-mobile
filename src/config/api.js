@@ -1,5 +1,5 @@
-import axios from 'axios'
-import { API_URL } from './app'
+import axios from 'axios';
+import { API_URL } from './app';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -7,6 +7,6 @@ const api = axios.create({
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
-})
+});
 
-export default api
+export default api;

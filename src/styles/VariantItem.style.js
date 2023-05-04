@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../database/AppData';
-import { borderRadius, marginContainer } from './global.style';
 
 export default StyleSheet.create({
   box: {
