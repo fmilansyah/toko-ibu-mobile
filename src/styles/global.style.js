@@ -28,7 +28,7 @@ export default StyleSheet.create({
     backgroundColor: COLOR_SETTINGS.WHITE,
   },
   iconBtn: {
-    fontSize: 20,
+    fontSize: 22,
     color: COLOR_SETTINGS.BLACK,
   },
   roundedBtn: {

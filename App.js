@@ -12,6 +12,7 @@ import AccountDetails from './src/screens/AccountDetails';
 import PaymentView from './src/screens/PaymentView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { USER_LEVEL } from './src/database/AppData';
+import SearchProduct from './src/screens/SearchProduct';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -58,6 +59,7 @@ const App = () => {
             />
             <Stack.Screen name="AccountDetails" component={AccountDetails} />
             <Stack.Screen name="PaymentView" component={PaymentView} />
+            <Stack.Screen name="SearchProduct" component={SearchProduct} />
           </>
         )}
       </Stack.Navigator>

@@ -139,7 +139,7 @@ const Home = ({ navigation }) => {
   return (
     <View style={globalStyle.container}>
       <View style={HomeStyle.headerContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchProduct')}>
           <Feather name="search" style={globalStyle.iconBtn} />
         </TouchableOpacity>
         <View>
