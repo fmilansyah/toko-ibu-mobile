@@ -19,7 +19,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     marginLeft: 10,
   },
   btnSaveContainer: {
@@ -46,6 +46,6 @@ export default StyleSheet.create({
     fontSize: 16,
     color: COLOR_SETTINGS.WHITE,
     textTransform: 'uppercase',
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
 });

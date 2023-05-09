@@ -53,7 +53,7 @@ export default StyleSheet.create({
   productName: {
     fontSize: 14,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     marginBottom: 2,
   },
   productStockContainer: {
@@ -62,10 +62,10 @@ export default StyleSheet.create({
   },
   productStockStatus: {
     fontSize: 12,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   productPrice: {
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   productInfo: {
     paddingLeft: 8,

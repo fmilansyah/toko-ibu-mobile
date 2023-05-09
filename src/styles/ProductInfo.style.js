@@ -42,7 +42,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: COLOR_SETTINGS.WHITE,
     textTransform: 'uppercase',
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   productImageContainer: {
     width: '100%',
@@ -130,7 +130,7 @@ export default StyleSheet.create({
     fontSize: 12,
     lineHeight: 20,
     marginBottom: 18,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     color: COLOR_SETTINGS.DARKGRAY,
   },
   productPriceContainer: {
@@ -147,7 +147,7 @@ export default StyleSheet.create({
   productPriceOffPercent: {
     fontSize: 14,
     color: COLOR_SETTINGS.RED,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     paddingVertical: 2,
     paddingHorizontal: 4,
     backgroundColor: '#FFDBE2',
@@ -155,7 +155,7 @@ export default StyleSheet.create({
   productPriceOffNominal: {
     fontSize: 14,
     color: COLOR_SETTINGS.GRAY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     paddingVertical: 2,
     paddingHorizontal: 4,
     textDecorationLine: 'line-through',

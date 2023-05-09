@@ -23,7 +23,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     marginLeft: 10,
   },
   payBtnContainer: {
@@ -55,7 +55,7 @@ export default StyleSheet.create({
     fontSize: 16,
     color: COLOR_SETTINGS.WHITE,
     textTransform: 'uppercase',
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   sectionContainer: {
     paddingHorizontal: paddingContainer,
@@ -64,7 +64,7 @@ export default StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     marginBottom: 10,
   },
   boxContainer: {
@@ -98,7 +98,7 @@ export default StyleSheet.create({
   boxDesc: {
     fontSize: 12,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     opacity: 0.5,
   },
   expandIcon: {
@@ -113,7 +113,7 @@ export default StyleSheet.create({
   },
   summaryTitle: {
     fontSize: 14,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     maxWidth: '80%',
     color: COLOR_SETTINGS.BLACK,
     opacity: 0.7,

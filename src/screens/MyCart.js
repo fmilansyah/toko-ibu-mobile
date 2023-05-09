@@ -50,7 +50,7 @@ const MyCart = ({ navigation }) => {
     }
   };
 
-  const removeItemFromCart = async (kd_detail_barang) => {
+  const removeItemFromCart = async kd_detail_barang => {
     const formData = new FormData();
     formData.append('kd_user', userData?.kd_user);
     formData.append('kd_detail_barang', kd_detail_barang);

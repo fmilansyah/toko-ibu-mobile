@@ -21,6 +21,6 @@ export default StyleSheet.create({
     textAlign: 'center',
     paddingTop: 10,
     paddingBottom: 10,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
 });

@@ -33,7 +33,7 @@ export default StyleSheet.create({
   forgot: {
     fontSize: 16,
     color: COLOR_SETTINGS.PRIMARY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   createAccount: {
     marginRight: 5,
@@ -62,7 +62,7 @@ export default StyleSheet.create({
   submitBtnText: {
     fontSize: 16,
     color: COLOR_SETTINGS.WHITE,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   backBtn: {
     position: 'absolute',

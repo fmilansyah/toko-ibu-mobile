@@ -14,7 +14,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   slider: {
     marginTop: marginContainer,
@@ -40,12 +40,12 @@ export default StyleSheet.create({
     fontWeight: '400',
     opacity: 0.5,
     marginLeft: 10,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   sectionShowAll: {
     fontSize: 16,
     color: COLOR_SETTINGS.PRIMARY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   logo: {
     width: 93,

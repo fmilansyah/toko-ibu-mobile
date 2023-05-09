@@ -23,7 +23,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
     marginLeft: 10,
   },
   card: {
@@ -57,7 +57,7 @@ export default StyleSheet.create({
   },
   headerDate: {
     color: COLOR_SETTINGS.GRAY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   footerCard: {
     paddingHorizontal: paddingContainer,
@@ -68,7 +68,7 @@ export default StyleSheet.create({
   },
   footerTitle: {
     color: COLOR_SETTINGS.GRAY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   footerNominal: {
     color: COLOR_SETTINGS.BLACK,
@@ -119,7 +119,7 @@ export default StyleSheet.create({
     fontSize: 14,
     maxWidth: '100%',
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   productPriceContainer: {
     marginTop: 4,
@@ -129,7 +129,7 @@ export default StyleSheet.create({
   },
   productPrice: {
     fontSize: 14,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   sectionTitleContainer: {
     paddingHorizontal: paddingContainer,
@@ -174,7 +174,7 @@ export default StyleSheet.create({
     fontSize: 14,
     maxWidth: '100%',
     color: COLOR_SETTINGS.PRIMARY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   logout: {
     fontSize: 14,
@@ -197,5 +197,10 @@ export default StyleSheet.create({
   menuIcon: {
     fontSize: 16,
     color: COLOR_SETTINGS.BLACK,
+  },
+  appNameNoSpace: {
+    fontSize: 20,
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-Regular',
   },
 });

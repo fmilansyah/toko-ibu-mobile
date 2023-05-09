@@ -43,12 +43,12 @@ export default StyleSheet.create({
   },
   descLink: {
     fontSize: 16,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   link: {
     fontSize: 16,
     color: COLOR_SETTINGS.PRIMARY,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   row: {
     flexDirection: 'row',
@@ -58,5 +58,51 @@ export default StyleSheet.create({
   },
   flex: {
     flex: 1,
+  },
+  paddingHorizontal: {
+    paddingHorizontal: 16,
+  },
+  pRelative: {
+    position: 'relative',
+  },
+  headerContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  appName: {
+    fontSize: 18,
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-Regular',
+  },
+  formGroup: {
+    marginVertical: 5,
+  },
+  submitBtn: {
+    width: '100%',
+    borderRadius: borderRadius,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: COLOR_SETTINGS.PRIMARY,
+    paddingVertical: 12,
+    marginBottom: marginContainer,
+    marginTop: 8,
+  },
+  submitBtnIcon: {
+    fontSize: 18,
+    color: COLOR_SETTINGS.WHITE,
+    marginRight: 5,
+  },
+  submitBtnText: {
+    fontSize: 16,
+    color: COLOR_SETTINGS.WHITE,
+    fontFamily: 'Lora-Regular',
+  },
+  formValidationContainer: {
+    backgroundColor: COLOR_SETTINGS.BG_ORANGE,
+    padding: paddingContainer,
+    borderRadius: borderRadius,
   },
 });

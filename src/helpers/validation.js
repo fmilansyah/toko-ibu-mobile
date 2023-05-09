@@ -43,3 +43,11 @@ export function confirmPasswordValidator(confirmPassword, password) {
   }
   return '';
 }
+
+export function containsNumbers(str = '') {
+  return /\d/.test(str);
+}
+
+export function containsUppercase(str = '') {
+  return /[A-Z]/.test(str);
+}

@@ -30,7 +30,7 @@ export default StyleSheet.create({
     fontSize: 14,
     maxWidth: '100%',
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   productPriceContainer: {
     marginTop: 4,
@@ -40,7 +40,7 @@ export default StyleSheet.create({
   },
   productPrice: {
     fontSize: 14,
-    fontFamily: 'Lora-Medium',
+    fontFamily: 'Lora-Regular',
   },
   productActionContainer: {
     flexDirection: 'row',

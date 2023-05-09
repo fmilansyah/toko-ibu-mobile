@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Image,
   ToastAndroid,
+  BackHandler,
 } from 'react-native';
 import { numberValidator, cantEmpty } from '../helpers/validation';
 import SignInStyle from '../styles/SignIn.style';
@@ -14,6 +15,7 @@ import globalStyle from '../styles/global.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../config/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { USER_LEVEL } from '../database/AppData';
 
 export default function SignIn({ navigation }) {
   const [phone, setPhone] = useState({ value: '', error: '' });
@@ -34,13 +36,21 @@ export default function SignIn({ navigation }) {
       .post('/login', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(({ data }) => updateUserData(data))
+      .then(({ data }) => afterLogin(data))
       .catch(() =>
         ToastAndroid.show(
           'No. Telepon atau Kata Sandi Tidak Cocok',
           ToastAndroid.SHORT,
         ),
       );
+  };
+
+  const afterLogin = data => {
+    updateUserData(data);
+    if (data?.level !== USER_LEVEL.BUYER) {
+      ToastAndroid.show('Silakan Buka Kembali Aplikasi', ToastAndroid.LONG);
+      BackHandler.exitApp();
+    }
   };
 
   const updateUserData = async data => {

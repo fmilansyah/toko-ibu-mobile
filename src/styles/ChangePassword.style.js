@@ -2,16 +2,18 @@ import { StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../database/AppData';
 
 export default StyleSheet.create({
-  box: {
-    alignSelf: 'flex-start',
-    borderColor: COLOR_SETTINGS.DARKGRAY,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingVertical: 5,
-    paddingHorizontal: 8,
+  title: {
+    fontSize: 20,
+    color: COLOR_SETTINGS.BLACK,
+    fontFamily: 'Lora-Bold',
   },
-  variantText: {
+  subTitle: {
+    marginTop: 10,
     fontSize: 14,
+    color: COLOR_SETTINGS.DARKGRAY,
     fontFamily: 'Lora-Regular',
+  },
+  form: {
+    marginTop: 20,
   },
 });
