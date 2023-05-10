@@ -74,9 +74,7 @@ export default function Account({ navigation }) {
           <View style={OrderListStyle.userDetailContainer}>
             <View>
               <Text style={OrderListStyle.userTitle}>{user?.nama}</Text>
-              <Text style={OrderListStyle.userSubtitle}>
-                {user?.level === USER_LEVEL.CASHIER ? 'Kasir' : 'Pemilik Toko'}
-              </Text>
+              <Text style={OrderListStyle.userSubtitle}>{user?.level}</Text>
               <TouchableOpacity onPress={() => confirmLogout()}>
                 <Text style={OrderListStyle.logout}>KELUAR</Text>
               </TouchableOpacity>
@@ -88,10 +86,21 @@ export default function Account({ navigation }) {
         </View>
         <View style={OrderListStyle.menuContainer}>
           <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('UserDetail', {
+                kd_user: user?.kd_user,
+              })
+            }>
+            <Text style={OrderListStyle.menuItem}>
+              <Feather name="user" style={OrderListStyle.menuIcon} />
+              Informasi Akun
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => navigation.navigate('AccountDetails')}>
             <Text style={OrderListStyle.menuItem}>
-              <Feather name="settings" style={OrderListStyle.menuIcon} />{' '}
-              Pengaturan Akun
+              <Feather name="settings" style={OrderListStyle.menuIcon} /> Ubah
+              Informasi Akun
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -101,14 +110,14 @@ export default function Account({ navigation }) {
               Ganti Kata Sandi
             </Text>
           </TouchableOpacity>
-          {/* {user?.level === USER_LEVEL.OWNER && ( */}
-          <TouchableOpacity onPress={() => navigation.navigate('UserList')}>
-            <Text style={OrderListStyle.menuItem}>
-              <Feather name="users" style={OrderListStyle.menuIcon} /> Daftar
-              Akun
-            </Text>
-          </TouchableOpacity>
-          {/* )} */}
+          {user?.level === USER_LEVEL.OWNER && (
+            <TouchableOpacity onPress={() => navigation.navigate('UserList')}>
+              <Text style={OrderListStyle.menuItem}>
+                <Feather name="users" style={OrderListStyle.menuIcon} /> Daftar
+                Akun
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </View>

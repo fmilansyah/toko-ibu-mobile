@@ -51,3 +51,8 @@ export function containsNumbers(str = '') {
 export function containsUppercase(str = '') {
   return /[A-Z]/.test(str);
 }
+
+export function validEmail(str = '') {
+  const rgx = /\S+@\S+\.\S+/;
+  return rgx.test(str);
+}

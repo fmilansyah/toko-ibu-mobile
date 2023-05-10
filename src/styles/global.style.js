@@ -60,7 +60,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   paddingHorizontal: {
-    paddingHorizontal: 16,
+    paddingHorizontal: paddingContainer,
   },
   pRelative: {
     position: 'relative',
@@ -104,5 +104,11 @@ export default StyleSheet.create({
     backgroundColor: COLOR_SETTINGS.BG_ORANGE,
     padding: paddingContainer,
     borderRadius: borderRadius,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

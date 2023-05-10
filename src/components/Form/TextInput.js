@@ -1,11 +1,11 @@
 import React, { useState, forwardRef } from 'react';
 import { View, Text } from 'react-native';
 import { TextInput as Input } from 'react-native-paper';
-import TextInputStyles from '../../styles/TextInput.styles';
+import FormStyles from '../../styles/Form.styles';
 import { COLOR_SETTINGS } from '../../database/AppData';
 
 const TextInput = forwardRef(
-  ({ label, isPassword = false, inputProps = {} }, ref) => {
+  ({ label = null, isPassword = false, inputProps = {} }, ref) => {
     const [passwordStatus, setPasswordStatus] = useState(isPassword);
     const [focus, setFocus] = useState(false);
 
@@ -14,16 +14,18 @@ const TextInput = forwardRef(
     };
 
     return (
-      <View style={TextInputStyles.container}>
-        <Text
-          style={[
-            TextInputStyles.label,
-            {
-              color: focus ? COLOR_SETTINGS.PRIMARY : COLOR_SETTINGS.DARKGRAY,
-            },
-          ]}>
-          {label}
-        </Text>
+      <View style={FormStyles.container}>
+        {label !== null && label !== undefined && (
+          <Text
+            style={[
+              FormStyles.label,
+              {
+                color: focus ? COLOR_SETTINGS.PRIMARY : COLOR_SETTINGS.DARKGRAY,
+              },
+            ]}>
+            {label}
+          </Text>
+        )}
         <Input
           ref={ref}
           mode="outlined"

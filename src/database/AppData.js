@@ -21,3 +21,11 @@ export const USER_LEVEL = {
   CASHIER: 'kasir',
   OWNER: 'pemilik toko',
 };
+export const UserLeveList = [
+  { value: USER_LEVEL.CASHIER, label: USER_LEVEL.CASHIER },
+  { value: USER_LEVEL.OWNER, label: USER_LEVEL.OWNER },
+];
+export const STATUS_ACTIVE = {
+  ACTIVE: 'A',
+  DELETE: 'D',
+};

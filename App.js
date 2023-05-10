@@ -19,6 +19,9 @@ import { Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Account from './src/screens/Admin/Account';
 import ChangePassword from './src/screens/ChangePassword';
+import UserList from './src/screens/Admin/UserList';
+import AddUser from './src/screens/Admin/AddUser';
+import UserDetail from './src/screens/Admin/UserDetail';
 
 const OnProgressScreen = () => {
   return (
@@ -80,6 +83,10 @@ const AccountScreen = () => {
       }}>
       <AccountStack.Screen name="Account" component={Account} />
       <AccountStack.Screen name="ChangePassword" component={ChangePassword} />
+      <AccountStack.Screen name="UserList" component={UserList} />
+      <AccountStack.Screen name="AddUser" component={AddUser} />
+      <AccountStack.Screen name="UserDetail" component={UserDetail} />
+      <AccountStack.Screen name="AccountDetails" component={AccountDetails} />
     </AccountStack.Navigator>
   );
 };
