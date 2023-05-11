@@ -22,16 +22,16 @@ export default function SignIn({ navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' });
 
   const handleLogin = () => {
-    const phoneError = numberValidator(phone.value);
-    const passwordError = cantEmpty(password.value);
-    if (phoneError || passwordError) {
-      setPhone({ ...phone, error: phoneError });
-      setPassword({ ...password, error: passwordError });
-      return;
-    }
+    // const phoneError = numberValidator(phone.value);
+    // const passwordError = cantEmpty(password.value);
+    // if (phoneError || passwordError) {
+    //   setPhone({ ...phone, error: phoneError });
+    //   setPassword({ ...password, error: passwordError });
+    //   return;
+    // }
     const formData = new FormData();
-    formData.append('no_telepon', phone.value);
-    formData.append('password', password.value);
+    formData.append('no_telepon', '');
+    formData.append('password', '');
     api
       .post('/login', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

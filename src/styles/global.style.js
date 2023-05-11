@@ -74,7 +74,7 @@ export default StyleSheet.create({
   appName: {
     fontSize: 18,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Regular',
+    fontFamily: 'Lora-SemiBold',
   },
   formGroup: {
     marginVertical: 5,
@@ -110,5 +110,16 @@ export default StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
+  },
+  flexBtn: {
+    flex: 1,
+    borderRadius: borderRadius,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: COLOR_SETTINGS.PRIMARY,
+    paddingVertical: 12,
+    marginBottom: marginContainer,
+    marginTop: 8,
   },
 });

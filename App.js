@@ -22,19 +22,13 @@ import ChangePassword from './src/screens/ChangePassword';
 import UserList from './src/screens/Admin/UserList';
 import AddUser from './src/screens/Admin/AddUser';
 import UserDetail from './src/screens/Admin/UserDetail';
+import ItemList from './src/screens/Admin/ItemList';
+import ItemDetail from './src/screens/Admin/ItemDetail';
 
 const OnProgressScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>1</Text>
-    </View>
-  );
-};
-
-const OnProgressScreen2 = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>2</Text>
     </View>
   );
 };
@@ -59,8 +53,12 @@ const OrderScreen = () => {
 const ItemScreen = () => {
   const ItemStack = createNativeStackNavigator();
   return (
-    <ItemStack.Navigator>
-      <ItemStack.Screen name="Item" component={OnProgressScreen2} />
+    <ItemStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <ItemStack.Screen name="ItemList" component={ItemList} />
+      <ItemStack.Screen name="ItemDetail" component={ItemDetail} />
     </ItemStack.Navigator>
   );
 };
@@ -115,7 +113,39 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      {userData?.level === USER_LEVEL?.CASHIER ? (
+      {userData?.level === USER_LEVEL?.OWNER ? (
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              if (route.name === 'Produk') {
+                iconName = focused ? 'pricetags' : 'pricetags-outline';
+              } else if (route.name === 'Laporan') {
+                iconName = focused
+                  ? 'document-attach'
+                  : 'document-attach-outline';
+              } else if (route.name === 'Akun') {
+                iconName = focused ? 'person' : 'person-outline';
+              }
+
+              // You can return any component that you like here!
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarActiveTintColor: COLOR_SETTINGS.PRIMARY,
+            tabBarInactiveTintColor: 'gray',
+            headerShown: false,
+            tabBarStyle: { height: 60 },
+            tabBarLabelStyle: {
+              fontFamily: 'Lora-SemiBold',
+              marginBottom: 7,
+            },
+          })}>
+          <Tab.Screen name="Produk" component={ItemScreen} />
+          <Tab.Screen name="Laporan" component={ReportScreen} />
+          <Tab.Screen name="Akun" component={AccountScreen} />
+        </Tab.Navigator>
+      ) : userData?.level === USER_LEVEL?.CASHIER ? (
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -123,7 +153,7 @@ const App = () => {
 
               if (route.name === 'Pesanan') {
                 iconName = focused ? 'receipt' : 'receipt-outline';
-              } else if (route.name === 'Data Barang') {
+              } else if (route.name === 'Produk') {
                 iconName = focused ? 'pricetags' : 'pricetags-outline';
               } else if (route.name === 'Laporan') {
                 iconName = focused
@@ -146,7 +176,7 @@ const App = () => {
             },
           })}>
           <Tab.Screen name="Pesanan" component={OrderScreen} />
-          <Tab.Screen name="Data Barang" component={ItemScreen} />
+          <Tab.Screen name="Produk" component={ItemScreen} />
           <Tab.Screen name="Laporan" component={ReportScreen} />
           <Tab.Screen name="Akun" component={AccountScreen} />
         </Tab.Navigator>
