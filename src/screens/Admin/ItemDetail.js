@@ -17,7 +17,7 @@ import Loading from '../Loading';
 import { Divider } from 'react-native-paper';
 import dayjs from 'dayjs';
 import { rupiahFormatter } from '../../helpers/formatter';
-// import Gallery from 'react-native-awesome-gallery';
+import ImageView from 'react-native-image-viewing';
 
 export default function ItemDetail({ route, navigation }) {
   const { kd_barang } = route.params;
@@ -26,6 +26,10 @@ export default function ItemDetail({ route, navigation }) {
   const [files, setFiles] = useState([]);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [imageViewer, setImageViewer] = useState({
+    currentIndex: 0,
+    visible: false,
+  });
 
   useEffect(() => {
     getItem();
@@ -111,7 +115,29 @@ export default function ItemDetail({ route, navigation }) {
 
             <View style={globalStyle.paddingHorizontal}>
               <Text style={ItemDetailStyle.itemTitle}>Foto Produk</Text>
-              {/* <Gallery data={files.map(data => data?.file)} /> */}
+              <View style={ItemDetailStyle.imageContainer}>
+                {files?.map((data, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={ItemDetailStyle.userPictureContainer}
+                    onPress={() =>
+                      setImageViewer({ currentIndex: index, visible: true })
+                    }>
+                    <Image
+                      source={{ uri: data.file ?? USER_PICTURE_DEFAULT }}
+                      style={ItemDetailStyle.userPicture}
+                    />
+                  </TouchableOpacity>
+                ))}
+                <ImageView
+                  images={files.map(data => ({ uri: data?.file }))}
+                  imageIndex={imageViewer.currentIndex}
+                  visible={imageViewer.visible}
+                  onRequestClose={() =>
+                    setImageViewer({ currentIndex: 0, visible: false })
+                  }
+                />
+              </View>
               <Divider />
             </View>
             <View style={globalStyle.paddingHorizontal}>

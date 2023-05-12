@@ -67,4 +67,10 @@ export default StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: borderRadius,
   },
+  imageContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
 });

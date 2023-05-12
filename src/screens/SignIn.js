@@ -30,8 +30,8 @@ export default function SignIn({ navigation }) {
     //   return;
     // }
     const formData = new FormData();
-    formData.append('no_telepon', '');
-    formData.append('password', '');
+    formData.append('no_telepon', '081111111111');
+    formData.append('password', 'Admin123');
     api
       .post('/login', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
