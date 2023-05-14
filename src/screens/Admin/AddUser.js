@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -7,7 +7,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../../styles/global.style';
 import ChangePasswordStyle from '../../styles/ChangePassword.style';
 import { RadioButtonGroup, TextInput, Validation } from '../../components/Form';

@@ -13,13 +13,18 @@ export const COLOR_SETTINGS = {
   BG_GREEN: 'rgb(214, 255, 222)',
   BG_ORANGE: '#fff7e6',
   ORANGE: '#d46b08',
+  BG_BLUE: '#e6f4ff',
+  BLUE: '#1677ff',
+  BG_LIME: '#fcffe6',
+  LIME: '#7cb305',
+  BG_RED: '#fff2f0',
 };
 export const USER_PICTURE_DEFAULT =
   'https://img.freepik.com/free-photo/cute-woman-hold-hands-gesture-empty-spec-business-woman-concept-pink-background-3d-rendering_56104-1468.jpg?w=740&t=st=1685270243~exp=1685270843~hmac=4ec37e0e8f5ad0abcda82edbca3aab945c11b4a467321e2c0b90bf58b3852617';
 export const USER_LEVEL = {
-  BUYER: 'pembeli',
-  CASHIER: 'kasir',
-  OWNER: 'pemilik toko',
+  BUYER: 'Pembeli',
+  CASHIER: 'Kasir',
+  OWNER: 'Pemilik Toko',
 };
 export const UserLeveList = [
   { value: USER_LEVEL.CASHIER, label: USER_LEVEL.CASHIER },
@@ -29,3 +34,11 @@ export const STATUS_ACTIVE = {
   ACTIVE: 'A',
   DELETE: 'D',
 };
+export const STATUS_ORDER = {
+  WAITING_FOR_PAYMENT: 'Menunggu Pembayaran',
+  WAITING_FOR_CONFIRMATION: 'Menunggu Konfirmasi',
+  PROCESS: 'Diproses',
+  DELIVERY: 'Dikirim',
+  FINISHED: 'Selesai',
+  CANCELLED: 'Batal',
+}

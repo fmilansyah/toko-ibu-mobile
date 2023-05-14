@@ -68,6 +68,7 @@ export default StyleSheet.create({
     position: 'absolute',
     top: paddingContainer,
     right: paddingContainer,
+    padding: 8,
   },
   backBtnIcon: {
     fontSize: 22,

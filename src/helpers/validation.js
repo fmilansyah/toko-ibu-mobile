@@ -56,3 +56,8 @@ export function validEmail(str = '') {
   const rgx = /\S+@\S+\.\S+/;
   return rgx.test(str);
 }
+
+export function numberOnly(str = '') {
+  const rgx = /^\d+$/;
+  return rgx.test(str);
+}

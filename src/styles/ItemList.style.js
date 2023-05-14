@@ -79,4 +79,20 @@ export default StyleSheet.create({
     color: COLOR_SETTINGS.PRIMARY,
     textAlign: 'center',
   },
+  categoryMenuContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
+  categoryMenuTitle: {
+    fontSize: 16,
+    fontFamily: 'Lora-SemiBold',
+    color: COLOR_SETTINGS.BLACK,
+  },
+  categoryMenuLink: {
+    fontSize: 16,
+    fontFamily: 'Lora-SemiBold',
+    color: COLOR_SETTINGS.PRIMARY,
+  },
 });

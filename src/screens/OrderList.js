@@ -13,7 +13,7 @@ import globalStyle from '../styles/global.style';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { rupiahFormatter } from '../helpers/formatter';
-import { USER_PICTURE_DEFAULT } from '../database/AppData';
+import { STATUS_ORDER, USER_PICTURE_DEFAULT } from '../database/AppData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../config/api';
 import dayjs from 'dayjs';
@@ -141,17 +141,15 @@ export default function OrderList({ navigation }) {
                     : '-'}
                 </Text>
               </View>
-              <View style={globalStyle.flex}>
-                <TouchableOpacity>
-                  <Entypo
-                    name="dots-three-vertical"
-                    style={OrderListStyle.moreBtn}
-                  />
-                </TouchableOpacity>
-              </View>
             </View>
             <View style={OrderListStyle.bodyCard}>
-              <TouchableOpacity style={OrderListStyle.productContainer}>
+              <TouchableOpacity
+                style={OrderListStyle.productContainer}
+                onPress={() =>
+                  navigation.navigate('OrderDetail', {
+                    kd_order: item?.kd_order,
+                  })
+                }>
                 <View style={OrderListStyle.productImageContainer}>
                   <Image
                     source={{ uri: item?.barang?.file }}
@@ -161,12 +159,12 @@ export default function OrderList({ navigation }) {
                 <View style={OrderListStyle.productDetailContainer}>
                   <View>
                     <Text style={OrderListStyle.productName}>
-                      {item?.barang?.name} - {item?.barang?.varian}
+                      {item?.barang?.nama} - {item?.barang?.varian}
                     </Text>
                     <View style={OrderListStyle.productPriceContainer}>
                       <Text style={OrderListStyle.productPrice}>
                         {item?.barang?.jumlah_barang}x{' '}
-                        {rupiahFormatter(item?.barang?.total_harga)}
+                        {rupiahFormatter(item?.barang?.harga)}
                       </Text>
                     </View>
                   </View>
@@ -186,9 +184,15 @@ export default function OrderList({ navigation }) {
               <View style={globalStyle.flex}>
                 <Text
                   style={
-                    item?.status_order === 'MENUNGGU PEMBAYARAN'
+                    item?.status_order === STATUS_ORDER.WAITING_FOR_CONFIRMATION
                       ? OrderListStyle.warningLabel
-                      : OrderListStyle.successLabel
+                      : item?.status_order === STATUS_ORDER.PROCESS
+                      ? OrderListStyle.infoLabel
+                      : item?.status_order === STATUS_ORDER.DELIVERY
+                      ? OrderListStyle.limeLabel
+                      : item?.status_order === STATUS_ORDER.FINISHED
+                      ? OrderListStyle.successLabel
+                      : OrderListStyle.errorLabel
                   }>
                   {item?.status_order}
                 </Text>

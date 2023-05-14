@@ -28,7 +28,7 @@ const ProductInfo = ({ route, navigation }) => {
   const [detailProduct, setDetailProduct] = useState([]);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [files, setFiles] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState([]);
 
   const width = Dimensions.get('window').width;
 
@@ -57,7 +57,7 @@ const ProductInfo = ({ route, navigation }) => {
         setProduct(data?.barang);
         setFiles(data?.file_barang);
         setDetailProduct(data?.detail_barang);
-        setCategories(data?.kategori_barang);
+        setCategory(data?.kategori_barang);
 
         const newSelectedDetail = data?.detail_barang.find(
           obj => obj.kd_detail_barang === kd_detail_barang,
@@ -161,7 +161,7 @@ const ProductInfo = ({ route, navigation }) => {
         <View style={ProductInfoStyle.productDescContainer}>
           <View style={ProductInfoStyle.productCategory}>
             <Text style={ProductInfoStyle.productCategoryName}>
-              {categories.map(item => item.nama).join(', ')}
+              {category?.nama}
             </Text>
           </View>
           <View style={ProductInfoStyle.productNameContainer}>

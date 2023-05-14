@@ -106,7 +106,7 @@ export default function Account({ navigation }) {
           <TouchableOpacity
             onPress={() => navigation.navigate('ChangePassword')}>
             <Text style={OrderListStyle.menuItem}>
-              <Feather name="shopping-cart" style={OrderListStyle.menuIcon} />{' '}
+              <Feather name="lock" style={OrderListStyle.menuIcon} />{' '}
               Ganti Kata Sandi
             </Text>
           </TouchableOpacity>

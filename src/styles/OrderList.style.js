@@ -88,6 +88,27 @@ export default StyleSheet.create({
     fontFamily: 'Lora-SemiBold',
     alignSelf: 'flex-end',
   },
+  infoLabel: {
+    paddingHorizontal: 8,
+    backgroundColor: COLOR_SETTINGS.BG_BLUE,
+    color: COLOR_SETTINGS.BLUE,
+    fontFamily: 'Lora-SemiBold',
+    alignSelf: 'flex-end',
+  },
+  limeLabel: {
+    paddingHorizontal: 8,
+    backgroundColor: COLOR_SETTINGS.BG_LIME,
+    color: COLOR_SETTINGS.LIME,
+    fontFamily: 'Lora-SemiBold',
+    alignSelf: 'flex-end',
+  },
+  errorLabel: {
+    paddingHorizontal: 8,
+    backgroundColor: COLOR_SETTINGS.BG_RED,
+    color: COLOR_SETTINGS.RED,
+    fontFamily: 'Lora-SemiBold',
+    alignSelf: 'flex-end',
+  },
   bodyCard: {
     paddingHorizontal: paddingContainer,
     paddingVertical: 8,
@@ -202,5 +223,41 @@ export default StyleSheet.create({
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
     fontFamily: 'Lora-Regular',
+  },
+  statusLabel: {
+    fontSize: 14,
+    fontFamily: 'Lora-Bold',
+    color: COLOR_SETTINGS.BLACK,
+  },
+  labelColumn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  labelText: {
+    fontSize: 14,
+    fontFamily: 'Lora-Regular',
+    color: COLOR_SETTINGS.DARKGRAY,
+  },
+  valueText: {
+    fontSize: 14,
+    fontFamily: 'Lora-SemiBold',
+    color: COLOR_SETTINGS.BLACK,
+  },
+  sectionTitleDetail: {
+    fontSize: 16,
+    color: COLOR_SETTINGS.DARKGRAY,
+    fontFamily: 'Lora-SemiBold',
+    marginBottom: 8,
+  },
+  sectionContainerDetail: {
+    marginVertical: 8,
+  },
+  filterContainer: {
+    marginHorizontal: marginContainer,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    // height: 35,
   },
 });

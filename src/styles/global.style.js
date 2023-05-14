@@ -62,6 +62,9 @@ export default StyleSheet.create({
   paddingHorizontal: {
     paddingHorizontal: paddingContainer,
   },
+  marginLayout: {
+    margin: marginContainer,
+  },
   pRelative: {
     position: 'relative',
   },
@@ -78,6 +81,11 @@ export default StyleSheet.create({
   },
   formGroup: {
     marginVertical: 5,
+  },
+  formLabel: {
+    fontSize: 16,
+    marginBottom: 5,
+    fontFamily: 'Lora-SemiBold',
   },
   submitBtn: {
     width: '100%',
@@ -121,5 +129,10 @@ export default StyleSheet.create({
     paddingVertical: 12,
     marginBottom: marginContainer,
     marginTop: 8,
+  },
+  paragraph: {
+    fontSize: 14,
+    fontFamily: 'Lora-Medium',
+    color: COLOR_SETTINGS.DARKGRAY,
   },
 });

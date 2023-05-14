@@ -70,27 +70,34 @@ const MyCart = ({ navigation }) => {
   // };
 
   const checkOut = () => {
-    const orders = carts.map(item => ({
-      kd_detail_barang: item?.kd_detail_barang,
-      jumlah_barang: item?.jumlah_barang,
-      harga_total: item?.harga_total,
-    }));
-    const formData = new FormData();
-    formData.append('kd_user', userData?.kd_user);
-    formData.append('total', grandTotal);
-    api
-      .post('/midtrans-createtoken', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      .then(({ data }) =>
-        navigation.navigate('PaymentView', {
-          token: data?.data?.token,
-          order: JSON.stringify(orders),
-        }),
-      )
-      .catch(e => {
-        ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
-      });
+    if (userData?.alamat) {
+      const orders = carts.map(item => ({
+        kd_detail_barang: item?.kd_detail_barang,
+        jumlah_barang: item?.jumlah_barang,
+        harga_total: item?.harga_total,
+      }));
+      const formData = new FormData();
+      formData.append('kd_user', userData?.kd_user);
+      formData.append('total', grandTotal);
+      api
+        .post('/midtrans-createtoken', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(({ data }) =>
+          navigation.navigate('PaymentView', {
+            token: data?.data?.token,
+            order: JSON.stringify(orders),
+          }),
+        )
+        .catch(e => {
+          ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
+        });
+    } else {
+      ToastAndroid.show(
+        'Harap lengkapi data diri terlebih dahulu',
+        ToastAndroid.SHORT,
+      );
+    }
   };
 
   const calcTotal = () => {
@@ -158,8 +165,7 @@ const MyCart = ({ navigation }) => {
               <View>
                 <Text style={MyCartStyle.boxTitle}>JNE Regular</Text>
                 <Text style={MyCartStyle.boxDesc} numberOfLines={1}>
-                  Jalan Layungsari 3 No. 12, Bogor Selatan, Kota Bogor, Jawa
-                  Barat
+                  {userData?.alamat ?? 'Belum Mengisi Alamat'}
                 </Text>
               </View>
             </View>

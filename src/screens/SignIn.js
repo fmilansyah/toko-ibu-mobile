@@ -8,30 +8,40 @@ import {
   ToastAndroid,
   BackHandler,
 } from 'react-native';
-import { numberValidator, cantEmpty } from '../helpers/validation';
 import SignInStyle from '../styles/SignIn.style';
-import { TextInput } from '../components/Form';
+import { TextInput, Validation } from '../components/Form';
 import globalStyle from '../styles/global.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../config/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { USER_LEVEL } from '../database/AppData';
+import { Snackbar } from 'react-native-paper';
 
 export default function SignIn({ navigation }) {
-  const [phone, setPhone] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
+  const [validation, setValidation] = useState({
+    phoneNumber: [],
+    password: [],
+  });
+  const [snackbarInfo, setSnackbarInfo] = useState({
+    visible: false,
+    message: null,
+  });
+
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  const passwordRef = React.createRef();
 
   const handleLogin = () => {
-    // const phoneError = numberValidator(phone.value);
-    // const passwordError = cantEmpty(password.value);
-    // if (phoneError || passwordError) {
-    //   setPhone({ ...phone, error: phoneError });
-    //   setPassword({ ...password, error: passwordError });
-    //   return;
-    // }
+    for (const key in validation) {
+      if (validation[key].length > 0) {
+        setSnackbarInfo({ visible: true, message: 'Harap Periksa Kembali' });
+        return;
+      }
+    }
     const formData = new FormData();
-    formData.append('no_telepon', '081111111111');
-    formData.append('password', 'Admin123');
+    formData.append('no_telepon', phoneNumber);
+    formData.append('password', password);
     api
       .post('/login', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -47,7 +57,7 @@ export default function SignIn({ navigation }) {
 
   const afterLogin = data => {
     updateUserData(data);
-    if (data?.level !== USER_LEVEL.BUYER) {
+    if (data?.User?.level !== USER_LEVEL.BUYER) {
       ToastAndroid.show('Silakan Buka Kembali Aplikasi', ToastAndroid.LONG);
       BackHandler.exitApp();
     }
@@ -61,9 +71,55 @@ export default function SignIn({ navigation }) {
     });
   };
 
+  const handleChangePassword = text => {
+    setPassword(text);
+
+    // validation rules
+    const passwordValidation = [];
+    if (text === null || text === '') {
+      passwordValidation.push({
+        title: 'Kata sandi harap diisi',
+        icon: 'error',
+      });
+    }
+    setValidation({
+      ...validation,
+      password: passwordValidation,
+    });
+  };
+
+  const handleChangePhoneNumber = text => {
+    setPhoneNumber(text);
+
+    // validation rules
+    const phoneNumberValidation = [];
+    if (text === null || text === '') {
+      phoneNumberValidation.push({
+        title: 'No. Telepon harap diisi',
+        icon: 'error',
+      });
+    }
+    setValidation({
+      ...validation,
+      phoneNumber: phoneNumberValidation,
+    });
+  };
+
+  const handleDismissSnackbar = () => {
+    setSnackbarInfo({
+      visible: false,
+      message: null,
+    });
+  };
+
   return (
     <View style={globalStyle.container}>
       <KeyboardAvoidingView style={SignInStyle.container} behavior="height">
+        <Snackbar
+          visible={snackbarInfo.visible}
+          onDismiss={handleDismissSnackbar}>
+          {snackbarInfo.message}
+        </Snackbar>
         <TouchableOpacity
           style={SignInStyle.backBtn}
           onPress={() => navigation.goBack('Home')}>
@@ -79,24 +135,49 @@ export default function SignIn({ navigation }) {
         />
         <Text style={SignInStyle.title}>Masuk Ke Akun Anda</Text>
 
-        <TextInput
-          label="No. Telepon"
-          returnKeyType="next"
-          value={phone.value}
-          onChangeText={text => setPhone({ value: text, error: '' })}
-          error={!!phone.error}
-          errorText={phone.error}
-          keyboardType="numeric"
-        />
-        <TextInput
-          label="Kata Sandi"
-          returnKeyType="done"
-          value={password.value}
-          onChangeText={text => setPassword({ value: text, error: '' })}
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
+        <View style={{ width: '100%' }}>
+          <View style={globalStyle.formGroup}>
+            <TextInput
+              label="No. Telepon"
+              inputProps={{
+                value: phoneNumber,
+                onChangeText: handleChangePhoneNumber,
+                keyboardType: 'phone-pad',
+                returnKeyType: 'next',
+                onSubmitEditing: () => {
+                  passwordRef.current.focus();
+                },
+              }}
+            />
+          </View>
+          {validation.phoneNumber.length > 0 && (
+            <View style={globalStyle.formGroup}>
+              <Validation data={validation.phoneNumber} />
+            </View>
+          )}
+          <View style={globalStyle.formGroup}>
+            <TextInput
+              ref={passwordRef}
+              label="Kata Sandi"
+              isPassword={true}
+              inputProps={{
+                value: password,
+                onChangeText: handleChangePassword,
+                autoCapitalize: 'none',
+                autoCorrect: false,
+                returnKeyType: 'done',
+                onSubmitEditing: () => {
+                  handleLogin();
+                },
+              }}
+            />
+          </View>
+          {validation.password.length > 0 && (
+            <View style={globalStyle.formGroup}>
+              <Validation data={validation.password} />
+            </View>
+          )}
+        </View>
 
         <View style={SignInStyle.forgotPassword}>
           <TouchableOpacity>

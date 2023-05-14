@@ -183,7 +183,11 @@ export default function ItemDetail({ route, navigation }) {
             </View>
             <View style={ItemDetailStyle.btnContainer}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('AccountDetails')}
+                onPress={() =>
+                  navigation.navigate('EditItem', {
+                    kd_barang: item?.kd_barang,
+                  })
+                }
                 style={globalStyle.flexBtn}>
                 <Feather name="edit" style={globalStyle.submitBtnIcon} />
                 <Text style={globalStyle.submitBtnText}>Ubah Produk</Text>

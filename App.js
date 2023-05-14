@@ -24,14 +24,14 @@ import AddUser from './src/screens/Admin/AddUser';
 import UserDetail from './src/screens/Admin/UserDetail';
 import ItemList from './src/screens/Admin/ItemList';
 import ItemDetail from './src/screens/Admin/ItemDetail';
-
-const OnProgressScreen = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>1</Text>
-    </View>
-  );
-};
+import AddItem from './src/screens/Admin/AddItem';
+import EditItem from './src/screens/Admin/EditItem';
+import Categories from './src/screens/Admin/Categories';
+import AddCategory from './src/screens/Admin/AddCategory';
+import EditCategory from './src/screens/Admin/EditCategory';
+import { default as OrderListAdmin } from './src/screens/Admin/OrderList';
+import { default as OrderDetailAdmin } from './src/screens/Admin/OrderDetail';
+import OrderDetail from './src/screens/OrderDetail';
 
 const OnProgressScreen3 = () => {
   return (
@@ -44,8 +44,12 @@ const OnProgressScreen3 = () => {
 const OrderScreen = () => {
   const OrderStack = createNativeStackNavigator();
   return (
-    <OrderStack.Navigator>
-      <OrderStack.Screen name="Order" component={OnProgressScreen} />
+    <OrderStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <OrderStack.Screen name="OrderListAdmin" component={OrderListAdmin} />
+      <OrderStack.Screen name="OrderDetailAdmin" component={OrderDetailAdmin} />
     </OrderStack.Navigator>
   );
 };
@@ -59,6 +63,11 @@ const ItemScreen = () => {
       }}>
       <ItemStack.Screen name="ItemList" component={ItemList} />
       <ItemStack.Screen name="ItemDetail" component={ItemDetail} />
+      <ItemStack.Screen name="AddItem" component={AddItem} />
+      <ItemStack.Screen name="EditItem" component={EditItem} />
+      <ItemStack.Screen name="Categories" component={Categories} />
+      <ItemStack.Screen name="AddCategory" component={AddCategory} />
+      <ItemStack.Screen name="EditCategory" component={EditCategory} />
     </ItemStack.Navigator>
   );
 };
@@ -202,6 +211,7 @@ const App = () => {
               <Stack.Screen name="AccountDetails" component={AccountDetails} />
               <Stack.Screen name="PaymentView" component={PaymentView} />
               <Stack.Screen name="SearchProduct" component={SearchProduct} />
+              <Stack.Screen name="OrderDetail" component={OrderDetail} />
             </>
           )}
         </Stack.Navigator>
