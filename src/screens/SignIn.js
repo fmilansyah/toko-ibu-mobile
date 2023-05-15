@@ -130,7 +130,7 @@ export default function SignIn({ navigation }) {
         </TouchableOpacity>
 
         <Image
-          source={require('../../assets/images/logo.jpg')}
+          source={require('../../assets/images/logo.png')}
           style={SignInStyle.logo}
         />
         <Text style={SignInStyle.title}>Masuk Ke Akun Anda</Text>

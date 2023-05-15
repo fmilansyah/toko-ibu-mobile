@@ -200,7 +200,7 @@ export default function SignUp({ navigation }) {
         </TouchableOpacity>
 
         <Image
-          source={require('../../assets/images/logo.jpg')}
+          source={require('../../assets/images/logo.png')}
           style={SignInStyle.logo}
         />
         <Text style={SignInStyle.title}>Buat Akun Baru</Text>
