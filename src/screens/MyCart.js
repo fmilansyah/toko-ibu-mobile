@@ -50,14 +50,24 @@ const MyCart = ({ navigation }) => {
     }
   };
 
-  const removeItemFromCart = async id => {
+  const removeItemFromCart = async (kd_detail_barang) => {
     const formData = new FormData();
-    formData.append('kd_keranjang', id);
+    formData.append('kd_user', userData?.kd_user);
+    formData.append('kd_detail_barang', kd_detail_barang);
     await api.post('/hapuskeranjang', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     await getDataFromDB();
   };
+
+  // const removeItemFromCart = async id => {
+  //   const formData = new FormData();
+  //   formData.append('kd_keranjang', id);
+  //   await api.post('/hapuskeranjang', formData, {
+  //     headers: { 'Content-Type': 'multipart/form-data' },
+  //   });
+  //   await getDataFromDB();
+  // };
 
   const checkOut = () => {
     const orders = carts.map(item => ({

@@ -28,7 +28,7 @@ const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
             <TouchableOpacity
               onPress={() =>
                 data?.jumlah_barang < 2
-                  ? onDelete(data?.kd_keranjang)
+                  ? onDelete(data?.kd_detail_barang)
                   : onUpdateQty(data?.kd_detail_barang, -1)
               }
               style={ProductCartItemStyle.productQtyActionMin}>
@@ -47,7 +47,7 @@ const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
               />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => onDelete(data?.kd_keranjang)}>
+          <TouchableOpacity onPress={() => onDelete(data?.kd_detail_barang)}>
             <MaterialCommunityIcons
               name="delete-outline"
               style={ProductCartItemStyle.productDeleteIcon}
