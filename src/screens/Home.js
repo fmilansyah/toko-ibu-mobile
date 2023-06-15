@@ -1,40 +1,109 @@
-import React from 'react';
-import { View, TouchableOpacity, ScrollView, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, TouchableOpacity, Text, Image, FlatList } from 'react-native';
 import { SliderItem } from '../components/Basic';
-import { APP_NAME } from '../database/AppData';
 import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import {
-  Categories,
-  MaleFashion,
-  SliderData,
-  Foods,
-} from '../database/Database';
+import { SliderData } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
+import api from '../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const renderSliderItem = ({ item }) => {
   return <SliderItem data={item} />;
 };
 
 const Home = ({ navigation }) => {
-  return (
-    <View style={globalStyle.container}>
-      <View style={HomeStyle.headerContainer}>
-        <TouchableOpacity>
-          <Feather name="search" style={globalStyle.iconBtn} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={HomeStyle.appName}>{APP_NAME}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
-          <Feather name="log-in" style={globalStyle.roundedBtn} />
-        </TouchableOpacity>
-      </View>
+  const [categories, setCategories] = useState([]);
+  const [categoryAndItem, setCategoryAndItem] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(false);
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+  useEffect(() => {
+    getCategories();
+    getCategoryAndItem();
+    getUserData();
+  }, []);
+
+  const getCategories = () => {
+    api
+      .get('/getkategori')
+      .then(({ data }) => setCategories(data?.Kategori ?? []));
+  };
+
+  const getCategoryAndItem = () => {
+    api
+      .get('/getkategoridanbarang')
+      .then(({ data }) => setCategoryAndItem(data?.Kategori ?? []));
+  };
+
+  const getUserData = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('user_data');
+      if (userData !== null) {
+        setLoggedIn(true);
+      }
+    } catch (e) {
+      setLoggedIn(false);
+    }
+  };
+
+  const renderCategories = ({ item, index }) => {
+    return (
+      <CategoryItem
+        key={index}
+        data={item}
+        isLastItem={index === categories.length - 1}
+      />
+    );
+  };
+
+  const renderCategoryProduct = ({ item, index }) => {
+    return (
+      <View key={index}>
+        <View
+          style={[
+            globalStyle.paddingContainer,
+            HomeStyle.categoryNameContainer,
+          ]}>
+          <View style={HomeStyle.sectionTitleContainer}>
+            <Text style={HomeStyle.sectionTitle}>{item?.nama}</Text>
+            <Text style={HomeStyle.sectionCount}>{item?.jml_barang}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('ProductByCategory', {
+                id: item?.kd_kategori,
+                name: item?.nama,
+              })
+            }>
+            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          data={item?.barang ?? []}
+          horizontal
+          renderItem={e => renderProducts(e, item?.barang.length)}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+    );
+  };
+
+  const renderProducts = ({ item, index }, totalItem) => {
+    return (
+      <ProductItem
+        key={index}
+        data={item}
+        isLastItem={index === totalItem - 1}
+      />
+    );
+  };
+
+  const renderHead = () => {
+    return (
+      <View>
         <View>
           <Carousel
             data={SliderData}
@@ -50,75 +119,51 @@ const Home = ({ navigation }) => {
           />
         </View>
 
-        <View style={HomeStyle.sectionContainer}>
+        <View>
           <View style={globalStyle.paddingContainer}>
             <View style={HomeStyle.sectionTitleContainer}>
               <Text style={HomeStyle.sectionTitle}>Kategori</Text>
             </View>
           </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {Categories.map((item, index) => (
-              <CategoryItem
-                key={index}
-                data={item}
-                isLastItem={index === Categories.length - 1}
-              />
-            ))}
-          </ScrollView>
+          <FlatList
+            data={categories}
+            horizontal
+            renderItem={renderCategories}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
+      </View>
+    );
+  };
 
-        <View style={HomeStyle.sectionContainer}>
-          <View
-            style={[
-              globalStyle.paddingContainer,
-              HomeStyle.categoryNameContainer,
-            ]}>
-            <View style={HomeStyle.sectionTitleContainer}>
-              <Text style={HomeStyle.sectionTitle}>Fashion Pria</Text>
-              <Text style={HomeStyle.sectionCount}>41</Text>
-            </View>
-            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
-          </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {MaleFashion.map((item, index) => (
-              <ProductItem
-                key={index}
-                data={item}
-                isLastItem={index === MaleFashion.length - 1}
-              />
-            ))}
-          </ScrollView>
+  return (
+    <View style={globalStyle.container}>
+      <View style={HomeStyle.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('SearchProduct')}>
+          <Feather name="search" style={globalStyle.iconBtn} />
+        </TouchableOpacity>
+        <View>
+          <Image
+            source={require('../../assets/images/logo.png')}
+            style={HomeStyle.logo}
+          />
         </View>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate(loggedIn ? 'OrderList' : 'SignIn')
+          }>
+          <Feather
+            name={loggedIn ? 'user' : 'log-in'}
+            style={globalStyle.roundedBtn}
+          />
+        </TouchableOpacity>
+      </View>
 
-        <View
-          style={[
-            HomeStyle.sectionContainer,
-            {
-              marginBottom: 16, // for last item only
-            },
-          ]}>
-          <View
-            style={[
-              globalStyle.paddingContainer,
-              HomeStyle.categoryNameContainer,
-            ]}>
-            <View style={HomeStyle.sectionTitleContainer}>
-              <Text style={HomeStyle.sectionTitle}>Makanan</Text>
-              <Text style={HomeStyle.sectionCount}>17</Text>
-            </View>
-            <Text style={HomeStyle.sectionShowAll}>Lihat Semua</Text>
-          </View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {Foods.map((item, index) => (
-              <ProductItem
-                key={index}
-                data={item}
-                isLastItem={index === Foods.length - 1}
-              />
-            ))}
-          </ScrollView>
-        </View>
-      </ScrollView>
+      <FlatList
+        data={categoryAndItem}
+        renderItem={renderCategoryProduct}
+        ListHeaderComponent={renderHead}
+      />
       {/* <Footer /> */}
     </View>
   );

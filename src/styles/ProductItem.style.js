@@ -10,6 +10,11 @@ export default StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
   },
+  productBoxVertical: {
+    borderColor: COLOR_SETTINGS.GRAY,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
   productImageContainer: {
     width: '100%',
     height: 100,

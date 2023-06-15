@@ -4,11 +4,9 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLOURS, Items } from '../database/Database';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MyCartStyle from '../styles/MyCart.style';
 import globalStyle from '../styles/global.style';
@@ -16,10 +14,14 @@ import Feather from 'react-native-vector-icons/Feather';
 import { ProductCartItem } from '../components/Product';
 import { rupiahFormatter } from '../helpers/formatter';
 import { Divider } from '../components/Basic';
+import api from '../config/api';
 
 const MyCart = ({ navigation }) => {
-  const [product, setProduct] = useState();
-  const [total, setTotal] = useState(null);
+  const [carts, setCarts] = useState([]);
+  const [subTotal, setSubTotal] = useState(0);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -29,66 +31,80 @@ const MyCart = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  //get data from local DB by ID
+  useEffect(() => {
+    calcTotal();
+  }, [carts, shippingCost]);
+
   const getDataFromDB = async () => {
-    let items = await AsyncStorage.getItem('cartItems');
-    items = JSON.parse(items);
-    let productData = [];
-    if (items) {
-      Items.forEach(data => {
-        if (items.includes(data.id)) {
-          productData.push(data);
-          return;
-        }
-      });
-      setProduct(productData);
-      getTotal(productData);
-    } else {
-      setProduct(false);
-      getTotal(false);
+    let newUserData = await AsyncStorage.getItem('user_data');
+    if (newUserData !== null) {
+      const user = JSON.parse(newUserData);
+      setUserData(user);
+      const formData = new FormData();
+      formData.append('kd_user', user?.kd_user);
+      api
+        .post('/getdatakeranjang', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(({ data }) => setCarts(data?.Keranjang ?? []));
     }
   };
-
-  //get total price of all items in the cart
-  const getTotal = productData => {
-    let total = 0;
-    for (let index = 0; index < productData.length; index++) {
-      let productPrice = productData[index].productPrice;
-      total = total + productPrice;
-    }
-    setTotal(total);
-  };
-
-  //remove data from Cart
 
   const removeItemFromCart = async id => {
-    let itemArray = await AsyncStorage.getItem('cartItems');
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      for (let index = 0; index < array.length; index++) {
-        if (array[index] == id) {
-          array.splice(index, 1);
-        }
-
-        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
-        getDataFromDB();
-      }
-    }
+    const formData = new FormData();
+    formData.append('kd_keranjang', id);
+    await api.post('/hapuskeranjang', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    await getDataFromDB();
   };
 
-  //checkout
+  const checkOut = () => {
+    const orders = carts.map(item => ({
+      kd_detail_barang: item?.kd_detail_barang,
+      jumlah_barang: item?.jumlah_barang,
+      harga_total: item?.harga_total,
+    }));
+    const formData = new FormData();
+    formData.append('kd_user', userData?.kd_user);
+    formData.append('total', grandTotal);
+    api
+      .post('/midtrans-createtoken', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) =>
+        navigation.navigate('PaymentView', {
+          token: data?.data?.token,
+          order: JSON.stringify(orders),
+        }),
+      )
+      .catch(e => {
+        ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
+      });
+  };
 
-  const checkOut = async () => {
-    try {
-      await AsyncStorage.removeItem('cartItems');
-    } catch (error) {
-      return error;
-    }
+  const calcTotal = () => {
+    const newSubTotal = carts.reduce(
+      (a, b) => a + (parseInt(b.harga_total) || 0),
+      0,
+    );
+    const newGrandTotal = carts.reduce(
+      (a, b) => a + (parseInt(b.harga_total) || 0),
+      0,
+    );
+    setSubTotal(newSubTotal);
+    setGrandTotal(newGrandTotal + shippingCost);
+  };
 
-    ToastAndroid.show('Items will be Deliverd SOON!', ToastAndroid.SHORT);
-
-    navigation.navigate('Home');
+  const updateCart = async (kd_detail_barang, qty) => {
+    const formData = new FormData();
+    formData.append('kd_user', userData?.kd_user);
+    formData.append('kd_detail_barang', kd_detail_barang);
+    formData.append('jumlah_barang', qty);
+    await api.post('/tambahkeranjang', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    await getDataFromDB();
   };
 
   return (
@@ -97,19 +113,26 @@ const MyCart = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Feather name="arrow-left" style={globalStyle.iconBtn} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <View>
           <Text style={MyCartStyle.appName}>Keranjang</Text>
-        </TouchableOpacity>
+        </View>
       </View>
       <ScrollView>
         <View style={MyCartStyle.sectionContainer}>
-          <Text style={MyCartStyle.sectionTitle}>Daftar Barang</Text>
+          <Text style={MyCartStyle.sectionTitle}>Daftar Produk</Text>
           <View>
-            {product
-              ? product.map((data, index) => (
-                  <ProductCartItem key={index} data={data} />
-                ))
-              : null}
+            {carts && carts.length > 0 ? (
+              carts.map((data, index) => (
+                <ProductCartItem
+                  key={index}
+                  data={data}
+                  onDelete={removeItemFromCart}
+                  onUpdateQty={updateCart}
+                />
+              ))
+            ) : (
+              <Text>Keranjang Kosong</Text>
+            )}
           </View>
         </View>
         <View style={MyCartStyle.sectionContainer}>
@@ -136,7 +159,7 @@ const MyCart = ({ navigation }) => {
             />
           </View>
         </View>
-        <View style={MyCartStyle.sectionContainer}>
+        {/* <View style={MyCartStyle.sectionContainer}>
           <Text style={MyCartStyle.sectionTitle}>Metode Pembayaran</Text>
           <View style={MyCartStyle.boxContainer}>
             <View style={MyCartStyle.boxContent}>
@@ -158,19 +181,21 @@ const MyCart = ({ navigation }) => {
               style={MyCartStyle.expandIcon}
             />
           </View>
-        </View>
+        </View> */}
         <View style={MyCartStyle.sectionContainer}>
           <Text style={MyCartStyle.sectionTitle}>Ringkasan Pembelian</Text>
           <View style={MyCartStyle.summaryItem}>
-            <Text style={MyCartStyle.summaryTitle}>Subtotal</Text>
+            <Text style={MyCartStyle.summaryTitle}>
+              Subtotal ({carts.length} produk)
+            </Text>
             <Text style={MyCartStyle.summaryTotal}>
-              {rupiahFormatter(200000)}
+              {rupiahFormatter(subTotal)}
             </Text>
           </View>
           <View style={MyCartStyle.summaryItem}>
-            <Text style={MyCartStyle.summaryTitle}>Ongkos Kirim</Text>
+            <Text style={MyCartStyle.summaryTitle}>Biaya Kirim</Text>
             <Text style={MyCartStyle.summaryTotal}>
-              {rupiahFormatter(10000)}
+              {rupiahFormatter(shippingCost)}
             </Text>
           </View>
           <Divider />
@@ -180,10 +205,10 @@ const MyCart = ({ navigation }) => {
               style={[
                 MyCartStyle.summaryTotal,
                 {
-                  fontSize: 14,
+                  fontFamily: 'Lora-Bold',
                 },
               ]}>
-              {rupiahFormatter(210000)}
+              {rupiahFormatter(grandTotal)}
             </Text>
           </View>
         </View>
@@ -191,7 +216,7 @@ const MyCart = ({ navigation }) => {
 
       <View style={MyCartStyle.payBtnContainer}>
         <TouchableOpacity
-          onPress={() => (total > 0 ? checkOut() : null)}
+          onPress={() => (grandTotal > 0 ? checkOut() : null)}
           style={MyCartStyle.payBtn}>
           <Feather name="credit-card" style={MyCartStyle.payBtnIcon} />
           <Text style={MyCartStyle.payBtnLabel}>BAYAR</Text>

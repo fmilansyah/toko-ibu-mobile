@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native';
 import { COLOR_SETTINGS } from '../../database/AppData';
 
 const Divider = () => {
@@ -10,7 +10,7 @@ const Divider = () => {
         marginVertical: 6,
       }}
     />
-  )
-}
+  );
+};
 
 export default Divider;

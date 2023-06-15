@@ -8,12 +8,13 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: paddingContainer,
+    paddingVertical: 8,
+    paddingHorizontal: paddingContainer,
   },
   appName: {
     fontSize: 20,
     color: COLOR_SETTINGS.BLACK,
-    fontFamily: 'Lora-Regular',
+    fontFamily: 'Lora-Medium',
   },
   slider: {
     marginTop: marginContainer,
@@ -28,9 +29,6 @@ export default StyleSheet.create({
     color: COLOR_SETTINGS.BLACK,
     fontFamily: 'Lora-SemiBold',
   },
-  sectionContainer: {
-    marginTop: marginContainer,
-  },
   categoryNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -42,11 +40,16 @@ export default StyleSheet.create({
     fontWeight: '400',
     opacity: 0.5,
     marginLeft: 10,
-    fontFamily: 'Lora-Regular',
+    fontFamily: 'Lora-Medium',
   },
   sectionShowAll: {
     fontSize: 16,
     color: COLOR_SETTINGS.PRIMARY,
     fontFamily: 'Lora-Medium',
+  },
+  logo: {
+    width: 93,
+    height: 40,
+    resizeMode: 'center',
   },
 });

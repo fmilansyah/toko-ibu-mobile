@@ -28,7 +28,7 @@ export default StyleSheet.create({
     backgroundColor: COLOR_SETTINGS.WHITE,
   },
   iconBtn: {
-    fontSize: 20,
+    fontSize: 22,
     color: COLOR_SETTINGS.BLACK,
   },
   roundedBtn: {
@@ -40,5 +40,23 @@ export default StyleSheet.create({
   },
   paddingContainer: {
     padding: 16,
+  },
+  descLink: {
+    fontSize: 16,
+    fontFamily: 'Lora-Medium',
+  },
+  link: {
+    fontSize: 16,
+    color: COLOR_SETTINGS.PRIMARY,
+    fontFamily: 'Lora-Medium',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  justifyContentEnd: {
+    justifyContent: 'flex-end',
+  },
+  flex: {
+    flex: 1,
   },
 });
