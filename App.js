@@ -15,7 +15,6 @@ import { COLOR_SETTINGS, USER_LEVEL } from './src/database/AppData';
 import SearchProduct from './src/screens/SearchProduct';
 import Loading from './src/screens/Loading';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Account from './src/screens/Admin/Account';
 import ChangePassword from './src/screens/ChangePassword';
@@ -32,14 +31,7 @@ import EditCategory from './src/screens/Admin/EditCategory';
 import { default as OrderListAdmin } from './src/screens/Admin/OrderList';
 import { default as OrderDetailAdmin } from './src/screens/Admin/OrderDetail';
 import OrderDetail from './src/screens/OrderDetail';
-
-const OnProgressScreen3 = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>4</Text>
-    </View>
-  );
-};
+import ReportAdmin from './src/screens/Admin/ReportAdmin';
 
 const OrderScreen = () => {
   const OrderStack = createNativeStackNavigator();
@@ -75,8 +67,11 @@ const ItemScreen = () => {
 const ReportScreen = () => {
   const ReportStack = createNativeStackNavigator();
   return (
-    <ReportStack.Navigator>
-      <ReportStack.Screen name="Report" component={OnProgressScreen3} />
+    <ReportStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <ReportStack.Screen name="ReportAdmin" component={ReportAdmin} />
     </ReportStack.Navigator>
   );
 };

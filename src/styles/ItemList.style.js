@@ -7,6 +7,12 @@ export default StyleSheet.create({
     marginHorizontal: marginContainer,
     marginBottom: marginContainer,
   },
+  filterContainer: {
+    marginHorizontal: marginContainer,
+    marginBottom: marginContainer,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   userContainer: {
     width: '100%',
     height: 75,
