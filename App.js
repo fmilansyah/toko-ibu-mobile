@@ -95,7 +95,6 @@ const AccountScreen = () => {
 
 export const Context = createContext();
 
-
 const App = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -120,110 +119,112 @@ const App = () => {
 
   return (
     <Context.Provider
-        value={{
-          setData: setUserData,
-        }}
-      >
-    <NavigationContainer>
-      {userData?.level === USER_LEVEL?.OWNER ? (
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
+      value={{
+        setData: setUserData,
+      }}>
+      <NavigationContainer>
+        {userData?.level === USER_LEVEL?.OWNER ? (
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-              if (route.name === 'Produk') {
-                iconName = focused ? 'pricetags' : 'pricetags-outline';
-              } else if (route.name === 'Laporan') {
-                iconName = focused
-                  ? 'document-attach'
-                  : 'document-attach-outline';
-              } else if (route.name === 'Akun') {
-                iconName = focused ? 'person' : 'person-outline';
-              }
+                if (route.name === 'Produk') {
+                  iconName = focused ? 'pricetags' : 'pricetags-outline';
+                } else if (route.name === 'Laporan') {
+                  iconName = focused
+                    ? 'document-attach'
+                    : 'document-attach-outline';
+                } else if (route.name === 'Akun') {
+                  iconName = focused ? 'person' : 'person-outline';
+                }
 
-              // You can return any component that you like here!
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: COLOR_SETTINGS.PRIMARY,
-            tabBarInactiveTintColor: 'gray',
-            headerShown: false,
-            tabBarStyle: { height: 60 },
-            tabBarLabelStyle: {
-              fontFamily: 'Lora-SemiBold',
-              marginBottom: 7,
-            },
-          })}>
-          <Tab.Screen name="Produk" component={ItemScreen} />
-          <Tab.Screen name="Laporan" component={ReportScreen} />
-          <Tab.Screen name="Akun" component={AccountScreen} />
-        </Tab.Navigator>
-      ) : userData?.level === USER_LEVEL?.CASHIER ? (
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
+                // You can return any component that you like here!
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: COLOR_SETTINGS.PRIMARY,
+              tabBarInactiveTintColor: 'gray',
+              headerShown: false,
+              tabBarStyle: { height: 60 },
+              tabBarLabelStyle: {
+                fontFamily: 'Lora-SemiBold',
+                marginBottom: 7,
+              },
+            })}>
+            <Tab.Screen name="Produk" component={ItemScreen} />
+            <Tab.Screen name="Laporan" component={ReportScreen} />
+            <Tab.Screen name="Akun" component={AccountScreen} />
+          </Tab.Navigator>
+        ) : userData?.level === USER_LEVEL?.CASHIER ? (
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-              if (route.name === 'Pesanan') {
-                iconName = focused ? 'receipt' : 'receipt-outline';
-              } else if (route.name === 'Produk') {
-                iconName = focused ? 'pricetags' : 'pricetags-outline';
-              } else if (route.name === 'Laporan') {
-                iconName = focused
-                  ? 'document-attach'
-                  : 'document-attach-outline';
-              } else if (route.name === 'Akun') {
-                iconName = focused ? 'person' : 'person-outline';
-              }
+                if (route.name === 'Pesanan') {
+                  iconName = focused ? 'receipt' : 'receipt-outline';
+                } else if (route.name === 'Produk') {
+                  iconName = focused ? 'pricetags' : 'pricetags-outline';
+                } else if (route.name === 'Laporan') {
+                  iconName = focused
+                    ? 'document-attach'
+                    : 'document-attach-outline';
+                } else if (route.name === 'Akun') {
+                  iconName = focused ? 'person' : 'person-outline';
+                }
 
-              // You can return any component that you like here!
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: COLOR_SETTINGS.PRIMARY,
-            tabBarInactiveTintColor: 'gray',
-            headerShown: false,
-            tabBarStyle: { height: 60 },
-            tabBarLabelStyle: {
-              fontFamily: 'Lora-SemiBold',
-              marginBottom: 7,
-            },
-          })}>
-          <Tab.Screen name="Pesanan" component={OrderScreen} />
-          <Tab.Screen name="Produk" component={ItemScreen} />
-          <Tab.Screen name="Laporan" component={ReportScreen} />
-          <Tab.Screen name="Akun" component={AccountScreen} />
-        </Tab.Navigator>
-      ) : (
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}>
-          {userData === 'waiting' ? (
-            <Stack.Screen name="Loading" component={Loading} />
-          ) : (
-            <>
-              <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="MyCart" component={MyCart} />
-              <Stack.Screen name="ProductInfo" component={ProductInfo} />
-              <Stack.Screen name="SignIn" component={SignIn} />
-              <Stack.Screen name="SignUp" component={SignUp} />
-              <Stack.Screen name="OrderList" component={OrderList} />
-              <Stack.Screen
-                name="ProductByCategory"
-                component={ProductByCategory}
-              />
-              <Stack.Screen name="AccountDetails" component={AccountDetails} />
-              <Stack.Screen name="PaymentView" component={PaymentView} />
-              <Stack.Screen name="SearchProduct" component={SearchProduct} />
-              <Stack.Screen name="OrderDetail" component={OrderDetail} />
+                // You can return any component that you like here!
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: COLOR_SETTINGS.PRIMARY,
+              tabBarInactiveTintColor: 'gray',
+              headerShown: false,
+              tabBarStyle: { height: 60 },
+              tabBarLabelStyle: {
+                fontFamily: 'Lora-SemiBold',
+                marginBottom: 7,
+              },
+            })}>
+            <Tab.Screen name="Pesanan" component={OrderScreen} />
+            <Tab.Screen name="Produk" component={ItemScreen} />
+            <Tab.Screen name="Laporan" component={ReportScreen} />
+            <Tab.Screen name="Akun" component={AccountScreen} />
+          </Tab.Navigator>
+        ) : (
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}>
+            {userData === 'waiting' ? (
+              <Stack.Screen name="Loading" component={Loading} />
+            ) : (
+              <>
+                <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="MyCart" component={MyCart} />
+                <Stack.Screen name="ProductInfo" component={ProductInfo} />
+                <Stack.Screen name="SignIn" component={SignIn} />
+                <Stack.Screen name="SignUp" component={SignUp} />
+                <Stack.Screen name="OrderList" component={OrderList} />
+                <Stack.Screen
+                  name="ProductByCategory"
+                  component={ProductByCategory}
+                />
+                <Stack.Screen
+                  name="AccountDetails"
+                  component={AccountDetails}
+                />
+                <Stack.Screen name="PaymentView" component={PaymentView} />
+                <Stack.Screen name="SearchProduct" component={SearchProduct} />
+                <Stack.Screen name="OrderDetail" component={OrderDetail} />
 
-              {/* JANGAN DIHAPUS */}
-              <Stack.Screen name="Pesanan" component={OrderScreen} />
-              <Stack.Screen name="Produk" component={ItemScreen} />
-            </>
-          )}
-        </Stack.Navigator>
-      )}
-    </NavigationContainer>
+                {/* JANGAN DIHAPUS */}
+                <Stack.Screen name="Pesanan" component={OrderScreen} />
+                <Stack.Screen name="Produk" component={ItemScreen} />
+              </>
+            )}
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
     </Context.Provider>
   );
 };

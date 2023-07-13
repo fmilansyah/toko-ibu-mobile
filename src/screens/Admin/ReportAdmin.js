@@ -28,6 +28,8 @@ import ItemListStyle from '../../styles/ItemList.style';
 import { rupiahFormatter } from '../../helpers/formatter';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
+import RNFetchBlob from 'rn-fetch-blob';
+import { API_URL } from '../../config/app';
 
 export default function ReportAdmin({ navigation }) {
   const [report, setReport] = useState([]);
@@ -66,6 +68,21 @@ export default function ReportAdmin({ navigation }) {
       mode: 'date',
       is24Hour: true,
     });
+  };
+
+  const handleDownload = () => {
+    RNFetchBlob.config({
+      // add this option that makes response data to be stored as a file,
+      // this is much more performant.
+      fileCache: true,
+    })
+      .fetch('GET', API_URL + '/pdf/report.php', {
+        //some headers ..
+      })
+      .then(res => {
+        // the temp file path
+        console.log('The file saved to ', res);
+      });
   };
 
   const showEndDate = () => {
@@ -173,6 +190,12 @@ export default function ReportAdmin({ navigation }) {
           </View>
         ))}
       </ScrollView>
+      <FAB
+        icon="download"
+        style={globalStyle.fab}
+        onPress={() => handleDownload()}
+        theme={{ colors: { onPrimaryContainer: COLOR_SETTINGS.PRIMARY } }}
+      />
     </View>
   );
 }
