@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -8,6 +8,7 @@ import {
   ToastAndroid,
   BackHandler,
 } from 'react-native';
+
 import SignInStyle from '../styles/SignIn.style';
 import { TextInput, Validation } from '../components/Form';
 import globalStyle from '../styles/global.style';
@@ -17,7 +18,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { USER_LEVEL } from '../database/AppData';
 import { Snackbar } from 'react-native-paper';
 
+import { Context } from '../../App';
+
 export default function SignIn({ navigation }) {
+  const { setData } = useContext(Context);
+
   const [validation, setValidation] = useState({
     phoneNumber: [],
     password: [],
@@ -57,18 +62,37 @@ export default function SignIn({ navigation }) {
 
   const afterLogin = data => {
     updateUserData(data);
-    if (data?.User?.level !== USER_LEVEL.BUYER) {
-      ToastAndroid.show('Silakan Buka Kembali Aplikasi', ToastAndroid.LONG);
-      BackHandler.exitApp();
-    }
+    // if (data?.User?.level !== USER_LEVEL.BUYER) {
+    //   ToastAndroid.show('Silakan Buka Kembali Aplikasi', ToastAndroid.LONG);
+    //   BackHandler.exitApp();
+    // }
   };
 
   const updateUserData = async data => {
+    // await AsyncStorage.setItem('user_data', JSON.stringify(data?.User));
+    // await navigation.reset({
+    //   index: 0,
+    //   routes: [{ name: 'Home' }],
+    // });
     await AsyncStorage.setItem('user_data', JSON.stringify(data?.User));
-    await navigation.reset({
-      index: 0,
-      routes: [{ name: 'Home' }],
-    });
+    await setData(JSON.stringify(data?.User));
+
+    if (data?.User?.level === USER_LEVEL.CASHIER) {
+      await navigation.reset({
+        index: 0,
+        routes: [{ name: 'Pesanan' }],
+      });
+    } else if (data?.User?.level === USER_LEVEL.OWNER) {
+      await navigation.reset({
+        index: 0,
+        routes: [{ name: 'Produk' }],
+      });
+    } else {
+      await navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    }
   };
 
   const handleChangePassword = text => {

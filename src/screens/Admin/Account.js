@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -14,7 +14,11 @@ import Feather from 'react-native-vector-icons/Feather';
 import { USER_LEVEL, USER_PICTURE_DEFAULT } from '../../database/AppData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { Context } from '../../../App';
+
 export default function Account({ navigation }) {
+  const { setData } = useContext(Context);
+  
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -43,17 +47,22 @@ export default function Account({ navigation }) {
   };
 
   const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('user_data');
-      await ToastAndroid.show(
-        'Silakan Buka Kembali Aplikasi',
-        ToastAndroid.LONG,
-      );
-      await BackHandler.exitApp();
-    } catch (e) {
-      ToastAndroid.show('Gagal Keluar', ToastAndroid.SHORT);
-    }
+    await AsyncStorage.removeItem('user_data');
+    await setData(JSON.stringify(data?.User));
   };
+
+  // const handleLogout = async () => {
+  //   try {
+  //     await AsyncStorage.removeItem('user_data');
+  //     await ToastAndroid.show(
+  //       'Silakan Buka Kembali Aplikasi',
+  //       ToastAndroid.LONG,
+  //     );
+  //     await BackHandler.exitApp();
+  //   } catch (e) {
+  //     ToastAndroid.show('Gagal Keluar', ToastAndroid.SHORT);
+  //   }
+  // };
 
   return (
     <View style={OrderListStyle.container}>

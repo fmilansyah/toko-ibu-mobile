@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/Home';
@@ -93,6 +93,9 @@ const AccountScreen = () => {
   );
 };
 
+export const Context = createContext();
+
+
 const App = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
@@ -100,7 +103,7 @@ const App = () => {
 
   useEffect(() => {
     getUserData();
-  }, []);
+  }, [AsyncStorage.getItem('user_data')]);
 
   const getUserData = async () => {
     try {
@@ -116,6 +119,11 @@ const App = () => {
   };
 
   return (
+    <Context.Provider
+        value={{
+          setData: setUserData,
+        }}
+      >
     <NavigationContainer>
       {userData?.level === USER_LEVEL?.OWNER ? (
         <Tab.Navigator
@@ -207,11 +215,16 @@ const App = () => {
               <Stack.Screen name="PaymentView" component={PaymentView} />
               <Stack.Screen name="SearchProduct" component={SearchProduct} />
               <Stack.Screen name="OrderDetail" component={OrderDetail} />
+
+              {/* JANGAN DIHAPUS */}
+              <Stack.Screen name="Pesanan" component={OrderScreen} />
+              <Stack.Screen name="Produk" component={ItemScreen} />
             </>
           )}
         </Stack.Navigator>
       )}
     </NavigationContainer>
+    </Context.Provider>
   );
 };
 
