@@ -60,8 +60,12 @@ export default function AddItem({ navigation }) {
   });
 
   useEffect(() => {
-    getCategories();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getCategories();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleSave = () => {
     if (files.length < 1) {

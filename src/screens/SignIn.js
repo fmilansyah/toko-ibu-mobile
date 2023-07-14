@@ -204,7 +204,8 @@ export default function SignIn({ navigation }) {
         </View>
 
         <View style={SignInStyle.forgotPassword}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ForgotPassword')}>
             <Text style={globalStyle.link}>Lupa Kata Sandi?</Text>
           </TouchableOpacity>
         </View>

@@ -28,10 +28,16 @@ export default function OrderDetail({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [deliveryModalVisible, setDeliveryModalVisible] = useState(false);
   const [shipmentNumber, setShipmentNumber] = useState(null);
+  const [trackingVisible, setTrackingVisible] = useState(false);
+  const [trackingOrder, setTrackingOrder] = useState([]);
 
   useEffect(() => {
-    getOrder();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getOrder();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getOrder = () => {
     const formData = new FormData();
@@ -49,7 +55,25 @@ export default function OrderDetail({ route, navigation }) {
           ) / 1000,
         );
         setLoading(false);
+        if (data?.Order?.no_resi) {
+          getTrackingOrder(
+            data?.Order?.no_resi,
+            data?.Order?.kode_jasa_pengiriman,
+          );
+        }
       });
+  };
+
+  const getTrackingOrder = (waybillId, courierCode) => {
+    const params = {
+      waybill_id: waybillId,
+      courier: courierCode,
+    };
+    api.get('/biteshiptracking', { params }).then(({ data }) => {
+      if (data?.data) {
+        setTrackingOrder(data?.data);
+      }
+    });
   };
 
   const confirmOrder = () => {
@@ -114,6 +138,14 @@ export default function OrderDetail({ route, navigation }) {
     }
   };
 
+  const trackOrder = () => {
+    setTrackingVisible(true);
+  };
+
+  const handleCloseTrackOrder = () => {
+    setTrackingVisible(false);
+  };
+
   const renderDelivery = () => {
     return (
       <View>
@@ -150,6 +182,58 @@ export default function OrderDetail({ route, navigation }) {
     );
   };
 
+  const renderTracking = () => {
+    return (
+      <View>
+        <View style={AddItemStyle.modalHeader}>
+          <View>
+            <Text style={AddItemStyle.modalTitle}>Lacak Pengiriman</Text>
+          </View>
+          <TouchableOpacity onPress={() => handleCloseTrackOrder()}>
+            <MaterialCommunityIcons
+              name="close-thick"
+              style={AddItemStyle.modalCloseIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        <ScrollView>
+          {trackingOrder?.length < 1 ? (
+            <View style={AddItemStyle.fileInfoContainer}>
+              <Text style={AddItemStyle.fileInfo}>
+                Belum Ada Update Pengiriman
+              </Text>
+            </View>
+          ) : (
+            <View>
+              {trackingOrder.map((data, index) => (
+                <View key={index}>
+                  <View style={AddItemStyle.categoryItem}>
+                    <Text
+                      style={[
+                        AddItemStyle.categoryName,
+                        { fontFamily: 'Lora-Bold' },
+                      ]}>
+                      {data?.note}
+                    </Text>
+                    <Text style={AddItemStyle.categoryName}>
+                      {data?.updated_at
+                        ? dayjs(
+                            data?.updated_at,
+                            'YYYY-MM-DDTHH:mm:ssZ',
+                          ).format('DD/MM/YYYY HH:mm:ss')
+                        : '-'}
+                    </Text>
+                  </View>
+                  {trackingOrder.length - 1 !== index && <Divider />}
+                </View>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    );
+  };
+
   return (
     <Provider>
       <Portal>
@@ -158,6 +242,12 @@ export default function OrderDetail({ route, navigation }) {
           onDismiss={() => closeDeliveryModal()}
           contentContainerStyle={AddItemStyle.modalContainer}>
           {renderDelivery()}
+        </Modal>
+        <Modal
+          visible={trackingVisible}
+          onDismiss={() => handleCloseTrackOrder()}
+          contentContainerStyle={AddItemStyle.modalContainer}>
+          {renderTracking()}
         </Modal>
       </Portal>
       <View style={[globalStyle.container, globalStyle.pRelative]}>
@@ -353,6 +443,15 @@ export default function OrderDetail({ route, navigation }) {
                   </View>
                 </View>
               </View>
+              {order?.status_order === STATUS_ORDER.DELIVERY && (
+                <TouchableOpacity
+                  onPress={() => trackOrder()}
+                  style={globalStyle.submitBtn}>
+                  <Text style={globalStyle.submitBtnText}>
+                    Lacak Pengiriman
+                  </Text>
+                </TouchableOpacity>
+              )}
               {(order?.status_order === STATUS_ORDER.WAITING_FOR_CONFIRMATION ||
                 order?.status_order === STATUS_ORDER.PROCESS) && (
                 <View>

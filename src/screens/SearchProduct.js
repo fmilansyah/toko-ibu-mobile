@@ -11,8 +11,12 @@ export default function SearchProduct({ navigation }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getProducts();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const handleSearchProduct = () => {
     getProducts();

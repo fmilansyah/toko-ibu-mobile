@@ -8,6 +8,8 @@ import {
   Alert,
   ToastAndroid,
   Button,
+  PermissionsAndroid,
+  Linking,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { borderRadius } from '../../styles/global.style';
@@ -30,6 +32,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import RNFetchBlob from 'rn-fetch-blob';
 import { API_URL } from '../../config/app';
+import AddItemStyle from '../../styles/AddItem.style';
 
 export default function ReportAdmin({ navigation }) {
   const [report, setReport] = useState([]);
@@ -41,8 +44,12 @@ export default function ReportAdmin({ navigation }) {
   );
 
   useEffect(() => {
-    getReport();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getReport();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     getReport();
@@ -70,19 +77,23 @@ export default function ReportAdmin({ navigation }) {
     });
   };
 
-  const handleDownload = () => {
-    RNFetchBlob.config({
-      // add this option that makes response data to be stored as a file,
-      // this is much more performant.
-      fileCache: true,
-    })
-      .fetch('GET', API_URL + '/pdf/report.php', {
-        //some headers ..
-      })
-      .then(res => {
-        // the temp file path
-        console.log('The file saved to ', res);
-      });
+  const handleDownload = async () => {
+    const params = {
+      start_date: startDate ? dayjs(startDate).format('YYYY-MM-DD') : '',
+      end_date: endDate ? dayjs(endDate).format('YYYY-MM-DD') : '',
+    };
+    const url =
+      'https://republikpreneur.online/pdf/report.php?start_date=' +
+      params.start_date +
+      '&end_date=' +
+      params.end_date;
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
   };
 
   const showEndDate = () => {
@@ -145,50 +156,61 @@ export default function ReportAdmin({ navigation }) {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        {report.map((item, index) => (
-          <View key={index}>
-            <View style={ItemListStyle.userContainer}>
-              <View style={ItemListStyle.userPictureContainer}>
-                <Image
-                  source={{ uri: item?.file ?? USER_PICTURE_DEFAULT }}
-                  style={ItemListStyle.userPicture}
-                />
-              </View>
-              <View style={ItemListStyle.userDetailContainer}>
-                <View>
-                  <Text style={ItemListStyle.userTitle}>
-                    {item?.nama} - {item?.varian}
-                  </Text>
-                  <Text style={ItemListStyle.userLevel}>
-                    Harga : {rupiahFormatter(item?.harga)}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 16,
-                    }}>
+        {report.length < 1 ? (
+          <View
+            style={[AddItemStyle.fileInfoContainer, globalStyle.marginLayout]}>
+            <Text style={AddItemStyle.fileInfo}>
+              Tidak Ada Transaksi Pada Periode Ini
+            </Text>
+          </View>
+        ) : (
+          <View>
+            {report.map((item, index) => (
+              <View key={index}>
+                <View style={ItemListStyle.userContainer}>
+                  <View style={ItemListStyle.userPictureContainer}>
+                    <Image
+                      source={{ uri: item?.file ?? USER_PICTURE_DEFAULT }}
+                      style={ItemListStyle.userPicture}
+                    />
+                  </View>
+                  <View style={ItemListStyle.userDetailContainer}>
                     <View>
-                      <Text style={ItemListStyle.userSubtitle}>
-                        Terjual : {item?.total_qty} pcs
+                      <Text style={ItemListStyle.userTitle}>
+                        {item?.nama} - {item?.varian}
                       </Text>
-                    </View>
-                    <View>
-                      <Text style={ItemListStyle.userSubtitle}>
-                        Total : {rupiahFormatter(item?.total_harga)}
+                      <Text style={ItemListStyle.userLevel}>
+                        Harga : {rupiahFormatter(item?.harga)}
                       </Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 16,
+                        }}>
+                        <View>
+                          <Text style={ItemListStyle.userSubtitle}>
+                            Terjual : {item?.total_qty} pcs
+                          </Text>
+                        </View>
+                        <View>
+                          <Text style={ItemListStyle.userSubtitle}>
+                            Total : {rupiahFormatter(item?.total_harga)}
+                          </Text>
+                        </View>
+                      </View>
                     </View>
                   </View>
                 </View>
+                {report.length !== index + 1 && (
+                  <View style={globalStyle.paddingContainer}>
+                    <Divider />
+                  </View>
+                )}
               </View>
-            </View>
-            {report.length !== index + 1 && (
-              <View style={globalStyle.paddingContainer}>
-                <Divider />
-              </View>
-            )}
+            ))}
           </View>
-        ))}
+        )}
       </ScrollView>
       <FAB
         icon="download"

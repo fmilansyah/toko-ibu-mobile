@@ -25,9 +25,13 @@ export default function Account({ route, navigation }) {
   const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
-    getUser();
-    getLoggedInUser();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUser();
+      getLoggedInUser();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getUser = () => {
     const params = {

@@ -23,8 +23,12 @@ export default function UserList({ navigation }) {
   const [name, setName] = useState(null);
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUsers();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     getUsers();

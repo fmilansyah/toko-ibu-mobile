@@ -6,6 +6,7 @@ import MyCart from './src/screens/MyCart';
 import ProductInfo from './src/screens/ProductInfo';
 import SignIn from './src/screens/SignIn';
 import SignUp from './src/screens/SignUp';
+import ForgotPassword from './src/screens/ForgotPassword';
 import OrderList from './src/screens/OrderList';
 import ProductByCategory from './src/screens/ProductByCategory';
 import AccountDetails from './src/screens/AccountDetails';
@@ -204,6 +205,7 @@ const App = () => {
                 <Stack.Screen name="ProductInfo" component={ProductInfo} />
                 <Stack.Screen name="SignIn" component={SignIn} />
                 <Stack.Screen name="SignUp" component={SignUp} />
+                <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
                 <Stack.Screen name="OrderList" component={OrderList} />
                 <Stack.Screen
                   name="ProductByCategory"

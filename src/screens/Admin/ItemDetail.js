@@ -32,8 +32,12 @@ export default function ItemDetail({ route, navigation }) {
   });
 
   useEffect(() => {
-    getItem();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getItem();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getItem = () => {
     const formData = new FormData();

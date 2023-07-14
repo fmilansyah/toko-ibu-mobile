@@ -21,10 +21,14 @@ const Home = ({ navigation }) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    getCategories();
-    getCategoryAndItem();
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getCategories();
+      getCategoryAndItem();
+      getUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getCategories = () => {
     api

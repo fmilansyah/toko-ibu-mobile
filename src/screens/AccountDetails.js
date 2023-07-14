@@ -193,12 +193,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../styles/global.style';
 import ChangePasswordStyle from '../styles/ChangePassword.style';
 import { TextInput, Validation } from '../components/Form';
-import { Snackbar } from 'react-native-paper';
+import { Divider, Modal, Portal, Provider, Snackbar } from 'react-native-paper';
 import { validEmail } from '../helpers/validation';
 import api from '../config/api';
 import { Button } from 'react-native-paper';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import { COLOR_SETTINGS } from '../database/AppData';
+import AddItemStyle from '../styles/AddItem.style';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function AccountDetails({ navigation }) {
   const [user, setUser] = useState(null);
@@ -219,15 +221,22 @@ export default function AccountDetails({ navigation }) {
     visible: false,
     message: null,
   });
+  const [areaVisible, setAreaVisible] = useState(false);
+  const [postalCodeSearch, setPostalCodeSearch] = useState(null);
+  const [areaList, setAreaList] = useState([]);
+  const [biteshipAreaId, setBiteshipAreaId] = useState(null);
 
   const phoneNumberRef = useRef();
   const emailRef = useRef();
   const addressRef = useRef();
-  const postalCodeRef = useRef();
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getUserData = async () => {
     try {
@@ -239,9 +248,12 @@ export default function AccountDetails({ navigation }) {
         setEmail(parsedUser?.email);
         setAddress(parsedUser?.alamat);
         setPostalCode(
-          parsedUser?.kode_pos ? String(parsedUser?.kode_pos) : null,
+          parsedUser?.kode_pos && parsedUser?.biteship_area_id
+            ? String(parsedUser?.kode_pos)
+            : null,
         );
         setUser(parsedUser);
+        setBiteshipAreaId(parsedUser?.biteship_area_id);
       }
     } catch (e) {
       setUser(null);
@@ -267,6 +279,7 @@ export default function AccountDetails({ navigation }) {
     formData.append('email', email);
     formData.append('alamat', address);
     formData.append('kode_pos', postalCode);
+    formData.append('biteship_area_id', biteshipAreaId);
     if (photo !== null) {
       formData.append('foto_profil', {
         ...photo[0],
@@ -387,161 +400,251 @@ export default function AccountDetails({ navigation }) {
     });
   };
 
-  return (
-    <View style={[globalStyle.container, globalStyle.pRelative]}>
-      <Snackbar
-        visible={snackbarInfo.visible}
-        onDismiss={handleDismissSnackbar}>
-        {snackbarInfo.message}
-      </Snackbar>
-      <View style={globalStyle.headerContainer}>
-        <TouchableOpacity
-          style={globalStyle.paddingContainer}
-          onPress={() => navigation.goBack()}>
-          <Feather name="arrow-left" style={globalStyle.iconBtn} />
-        </TouchableOpacity>
-        <View>
-          <Text style={globalStyle.appName}>Ubah Informasi Akun</Text>
-        </View>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={globalStyle.paddingHorizontal}>
-          <Text style={ChangePasswordStyle.subTitle}>
-            Harap lengkapi semua isian yang ada
-          </Text>
+  const handleCloseArea = () => {
+    setAreaVisible(false);
+  };
 
-          <View style={ChangePasswordStyle.form}>
-            <View style={globalStyle.formGroup}>
-              <TextInput
-                label="Nama Lengkap"
-                inputProps={{
-                  value: name,
-                  onChangeText: handleChangeName,
-                  autoCapitalize: 'words',
-                  autoCorrect: false,
-                  returnKeyType: 'next',
-                  onSubmitEditing: () => {
-                    phoneNumberRef.current.focus();
-                  },
-                }}
-              />
+  const handleOpenArea = () => {
+    setAreaVisible(true);
+  };
+
+  const handleSearchPostal = () => {
+    const params = {
+      input: postalCodeSearch,
+    };
+    api.get('/biteshipmaps', { params }).then(({ data }) => {
+      setAreaList(data?.data);
+    });
+  };
+
+  const renderArea = () => {
+    return (
+      <View>
+        <View style={AddItemStyle.modalHeader}>
+          <View>
+            <Text style={AddItemStyle.modalTitle}>Cari Kode Pos</Text>
+          </View>
+          <TouchableOpacity onPress={() => handleCloseArea()}>
+            <MaterialCommunityIcons
+              name="close-thick"
+              style={AddItemStyle.modalCloseIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TextInput
+            inputProps={{
+              value: postalCodeSearch,
+              onChangeText: setPostalCodeSearch,
+              placeholder: 'Kode Pos',
+              keyboardType: 'numeric',
+              returnKeyType: 'search',
+              onSubmitEditing: () => {
+                handleSearchPostal();
+              },
+            }}
+          />
+        </View>
+        <ScrollView>
+          {areaList?.length < 1 ? (
+            <View style={AddItemStyle.fileInfoContainer}>
+              <Text style={AddItemStyle.fileInfo}>
+                {postalCodeSearch
+                  ? 'Kode Pos Tidak Ditemukan'
+                  : 'Harap Isi Kode Pos'}
+              </Text>
             </View>
-            {validation.name.length > 0 && (
-              <View style={globalStyle.formGroup}>
-                <Validation data={validation.name} />
-              </View>
-            )}
-            <View style={globalStyle.formGroup}>
-              <TextInput
-                ref={phoneNumberRef}
-                label="No. Telepon"
-                inputProps={{
-                  value: phoneNumber,
-                  onChangeText: handleChangePhoneNumber,
-                  keyboardType: 'phone-pad',
-                  returnKeyType: 'next',
-                  onSubmitEditing: () => {
-                    emailRef.current.focus();
-                  },
-                }}
-              />
+          ) : (
+            <View>
+              {areaList.map((data, index) => (
+                <View key={index}>
+                  <TouchableOpacity
+                    style={AddItemStyle.categoryItem}
+                    onPress={() => {
+                      setPostalCode(String(data?.postal_code));
+                      setBiteshipAreaId(data?.id);
+                      handleCloseArea();
+                    }}>
+                    <Text style={AddItemStyle.categoryName}>{data?.name}</Text>
+                  </TouchableOpacity>
+                  {areaList.length - 1 !== index && <Divider />}
+                </View>
+              ))}
             </View>
-            {validation.phoneNumber.length > 0 && (
-              <View style={globalStyle.formGroup}>
-                <Validation data={validation.phoneNumber} />
-              </View>
-            )}
-            <View style={globalStyle.formGroup}>
-              <TextInput
-                ref={emailRef}
-                label="Email"
-                inputProps={{
-                  value: email,
-                  onChangeText: handleChangeEmail,
-                  autoCapitalize: 'none',
-                  autoCorrect: false,
-                  autoComplete: 'email',
-                  keyboardType: 'email-address',
-                  returnKeyType: 'next',
-                  onSubmitEditing: () => {
-                    addressRef.current.focus();
-                  },
-                }}
-              />
-            </View>
-            {validation.email.length > 0 && (
-              <View style={globalStyle.formGroup}>
-                <Validation data={validation.email} />
-              </View>
-            )}
-            <View style={globalStyle.formGroup}>
-              <TextInput
-                label="Alamat Lengkap"
-                inputProps={{
-                  value: address,
-                  onChangeText: handleChangeAddress,
-                  returnKeyType: 'next',
-                  multiline: true,
-                  onSubmitEditing: () => {
-                    postalCodeRef.current.focus();
-                  },
-                }}
-              />
-            </View>
-            {validation.address.length > 0 && (
-              <View style={globalStyle.formGroup}>
-                <Validation data={validation.address} />
-              </View>
-            )}
-            <View style={globalStyle.formGroup}>
-              <TextInput
-                label="Kode Pos"
-                inputProps={{
-                  value: postalCode,
-                  onChangeText: handleChangePostalCode,
-                  returnKeyType: 'done',
-                }}
-              />
-            </View>
-            {validation.postalCode.length > 0 && (
-              <View style={globalStyle.formGroup}>
-                <Validation data={validation.postalCode} />
-              </View>
-            )}
-            <View style={globalStyle.formGroup}>
-              <Button
-                icon="camera"
-                mode="outlined"
-                onPress={() => {
-                  DocumentPicker.pick({
-                    type: types.images,
-                  })
-                    .then(setPhoto)
-                    .catch(() => console.log('picker canceled'));
-                }}
-                style={{
-                  marginTop: 10,
-                }}
-                theme={{
-                  colors: {
-                    primary: COLOR_SETTINGS.PRIMARY,
-                    outline: COLOR_SETTINGS.PRIMARY,
-                  },
-                }}>
-                {photo !== null ? photo[0]?.name : 'Pilih Foto Profil'}
-              </Button>
-            </View>
-            <View style={globalStyle.formGroup}>
-              <TouchableOpacity
-                style={globalStyle.submitBtn}
-                onPress={() => handleSave()}>
-                <Feather name="save" style={globalStyle.submitBtnIcon} />
-                <Text style={globalStyle.submitBtnText}>Simpan</Text>
-              </TouchableOpacity>
-            </View>
+          )}
+        </ScrollView>
+      </View>
+    );
+  };
+
+  return (
+    <Provider>
+      <Portal>
+        <Modal
+          visible={areaVisible}
+          onDismiss={() => {
+            handleCloseArea();
+          }}
+          contentContainerStyle={AddItemStyle.modalContainer}>
+          {renderArea()}
+        </Modal>
+      </Portal>
+      <View style={[globalStyle.container, globalStyle.pRelative]}>
+        <Snackbar
+          visible={snackbarInfo.visible}
+          onDismiss={handleDismissSnackbar}>
+          {snackbarInfo.message}
+        </Snackbar>
+        <View style={globalStyle.headerContainer}>
+          <TouchableOpacity
+            style={globalStyle.paddingContainer}
+            onPress={() => navigation.goBack()}>
+            <Feather name="arrow-left" style={globalStyle.iconBtn} />
+          </TouchableOpacity>
+          <View>
+            <Text style={globalStyle.appName}>Ubah Informasi Akun</Text>
           </View>
         </View>
-      </ScrollView>
-    </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={globalStyle.paddingHorizontal}>
+            <Text style={ChangePasswordStyle.subTitle}>
+              Harap lengkapi semua isian yang ada
+            </Text>
+
+            <View style={ChangePasswordStyle.form}>
+              <View style={globalStyle.formGroup}>
+                <TextInput
+                  label="Nama Lengkap"
+                  inputProps={{
+                    value: name,
+                    onChangeText: handleChangeName,
+                    autoCapitalize: 'words',
+                    autoCorrect: false,
+                    returnKeyType: 'next',
+                    onSubmitEditing: () => {
+                      phoneNumberRef.current.focus();
+                    },
+                  }}
+                />
+              </View>
+              {validation.name.length > 0 && (
+                <View style={globalStyle.formGroup}>
+                  <Validation data={validation.name} />
+                </View>
+              )}
+              <View style={globalStyle.formGroup}>
+                <TextInput
+                  ref={phoneNumberRef}
+                  label="No. Telepon"
+                  inputProps={{
+                    value: phoneNumber,
+                    onChangeText: handleChangePhoneNumber,
+                    keyboardType: 'phone-pad',
+                    returnKeyType: 'next',
+                    onSubmitEditing: () => {
+                      emailRef.current.focus();
+                    },
+                  }}
+                />
+              </View>
+              {validation.phoneNumber.length > 0 && (
+                <View style={globalStyle.formGroup}>
+                  <Validation data={validation.phoneNumber} />
+                </View>
+              )}
+              <View style={globalStyle.formGroup}>
+                <TextInput
+                  ref={emailRef}
+                  label="Email"
+                  inputProps={{
+                    value: email,
+                    onChangeText: handleChangeEmail,
+                    autoCapitalize: 'none',
+                    autoCorrect: false,
+                    autoComplete: 'email',
+                    keyboardType: 'email-address',
+                    returnKeyType: 'next',
+                    onSubmitEditing: () => {
+                      addressRef.current.focus();
+                    },
+                  }}
+                />
+              </View>
+              {validation.email.length > 0 && (
+                <View style={globalStyle.formGroup}>
+                  <Validation data={validation.email} />
+                </View>
+              )}
+              <View style={globalStyle.formGroup}>
+                <TextInput
+                  label="Alamat Lengkap"
+                  inputProps={{
+                    value: address,
+                    onChangeText: handleChangeAddress,
+                    returnKeyType: 'next',
+                    multiline: true,
+                    onSubmitEditing: () => {
+                      handleOpenArea();
+                    },
+                  }}
+                />
+              </View>
+              {validation.address.length > 0 && (
+                <View style={globalStyle.formGroup}>
+                  <Validation data={validation.address} />
+                </View>
+              )}
+              <TouchableOpacity
+                onPress={() => handleOpenArea()}
+                style={globalStyle.formGroup}>
+                <TextInput
+                  label="Kode Pos"
+                  inputProps={{
+                    value: postalCode,
+                    editable: false,
+                  }}
+                />
+              </TouchableOpacity>
+              {validation.postalCode.length > 0 && (
+                <View style={globalStyle.formGroup}>
+                  <Validation data={validation.postalCode} />
+                </View>
+              )}
+              <View style={globalStyle.formGroup}>
+                <Button
+                  icon="camera"
+                  mode="outlined"
+                  onPress={() => {
+                    DocumentPicker.pick({
+                      type: types.images,
+                    })
+                      .then(setPhoto)
+                      .catch(() => console.log('picker canceled'));
+                  }}
+                  style={{
+                    marginTop: 10,
+                  }}
+                  theme={{
+                    colors: {
+                      primary: COLOR_SETTINGS.PRIMARY,
+                      outline: COLOR_SETTINGS.PRIMARY,
+                    },
+                  }}>
+                  {photo !== null ? photo[0]?.name : 'Pilih Foto Profil'}
+                </Button>
+              </View>
+              <View style={globalStyle.formGroup}>
+                <TouchableOpacity
+                  style={globalStyle.submitBtn}
+                  onPress={() => handleSave()}>
+                  <Feather name="save" style={globalStyle.submitBtnIcon} />
+                  <Text style={globalStyle.submitBtnText}>Simpan</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </Provider>
   );
 }

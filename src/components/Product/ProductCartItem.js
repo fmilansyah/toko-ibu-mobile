@@ -20,6 +20,8 @@ const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
           <View style={ProductCartItemStyle.productPriceContainer}>
             <Text style={ProductCartItemStyle.productPrice}>
               {rupiahFormatter(data?.harga_total)}
+              {' | '}
+              Berat : {(data?.berat_satuan * data?.jumlah_barang) / 1000} kg
             </Text>
           </View>
         </View>

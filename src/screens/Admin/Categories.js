@@ -37,8 +37,12 @@ export default function ItemList({ navigation }) {
   const [descriptionVisible, setDescriptionVisible] = useState(false);
 
   useEffect(() => {
-    getCategories();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getCategories();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getCategories = () => {
     const params = {

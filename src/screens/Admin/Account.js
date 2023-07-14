@@ -22,8 +22,12 @@ export default function Account({ navigation }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getUserData = async () => {
     try {

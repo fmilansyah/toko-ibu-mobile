@@ -34,8 +34,12 @@ export default function ChangePassword({ navigation }) {
   const confirmNewPasswordRef = useRef();
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getUserData = async () => {
     try {

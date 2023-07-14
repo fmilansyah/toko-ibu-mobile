@@ -9,15 +9,13 @@ import {
 } from 'react-native';
 import { PAYMENT_LINK } from '../config/app';
 import api from '../config/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STATUS_ORDER } from '../database/AppData';
 
 const PaymentView = ({ route, navigation }) => {
-  const { token, order } = route.params;
+  const { token, kd_order } = route.params;
   const [isLoading, setLoading] = React.useState(true);
-  const [userData, setUserData] = React.useState(null);
 
   React.useEffect(() => {
-    getUser();
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       () => true,
@@ -25,46 +23,47 @@ const PaymentView = ({ route, navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-  const getUser = async () => {
-    let newUserData = await AsyncStorage.getItem('user_data');
-    if (newUserData !== null) {
-      const user = JSON.parse(newUserData);
-      setUserData(user);
-    }
-  };
-
   const receiveMessage = data => {
+    console.log(data);
     if (
       data.nativeEvent.data === 'success' ||
       data.nativeEvent.data === 'pending' ||
       data.nativeEvent.data === 'close'
     ) {
-      const formData = new FormData();
-      formData.append('kd_user', userData?.kd_user);
-      formData.append('orders', order);
-      formData.append('jenis_order', 'keranjang');
-      formData.append('jasa_pengiriman', 'JNE');
-      formData.append('jenis_pengiriman', 'Regular');
-      if (data.nativeEvent.data === 'pending') {
-        formData.append('midtrans_token', token);
-      }
-      api
-        .post('/orderbarang', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        })
-        .then(() => {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
+      if (
+        data.nativeEvent.data === 'success' ||
+        data.nativeEvent.data === 'close'
+      ) {
+        const formData = new FormData();
+        formData.append('kd_order', kd_order);
+        formData.append('status_order', STATUS_ORDER.WAITING_FOR_CONFIRMATION);
+        api
+          .post('/updatestatusorder', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          })
+          .then(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Home' }],
+            });
+            ToastAndroid.show('Pemesanan Berhasil', ToastAndroid.SHORT);
+          })
+          .catch(e => {
+            ToastAndroid.show('Pembayaran Gagal', ToastAndroid.SHORT);
+            navigation.goBack();
           });
-          ToastAndroid.show('Pemesanan Berhasil', ToastAndroid.SHORT);
-        })
-        .catch(() => {
-          ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
-          navigation.goBack();
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
         });
+        ToastAndroid.show(
+          'Harap segera selesaikan pembayaran',
+          ToastAndroid.SHORT,
+        );
+      }
     } else {
-      ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
+      ToastAndroid.show('Pembayaran Gagal', ToastAndroid.SHORT);
       navigation.goBack();
     }
   };

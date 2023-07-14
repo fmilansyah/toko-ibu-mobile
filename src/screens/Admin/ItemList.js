@@ -30,8 +30,12 @@ export default function ItemList({ navigation }) {
   const [name, setName] = useState(null);
 
   useEffect(() => {
-    getItems();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getItems();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getItems = () => {
     const params = {

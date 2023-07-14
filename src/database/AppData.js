@@ -41,4 +41,13 @@ export const STATUS_ORDER = {
   DELIVERY: 'Dikirim',
   FINISHED: 'Selesai',
   CANCELLED: 'Batal',
-}
+};
+export const ALLOWED_COURIER = [
+  'jne',
+  'tiki',
+  'ninja',
+  'sicepat',
+  'jnt',
+  'pos',
+  'anteraja',
+];

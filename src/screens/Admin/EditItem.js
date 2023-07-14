@@ -65,9 +65,14 @@ export default function EditItem({ route, navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCategories();
-    getItem();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getCartsAndUser();
+      getCategories();
+      getItem();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getItem = () => {
     const formData = new FormData();

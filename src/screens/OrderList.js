@@ -23,8 +23,12 @@ export default function OrderList({ navigation }) {
   const [userOrder, setUserOrder] = useState([]);
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getUserData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     if (user !== null) {
@@ -75,6 +79,18 @@ export default function OrderList({ navigation }) {
       .then(({ data }) => setUserOrder(data?.listOrder ?? []));
   };
 
+  const handleCart = () => {
+    if (user?.biteship_area_id) {
+      navigation.navigate('MyCart')
+    } else {
+      ToastAndroid.show(
+        'Harap lengkapi data diri terlebih dahulu',
+        ToastAndroid.SHORT,
+      );
+      navigation.navigate('AccountDetails')
+    }
+  }
+
   return (
     <View style={OrderListStyle.container}>
       <View style={OrderListStyle.headerContainer}>
@@ -117,7 +133,7 @@ export default function OrderList({ navigation }) {
               Pengaturan Akun
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('MyCart')}>
+          <TouchableOpacity onPress={() => handleCart()}>
             <Text style={OrderListStyle.menuItem}>
               <Feather name="shopping-cart" style={OrderListStyle.menuIcon} />{' '}
               Keranjang Belanja

@@ -12,8 +12,12 @@ export default function ProductByCategory({ route, navigation }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    getProductByCategory();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getProductByCategory();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getProductByCategory = () => {
     const params = {

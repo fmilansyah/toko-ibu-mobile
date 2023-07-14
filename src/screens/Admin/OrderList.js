@@ -29,8 +29,13 @@ export default function OrderList({ navigation }) {
   const [statusOrder, setStatusOrder] = useState('ALL');
 
   useEffect(() => {
-    getOrders();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getCartsAndUser();
+      getOrders();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     getOrders();

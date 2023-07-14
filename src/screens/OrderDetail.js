@@ -24,8 +24,12 @@ export default function OrderDetail({ route, navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getOrder();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getOrder();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const getOrder = () => {
     const formData = new FormData();
@@ -64,6 +68,13 @@ export default function OrderDetail({ route, navigation }) {
       },
       { text: 'Ya', onPress: () => handleUpdateStatus(STATUS_ORDER.CANCELLED) },
     ]);
+  };
+
+  const payOrder = () => {
+    navigation.navigate('PaymentView', {
+      token: order?.midtrans_token,
+      kd_order: kd_order,
+    });
   };
 
   const handleUpdateStatus = status => {
@@ -255,6 +266,15 @@ export default function OrderDetail({ route, navigation }) {
             </View>
 
             <View>
+              {order?.status_order === STATUS_ORDER.WAITING_FOR_PAYMENT && (
+                <TouchableOpacity
+                  onPress={() => payOrder()}
+                  style={globalStyle.submitBtn}>
+                  <Text style={globalStyle.submitBtnText}>
+                    Lanjutkan Pembayaran
+                  </Text>
+                </TouchableOpacity>
+              )}
               {order?.status_order === STATUS_ORDER.DELIVERY && (
                 <TouchableOpacity
                   onPress={() => finishOrder()}
