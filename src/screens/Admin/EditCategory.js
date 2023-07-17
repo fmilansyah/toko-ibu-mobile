@@ -108,7 +108,7 @@ export default function EditCategory({ route, navigation }) {
           <Feather name="arrow-left" style={globalStyle.iconBtn} />
         </TouchableOpacity>
         <View>
-          <Text style={globalStyle.appName}>Tambah Kategori</Text>
+          <Text style={globalStyle.appName}>Edit Kategori</Text>
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
