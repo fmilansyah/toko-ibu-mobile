@@ -17,10 +17,12 @@ import { STATUS_ORDER, USER_PICTURE_DEFAULT } from '../database/AppData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../config/api';
 import dayjs from 'dayjs';
+import Loading from './Loading';
 
 export default function OrderList({ navigation }) {
   const [user, setUser] = useState(null);
   const [userOrder, setUserOrder] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -72,24 +74,28 @@ export default function OrderList({ navigation }) {
   const getUserOrder = () => {
     const formData = new FormData();
     formData.append('kd_user', user?.kd_user);
+    setLoading(true);
     api
       .post('/getuserorder', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(({ data }) => setUserOrder(data?.listOrder ?? []));
+      .then(({ data }) => {
+        setLoading(false);
+        setUserOrder(data?.listOrder ?? [])
+      });
   };
 
   const handleCart = () => {
     if (user?.biteship_area_id) {
-      navigation.navigate('MyCart')
+      navigation.navigate('MyCart');
     } else {
       ToastAndroid.show(
         'Harap lengkapi data diri terlebih dahulu',
         ToastAndroid.SHORT,
       );
-      navigation.navigate('AccountDetails')
+      navigation.navigate('AccountDetails');
     }
-  }
+  };
 
   return (
     <View style={OrderListStyle.container}>
@@ -144,7 +150,13 @@ export default function OrderList({ navigation }) {
         <View style={OrderListStyle.sectionTitleContainer}>
           <Text style={OrderListStyle.sectionTitle}>Riwayat Transaksi</Text>
         </View>
-        {userOrder.map((item, i) => (
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : (
+          <View>
+            {userOrder.map((item, i) => (
           <View key={i} style={OrderListStyle.card}>
             <View style={OrderListStyle.headerCard}>
               <View style={globalStyle.flex}>
@@ -186,9 +198,11 @@ export default function OrderList({ navigation }) {
                   </View>
                 </View>
               </TouchableOpacity>
-              <Text style={OrderListStyle.productPrice}>
-                +{item?.jumlah_produk} produk lainnya
-              </Text>
+              {item?.jumlah_produk > 1 && (
+                <Text style={OrderListStyle.productPrice}>
+                  +{item?.jumlah_produk - 1} produk lainnya
+                </Text>
+              )}
             </View>
             <View style={OrderListStyle.footerCard}>
               <View style={globalStyle.flex}>
@@ -216,6 +230,8 @@ export default function OrderList({ navigation }) {
             </View>
           </View>
         ))}
+            </View>
+        )}
       </ScrollView>
     </View>
   );

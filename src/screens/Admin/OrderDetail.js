@@ -109,12 +109,12 @@ export default function OrderDetail({ route, navigation }) {
     const formData = new FormData();
     formData.append('kd_order', kd_order);
     formData.append('status_order', status);
+    setLoading(true);
     api
       .post('/updatestatusorder', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(() => {
-        setLoading(true);
         getOrder();
       });
   };

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ToastAndroid,
   BackHandler,
+  Linking,
 } from 'react-native';
 import { PAYMENT_LINK } from '../config/app';
 import api from '../config/api';
@@ -24,44 +25,37 @@ const PaymentView = ({ route, navigation }) => {
   }, []);
 
   const receiveMessage = data => {
-    console.log(data);
-    if (
-      data.nativeEvent.data === 'success' ||
+    if (data.nativeEvent.data === 'success') {
+      const formData = new FormData();
+      formData.append('kd_order', kd_order);
+      formData.append('status_order', STATUS_ORDER.WAITING_FOR_CONFIRMATION);
+      api
+        .post('/updatestatusorder', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          });
+          ToastAndroid.show('Pemesanan Berhasil', ToastAndroid.SHORT);
+        })
+        .catch(e => {
+          ToastAndroid.show('Pembayaran Gagal', ToastAndroid.SHORT);
+          navigation.goBack();
+        });
+    } else if (
       data.nativeEvent.data === 'pending' ||
       data.nativeEvent.data === 'close'
     ) {
-      if (
-        data.nativeEvent.data === 'success' ||
-        data.nativeEvent.data === 'close'
-      ) {
-        const formData = new FormData();
-        formData.append('kd_order', kd_order);
-        formData.append('status_order', STATUS_ORDER.WAITING_FOR_CONFIRMATION);
-        api
-          .post('/updatestatusorder', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          })
-          .then(() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            });
-            ToastAndroid.show('Pemesanan Berhasil', ToastAndroid.SHORT);
-          })
-          .catch(e => {
-            ToastAndroid.show('Pembayaran Gagal', ToastAndroid.SHORT);
-            navigation.goBack();
-          });
-      } else {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
-        ToastAndroid.show(
-          'Harap segera selesaikan pembayaran',
-          ToastAndroid.SHORT,
-        );
-      }
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+      ToastAndroid.show(
+        'Harap segera selesaikan pembayaran',
+        ToastAndroid.SHORT,
+      );
     } else {
       ToastAndroid.show('Pembayaran Gagal', ToastAndroid.SHORT);
       navigation.goBack();
@@ -81,6 +75,20 @@ const PaymentView = ({ route, navigation }) => {
         allowFileAccess={true}
         cacheMode="LOAD_NO_CACHE"
         onMessage={receiveMessage}
+        onNavigationStateChange={request => {
+          const { url } = request;
+          if (url.startsWith('https://gojek.link')) {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Home' }],
+            });
+            ToastAndroid.show(
+              'Harap segera selesaikan pembayaran',
+              ToastAndroid.SHORT,
+            );
+            Linking.openURL(url);
+          }
+        }}
       />
       {isLoading && (
         <View style={styles.loader}>

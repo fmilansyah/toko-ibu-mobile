@@ -313,6 +313,11 @@ export default function SignUp({ navigation }) {
             <Text style={globalStyle.link}>Masuk</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Eula')}>
+          <Text style={globalStyle.link}>
+            Persetujuan Pengguna & Kebijakan Privasi
+          </Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </View>
   );

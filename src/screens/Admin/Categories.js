@@ -29,12 +29,14 @@ import {
 } from '../../database/AppData';
 import ItemListStyle from '../../styles/ItemList.style';
 import AddItemStyle from '../../styles/AddItem.style';
+import Loading from '../Loading';
 
 export default function ItemList({ navigation }) {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState(null);
   const [description, setDescription] = useState(null);
   const [descriptionVisible, setDescriptionVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -48,9 +50,11 @@ export default function ItemList({ navigation }) {
     const params = {
       nama: name ?? '',
     };
-    api
-      .get('/getkategori', { params })
-      .then(({ data }) => setCategories(data?.Kategori ?? []));
+    setLoading(true);
+    api.get('/getkategori', { params }).then(({ data }) => {
+      setLoading(false);
+      setCategories(data?.Kategori ?? []);
+    });
   };
 
   const confirmDelete = record => {
@@ -66,6 +70,7 @@ export default function ItemList({ navigation }) {
   const handleDelete = record => {
     const formData = new FormData();
     formData.append('kd_kategori', record?.kd_kategori);
+    setLoading(true);
     api
       .post('/deletekategori', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -83,7 +88,7 @@ export default function ItemList({ navigation }) {
   const handleCloseDescription = () => {
     setDescription(null);
     setDescriptionVisible(false);
-  }
+  };
 
   const renderDescription = () => {
     return (
@@ -114,96 +119,108 @@ export default function ItemList({ navigation }) {
           {renderDescription()}
         </Modal>
       </Portal>
-    <View style={[globalStyle.container, globalStyle.pRelative]}>
-      <View style={globalStyle.headerContainer}>
-        <TouchableOpacity
-          style={globalStyle.paddingContainer}
-          onPress={() => navigation.goBack()}>
-          <Feather name="arrow-left" style={globalStyle.iconBtn} />
-        </TouchableOpacity>
-        <View>
-          <Text style={globalStyle.appName}>Daftar Kategori</Text>
+      <View style={[globalStyle.container, globalStyle.pRelative]}>
+        <View style={globalStyle.headerContainer}>
+          <TouchableOpacity
+            style={globalStyle.paddingContainer}
+            onPress={() => navigation.goBack()}>
+            <Feather name="arrow-left" style={globalStyle.iconBtn} />
+          </TouchableOpacity>
+          <View>
+            <Text style={globalStyle.appName}>Daftar Kategori</Text>
+          </View>
         </View>
-      </View>
-      <View style={ItemListStyle.topContainer}>
-        <TextInput
-          inputProps={{
-            placeholder: 'Cari Kategori',
-            value: name,
-            onChangeText: text => setName(text),
-            autoCorrect: false,
-            returnKeyType: 'search',
-            onSubmitEditing: () => getCategories(),
-            left: (
-              <Input.Icon
-                icon="magnify"
-                color={isTextInputFocused =>
-                  isTextInputFocused
-                    ? COLOR_SETTINGS.PRIMARY
-                    : COLOR_SETTINGS.DARKGRAY
-                }
-              />
-            ),
-          }}
+        <View style={ItemListStyle.topContainer}>
+          <TextInput
+            inputProps={{
+              placeholder: 'Cari Kategori',
+              value: name,
+              onChangeText: text => setName(text),
+              autoCorrect: false,
+              returnKeyType: 'search',
+              onSubmitEditing: () => getCategories(),
+              left: (
+                <Input.Icon
+                  icon="magnify"
+                  color={isTextInputFocused =>
+                    isTextInputFocused
+                      ? COLOR_SETTINGS.PRIMARY
+                      : COLOR_SETTINGS.DARKGRAY
+                  }
+                />
+              ),
+            }}
+          />
+        </View>
+        <ScrollView>
+          {loading ? (
+            <View style={{ paddingVertical: 16 }}>
+              <Loading />
+            </View>
+          ) : (
+            <View>
+              {categories.map((item, index) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setDescription(item?.keterangan);
+                    setDescriptionVisible(true);
+                  }}
+                  key={index}>
+                  <View style={ItemListStyle.userContainer}>
+                    <View style={ItemListStyle.userPictureContainer}>
+                      <Image
+                        source={{ uri: item?.foto ?? USER_PICTURE_DEFAULT }}
+                        style={ItemListStyle.userPicture}
+                      />
+                    </View>
+                    <View style={ItemListStyle.userDetailContainer}>
+                      <View>
+                        <Text style={ItemListStyle.userTitle}>
+                          {item?.nama}
+                        </Text>
+                        <Text style={ItemListStyle.userSubtitle}>
+                          {item?.jumlah_produk} Produk
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={ItemListStyle.btnContainer}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('EditCategory', {
+                          kd_kategori: item?.kd_kategori,
+                          nama: item?.nama,
+                          keterangan: item?.keterangan,
+                        })
+                      }
+                      style={ItemListStyle.btnPrimaryOutline}>
+                      <Text style={ItemListStyle.btnTextPrimary}>
+                        Ubah Kategori
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={ItemListStyle.btn}
+                      onPress={() => confirmDelete(item)}>
+                      <Text style={ItemListStyle.btnText}>Hapus Kategori</Text>
+                    </TouchableOpacity>
+                  </View>
+                  {categories.length !== index + 1 && (
+                    <View style={globalStyle.paddingContainer}>
+                      <Divider />
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+        <FAB
+          icon="plus"
+          style={globalStyle.fab}
+          onPress={() => navigation.navigate('AddCategory')}
+          theme={{ colors: { onPrimaryContainer: COLOR_SETTINGS.PRIMARY } }}
         />
       </View>
-      <ScrollView>
-        {categories.map((item, index) => (
-          <TouchableOpacity
-            onPress={() => {
-              setDescription(item?.keterangan);
-              setDescriptionVisible(true);
-            }}
-            key={index}>
-            <View style={ItemListStyle.userContainer}>
-              <View style={ItemListStyle.userPictureContainer}>
-                <Image
-                  source={{ uri: item?.foto ?? USER_PICTURE_DEFAULT }}
-                  style={ItemListStyle.userPicture}
-                />
-              </View>
-              <View style={ItemListStyle.userDetailContainer}>
-                <View>
-                  <Text style={ItemListStyle.userTitle}>{item?.nama}</Text>
-                  <Text style={ItemListStyle.userSubtitle}>
-                    {item?.jumlah_produk} Produk
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={ItemListStyle.btnContainer}>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('EditCategory', {
-                    kd_kategori: item?.kd_kategori,
-                    nama: item?.nama,
-                    keterangan: item?.keterangan,
-                  })
-                }
-                style={ItemListStyle.btnPrimaryOutline}>
-                <Text style={ItemListStyle.btnTextPrimary}>Ubah Kategori</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={ItemListStyle.btn}
-                onPress={() => confirmDelete(item)}>
-                <Text style={ItemListStyle.btnText}>Hapus Kategori</Text>
-              </TouchableOpacity>
-            </View>
-            {categories.length !== index + 1 && (
-              <View style={globalStyle.paddingContainer}>
-                <Divider />
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      <FAB
-        icon="plus"
-        style={globalStyle.fab}
-        onPress={() => navigation.navigate('AddCategory')}
-        theme={{ colors: { onPrimaryContainer: COLOR_SETTINGS.PRIMARY } }}
-      />
-    </View>
     </Provider>
   );
 }

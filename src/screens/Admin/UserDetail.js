@@ -10,11 +10,15 @@ import {
 } from 'react-native';
 import UserDetailStyle from '../../styles/UserDetail.style';
 import Feather from 'react-native-vector-icons/Feather';
-import { STATUS_ACTIVE, USER_PICTURE_DEFAULT } from '../../database/AppData';
+import {
+  COLOR_SETTINGS,
+  STATUS_ACTIVE,
+  USER_PICTURE_DEFAULT,
+} from '../../database/AppData';
 import globalStyle from '../../styles/global.style';
 import api from '../../config/api';
 import Loading from '../Loading';
-import { Divider } from 'react-native-paper';
+import { ActivityIndicator, Divider } from 'react-native-paper';
 import dayjs from 'dayjs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -23,6 +27,7 @@ export default function Account({ route, navigation }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -68,11 +73,13 @@ export default function Account({ route, navigation }) {
     const formData = new FormData();
     formData.append('kd_user', kd_user);
     formData.append('record_status', STATUS_ACTIVE.DELETE);
+    setSaving(true);
     api
       .post('/ubahstatususer', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(({ data }) => {
+        setSaving(false);
         if (data.Error === 0) {
           navigation.goBack();
           ToastAndroid.show('Akun Berhasil Dihapus', ToastAndroid.SHORT);
@@ -172,7 +179,17 @@ export default function Account({ route, navigation }) {
                 <TouchableOpacity
                   onPress={() => confirmDelete()}
                   style={globalStyle.submitBtn}>
-                  <Feather name="trash-2" style={globalStyle.submitBtnIcon} />
+                  {saving ? (
+                    <ActivityIndicator
+                      size="small"
+                      color={COLOR_SETTINGS.WHITE}
+                      style={{
+                        marginRight: 5,
+                      }}
+                    />
+                  ) : (
+                    <Feather name="trash-2" style={globalStyle.submitBtnIcon} />
+                  )}
                   <Text style={globalStyle.submitBtnText}>Hapus Akun</Text>
                 </TouchableOpacity>
               </View>

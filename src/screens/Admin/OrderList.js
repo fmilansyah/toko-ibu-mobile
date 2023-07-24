@@ -23,14 +23,15 @@ import api from '../../config/api';
 import dayjs from 'dayjs';
 import { Chip } from 'react-native-paper';
 import AddItemStyle from '../../styles/AddItem.style';
+import Loading from '../Loading';
 
 export default function OrderList({ navigation }) {
   const [orders, setOrders] = useState([]);
   const [statusOrder, setStatusOrder] = useState('ALL');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      getCartsAndUser();
       getOrders();
     });
 
@@ -44,11 +45,15 @@ export default function OrderList({ navigation }) {
   const getOrders = () => {
     const formData = new FormData();
     formData.append('status_order', statusOrder);
+    setLoading(true);
     api
       .post('/getlistorder', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(({ data }) => setOrders(data?.listOrder ?? []));
+      .then(({ data }) => {
+        setLoading(false);
+        setOrders(data?.listOrder ?? []);
+      });
   };
 
   return (
@@ -131,7 +136,11 @@ export default function OrderList({ navigation }) {
       </View>
 
       <ScrollView>
-        {orders?.length < 1 ? (
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : orders?.length < 1 ? (
           <View
             style={[AddItemStyle.fileInfoContainer, globalStyle.marginLayout]}>
             <Text style={AddItemStyle.fileInfo}>Belum Ada Pesanan</Text>

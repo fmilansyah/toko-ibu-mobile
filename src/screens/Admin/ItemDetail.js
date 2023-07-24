@@ -68,6 +68,7 @@ export default function ItemDetail({ route, navigation }) {
   const handleDelete = () => {
     const formData = new FormData();
     formData.append('kd_barang', kd_barang);
+    setLoading(true);
     api
       .post('/deletedatabarang', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

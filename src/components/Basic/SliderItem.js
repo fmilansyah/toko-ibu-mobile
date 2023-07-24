@@ -15,7 +15,7 @@ class SliderItem extends Component {
 
   render() {
     return (
-      <TouchableOpacity style={SliderItemStyle.slideInnerContainer}>
+      <TouchableOpacity onPress={() => this.props.onPress()} style={SliderItemStyle.slideInnerContainer}>
         <View style={SliderItemStyle.imageContainer}>{this.image}</View>
       </TouchableOpacity>
     );

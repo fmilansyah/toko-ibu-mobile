@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -18,6 +18,7 @@ import {
   Modal,
   Divider,
   Button,
+  ActivityIndicator,
 } from 'react-native-paper';
 import api from '../../config/api';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -41,6 +42,7 @@ export default function EditItem({ route, navigation }) {
   });
   const [name, setName] = useState(null);
   const [category, setCategory] = useState(null);
+  const [description, setDescription] = useState(null);
   const [files, setFiles] = useState([]);
   const [variants, setVariants] = useState([
     {
@@ -63,10 +65,13 @@ export default function EditItem({ route, navigation }) {
     visible: false,
   });
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [categoriesloading, setCategoriesloading] = useState(false);
+
+  const descriptionRef = useRef();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      getCartsAndUser();
       getCategories();
       getItem();
     });
@@ -88,6 +93,7 @@ export default function EditItem({ route, navigation }) {
             ? data?.barang?.kd_kategori + ' - ' + data?.kategori_barang?.nama
             : null,
         );
+        setDescription(data?.barang?.deskripsi ?? null);
         setFiles(
           data?.file_barang
             ? data?.file_barang.map(item => ({
@@ -141,16 +147,16 @@ export default function EditItem({ route, navigation }) {
         });
       });
     formData.append('ukuran', JSON.stringify(variants));
+    formData.append('deskripsi', description ?? '');
     formData.append('hapus_ukuran', JSON.stringify(deletedVariants));
     formData.append('hapus_file', JSON.stringify(deletedFiles));
-    console.log(JSON.stringify(variants));
-    console.log(JSON.stringify(deletedVariants));
-    console.log(JSON.stringify(deletedFiles));
+    setSaving(true);
     api
       .post('/ubahdatabarang', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(({ data }) => {
+        setSaving(false);
         if (data.Error === 0) {
           navigation.goBack();
           ToastAndroid.show('Produk Berhasil Diubah', ToastAndroid.SHORT);
@@ -159,7 +165,7 @@ export default function EditItem({ route, navigation }) {
         }
       })
       .catch(e => {
-        console.log(e.data);
+        setSaving(false);
         setSnackbarInfo({ visible: true, message: 'Gagal Mengubah Produk' });
       });
   };
@@ -269,9 +275,11 @@ export default function EditItem({ route, navigation }) {
   };
 
   const getCategories = () => {
-    api
-      .get('/getkategori')
-      .then(({ data }) => setCategories(data?.Kategori ?? []));
+    setCategoriesloading(true);
+    api.get('/getkategori').then(({ data }) => {
+      setCategoriesloading(false);
+      setCategories(data?.Kategori ?? []);
+    });
   };
 
   const handleDeleteVariant = index => {
@@ -340,19 +348,27 @@ export default function EditItem({ route, navigation }) {
           </TouchableOpacity>
         </View>
         <ScrollView>
-          {categories.map((cat, index) => (
-            <View key={index}>
-              <TouchableOpacity
-                style={AddItemStyle.categoryItem}
-                onPress={() => {
-                  setCategory(cat?.kd_kategori + ' - ' + cat?.nama);
-                  handleCloseCategories();
-                }}>
-                <Text style={AddItemStyle.categoryName}>{cat?.nama}</Text>
-              </TouchableOpacity>
-              {categories.length - 1 !== index && <Divider />}
+          {categoriesloading ? (
+            <View style={{ paddingVertical: 16 }}>
+              <Loading />
             </View>
-          ))}
+          ) : (
+            <View>
+              {categories.map((cat, index) => (
+                <View key={index}>
+                  <TouchableOpacity
+                    style={AddItemStyle.categoryItem}
+                    onPress={() => {
+                      setCategory(cat?.kd_kategori + ' - ' + cat?.nama);
+                      handleCloseCategories();
+                    }}>
+                    <Text style={AddItemStyle.categoryName}>{cat?.nama}</Text>
+                  </TouchableOpacity>
+                  {categories.length - 1 !== index && <Divider />}
+                </View>
+              ))}
+            </View>
+          )}
         </ScrollView>
       </View>
     );
@@ -407,7 +423,7 @@ export default function EditItem({ route, navigation }) {
                       autoCorrect: false,
                       returnKeyType: 'next',
                       onSubmitEditing: () => {
-                        handleOpenCategories();
+                        descriptionRef.current.focus();
                       },
                     }}
                   />
@@ -417,6 +433,21 @@ export default function EditItem({ route, navigation }) {
                     <Validation data={validation.name} />
                   </View>
                 )}
+                <View style={globalStyle.formGroup}>
+                  <TextInput
+                    ref={descriptionRef}
+                    label="Deskripsi"
+                    inputProps={{
+                      value: description,
+                      onChangeText: setDescription,
+                      autoCorrect: false,
+                      returnKeyType: 'next',
+                      onSubmitEditing: () => {
+                        handleOpenCategories();
+                      },
+                    }}
+                  />
+                </View>
                 <TouchableOpacity
                   onPress={() => handleOpenCategories()}
                   style={globalStyle.formGroup}>
@@ -469,7 +500,7 @@ export default function EditItem({ route, navigation }) {
                         type: types.images,
                         allowMultiSelection: true,
                       })
-                        .then(newFiles => handleChangeFiles(files))
+                        .then(newFiles => handleChangeFiles(newFiles))
                         .catch(() => console.log('picker canceled'));
                     }}
                     style={{
@@ -597,7 +628,17 @@ export default function EditItem({ route, navigation }) {
                   <TouchableOpacity
                     style={globalStyle.submitBtn}
                     onPress={() => handleSave()}>
-                    <Feather name="save" style={globalStyle.submitBtnIcon} />
+                    {saving ? (
+                      <ActivityIndicator
+                        size="small"
+                        color={COLOR_SETTINGS.WHITE}
+                        style={{
+                          marginRight: 5,
+                        }}
+                      />
+                    ) : (
+                      <Feather name="save" style={globalStyle.submitBtnIcon} />
+                    )}
                     <Text style={globalStyle.submitBtnText}>Simpan</Text>
                   </TouchableOpacity>
                 </View>

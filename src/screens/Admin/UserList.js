@@ -16,11 +16,13 @@ import {
   USER_PICTURE_DEFAULT,
 } from '../../database/AppData';
 import UserListStyle from '../../styles/UserList.style';
+import Loading from '../Loading';
 
 export default function UserList({ navigation }) {
   const [users, setUsers] = useState([]);
   const [level, setLevel] = useState('');
   const [name, setName] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -39,9 +41,11 @@ export default function UserList({ navigation }) {
       level: level ?? '',
       nama: name ?? '',
     };
-    api
-      .get('/list-user', { params })
-      .then(({ data }) => setUsers(data?.User ?? []));
+    setLoading(true);
+    api.get('/list-user', { params }).then(({ data }) => {
+      setLoading(false);
+      setUsers(data?.User ?? []);
+    });
   };
 
   return (
@@ -102,34 +106,44 @@ export default function UserList({ navigation }) {
         />
       </View>
       <ScrollView>
-        {users.map((item, index) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('UserDetail', {
-                kd_user: item?.kd_user,
-              })
-            }
-            key={index}>
-            <View style={UserListStyle.userContainer}>
-              <View style={UserListStyle.userPictureContainer}>
-                <Image
-                  source={{ uri: item?.foto_profil ?? USER_PICTURE_DEFAULT }}
-                  style={UserListStyle.userPicture}
-                />
-              </View>
-              <View style={UserListStyle.userDetailContainer}>
-                <View>
-                  <Text style={UserListStyle.userTitle}>{item?.nama}</Text>
-                  <Text style={UserListStyle.userSubtitle}>
-                    {item?.no_telepon}
-                  </Text>
-                  <Text style={UserListStyle.userLevel}>{item?.level}</Text>
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : (
+          <View>
+            {users.map((item, index) => (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('UserDetail', {
+                    kd_user: item?.kd_user,
+                  })
+                }
+                key={index}>
+                <View style={UserListStyle.userContainer}>
+                  <View style={UserListStyle.userPictureContainer}>
+                    <Image
+                      source={{
+                        uri: item?.foto_profil ?? USER_PICTURE_DEFAULT,
+                      }}
+                      style={UserListStyle.userPicture}
+                    />
+                  </View>
+                  <View style={UserListStyle.userDetailContainer}>
+                    <View>
+                      <Text style={UserListStyle.userTitle}>{item?.nama}</Text>
+                      <Text style={UserListStyle.userSubtitle}>
+                        {item?.no_telepon}
+                      </Text>
+                      <Text style={UserListStyle.userLevel}>{item?.level}</Text>
+                    </View>
+                  </View>
                 </View>
-              </View>
-            </View>
-            {users.length !== index + 1 && <Divider />}
-          </TouchableOpacity>
-        ))}
+                {users.length !== index + 1 && <Divider />}
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </ScrollView>
       <FAB
         icon="plus"

@@ -24,10 +24,12 @@ import {
   USER_PICTURE_DEFAULT,
 } from '../../database/AppData';
 import ItemListStyle from '../../styles/ItemList.style';
+import Loading from '../Loading';
 
 export default function ItemList({ navigation }) {
   const [items, setItems] = useState([]);
   const [name, setName] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -41,9 +43,11 @@ export default function ItemList({ navigation }) {
     const params = {
       nama: name ?? '',
     };
-    api
-      .get('/getdatabarang', { params })
-      .then(({ data }) => setItems(data?.Barang ?? []));
+    setLoading(true);
+    api.get('/getdatabarang', { params }).then(({ data }) => {
+      setLoading(false);
+      setItems(data?.Barang ?? []);
+    });
   };
 
   const confirmDelete = record => {
@@ -59,6 +63,7 @@ export default function ItemList({ navigation }) {
   const handleDelete = record => {
     const formData = new FormData();
     formData.append('kd_barang', record?.kd_barang);
+    setLoading(true);
     api
       .post('/deletedatabarang', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -111,56 +116,66 @@ export default function ItemList({ navigation }) {
         />
       </View>
       <ScrollView>
-        {items.map((item, index) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('ItemDetail', {
-                kd_barang: item?.kd_barang,
-              })
-            }
-            key={index}>
-            <View style={ItemListStyle.userContainer}>
-              <View style={ItemListStyle.userPictureContainer}>
-                <Image
-                  source={{ uri: item?.file ?? USER_PICTURE_DEFAULT }}
-                  style={ItemListStyle.userPicture}
-                />
-              </View>
-              <View style={ItemListStyle.userDetailContainer}>
-                <View>
-                  <Text style={ItemListStyle.userTitle}>{item?.nama}</Text>
-                  <Text style={ItemListStyle.userSubtitle}>
-                    {item?.jumlah_varian} Varian
-                  </Text>
-                  <Text style={ItemListStyle.userLevel}>
-                    {item?.nama_kategori}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={ItemListStyle.btnContainer}>
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : (
+          <View>
+            {items.map((item, index) => (
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('EditItem', {
+                  navigation.navigate('ItemDetail', {
                     kd_barang: item?.kd_barang,
                   })
                 }
-                style={ItemListStyle.btnPrimaryOutline}>
-                <Text style={ItemListStyle.btnTextPrimary}>Ubah Produk</Text>
+                key={index}>
+                <View style={ItemListStyle.userContainer}>
+                  <View style={ItemListStyle.userPictureContainer}>
+                    <Image
+                      source={{ uri: item?.file ?? USER_PICTURE_DEFAULT }}
+                      style={ItemListStyle.userPicture}
+                    />
+                  </View>
+                  <View style={ItemListStyle.userDetailContainer}>
+                    <View>
+                      <Text style={ItemListStyle.userTitle}>{item?.nama}</Text>
+                      <Text style={ItemListStyle.userSubtitle}>
+                        {item?.jumlah_varian} Varian
+                      </Text>
+                      <Text style={ItemListStyle.userLevel}>
+                        {item?.nama_kategori}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={ItemListStyle.btnContainer}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('EditItem', {
+                        kd_barang: item?.kd_barang,
+                      })
+                    }
+                    style={ItemListStyle.btnPrimaryOutline}>
+                    <Text style={ItemListStyle.btnTextPrimary}>
+                      Ubah Produk
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={ItemListStyle.btn}
+                    onPress={() => confirmDelete(item)}>
+                    <Text style={ItemListStyle.btnText}>Hapus Produk</Text>
+                  </TouchableOpacity>
+                </View>
+                {items.length !== index + 1 && (
+                  <View style={globalStyle.paddingContainer}>
+                    <Divider />
+                  </View>
+                )}
               </TouchableOpacity>
-              <TouchableOpacity
-                style={ItemListStyle.btn}
-                onPress={() => confirmDelete(item)}>
-                <Text style={ItemListStyle.btnText}>Hapus Produk</Text>
-              </TouchableOpacity>
-            </View>
-            {items.length !== index + 1 && (
-              <View style={globalStyle.paddingContainer}>
-                <Divider />
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
+            ))}
+          </View>
+        )}
       </ScrollView>
       <FAB
         icon="plus"

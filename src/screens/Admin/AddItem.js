@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -39,6 +39,7 @@ export default function AddItem({ navigation }) {
   });
   const [name, setName] = useState(null);
   const [category, setCategory] = useState(null);
+  const [description, setDescription] = useState(null);
   const [files, setFiles] = useState([]);
   const [variants, setVariants] = useState([
     {
@@ -58,6 +59,9 @@ export default function AddItem({ navigation }) {
     currentIndex: 0,
     visible: false,
   });
+  const [saving, setSaving] = useState(false);
+
+  const descriptionRef = useRef();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -84,11 +88,14 @@ export default function AddItem({ navigation }) {
       });
     });
     formData.append('ukuran', JSON.stringify(variants));
+    formData.append('deskripsi', description ?? '');
+    setSaving(true);
     api
       .post('/tambahdatabarang', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(({ data }) => {
+        setSaving(false);
         if (data.Error === 0) {
           navigation.goBack();
           ToastAndroid.show('Produk Berhasil Ditambahkan', ToastAndroid.SHORT);
@@ -97,7 +104,7 @@ export default function AddItem({ navigation }) {
         }
       })
       .catch(e => {
-        console.log(e.response, e.data);
+        setSaving(false);
         setSnackbarInfo({ visible: true, message: 'Gagal Menambahkan Produk' });
       });
   };
@@ -326,7 +333,7 @@ export default function AddItem({ navigation }) {
                     autoCorrect: false,
                     returnKeyType: 'next',
                     onSubmitEditing: () => {
-                      handleOpenCategories();
+                      descriptionRef.current.focus();
                     },
                   }}
                 />
@@ -336,6 +343,21 @@ export default function AddItem({ navigation }) {
                   <Validation data={validation.name} />
                 </View>
               )}
+              <View style={globalStyle.formGroup}>
+                <TextInput
+                  ref={descriptionRef}
+                  label="Dekripsi"
+                  inputProps={{
+                    value: description,
+                    onChangeText: setDescription,
+                    autoCorrect: false,
+                    returnKeyType: 'next',
+                    onSubmitEditing: () => {
+                      handleOpenCategories();
+                    },
+                  }}
+                />
+              </View>
               <TouchableOpacity
                 onPress={() => handleOpenCategories()}
                 style={globalStyle.formGroup}>
@@ -510,7 +532,17 @@ export default function AddItem({ navigation }) {
                 <TouchableOpacity
                   style={globalStyle.submitBtn}
                   onPress={() => handleSave()}>
-                  <Feather name="save" style={globalStyle.submitBtnIcon} />
+                  {saving ? (
+                    <ActivityIndicator
+                      size="small"
+                      color={COLOR_SETTINGS.WHITE}
+                      style={{
+                        marginRight: 5,
+                      }}
+                    />
+                  ) : (
+                    <Feather name="save" style={globalStyle.submitBtnIcon} />
+                  )}
                   <Text style={globalStyle.submitBtnText}>Simpan</Text>
                 </TouchableOpacity>
               </View>

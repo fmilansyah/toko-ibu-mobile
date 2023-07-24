@@ -51,7 +51,13 @@ export default function SignIn({ navigation }) {
       .post('/login', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(({ data }) => afterLogin(data))
+      .then(({ data }) => {
+        if (data.Error === 0) {
+          afterLogin(data);
+        } else {
+          setSnackbarInfo({ visible: true, message: data.Message });
+        }
+      })
       .catch(() =>
         ToastAndroid.show(
           'No. Telepon atau Kata Sandi Tidak Cocok',
@@ -226,6 +232,11 @@ export default function SignIn({ navigation }) {
             <Text style={globalStyle.link}>Buat Akun</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Eula')}>
+          <Text style={globalStyle.link}>
+            Persetujuan Pengguna & Kebijakan Privasi
+          </Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     </View>
   );

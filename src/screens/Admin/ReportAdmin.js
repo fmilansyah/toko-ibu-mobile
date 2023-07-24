@@ -33,6 +33,7 @@ import dayjs from 'dayjs';
 import RNFetchBlob from 'rn-fetch-blob';
 import { API_URL } from '../../config/app';
 import AddItemStyle from '../../styles/AddItem.style';
+import Loading from '../Loading';
 
 export default function ReportAdmin({ navigation }) {
   const [report, setReport] = useState([]);
@@ -42,10 +43,12 @@ export default function ReportAdmin({ navigation }) {
   const [endDate, setEndDate] = useState(
     new Date(dayjs().format('YYYY-MM-DD')),
   );
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getReport();
+      setStartDate(new Date(dayjs().format('YYYY-MM-DD')));
+      setEndDate(new Date(dayjs().format('YYYY-MM-DD')));
     });
 
     return unsubscribe;
@@ -60,9 +63,11 @@ export default function ReportAdmin({ navigation }) {
       start_date: startDate ? dayjs(startDate).format('YYYY-MM-DD') : '',
       end_date: endDate ? dayjs(endDate).format('YYYY-MM-DD') : '',
     };
-    api
-      .get('/reportorder', { params })
-      .then(({ data }) => setReport(data?.Order ?? []));
+    setLoading(true);
+    api.get('/reportorder', { params }).then(({ data }) => {
+      setLoading(false);
+      setReport(data?.Order ?? []);
+    });
   };
 
   const showStartDate = () => {
@@ -83,17 +88,12 @@ export default function ReportAdmin({ navigation }) {
       end_date: endDate ? dayjs(endDate).format('YYYY-MM-DD') : '',
     };
     const url =
-      'https://republikpreneur.online/pdf/report.php?start_date=' +
+      API_URL +
+      '/pdf/report.php?start_date=' +
       params.start_date +
       '&end_date=' +
       params.end_date;
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        console.log("Don't know how to open URI: " + url);
-      }
-    });
+    Linking.openURL(url);
   };
 
   const showEndDate = () => {
@@ -156,7 +156,11 @@ export default function ReportAdmin({ navigation }) {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        {report.length < 1 ? (
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : report.length < 1 ? (
           <View
             style={[AddItemStyle.fileInfoContainer, globalStyle.marginLayout]}>
             <Text style={AddItemStyle.fileInfo}>

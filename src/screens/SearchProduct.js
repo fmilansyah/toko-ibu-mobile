@@ -5,10 +5,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import api from '../config/api';
 import SearchProductStyle from '../styles/SearchProduct.style';
 import { ProductItem } from '../components/Product';
+import Loading from './Loading';
 
 export default function SearchProduct({ navigation }) {
   const [search, setSearch] = useState(null);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -39,9 +41,11 @@ export default function SearchProduct({ navigation }) {
     const params = {
       search: search ?? '',
     };
-    api
-      .get('/getbarangterbaru', { params })
-      .then(({ data }) => setProducts(data?.Barang ?? []));
+    setLoading(true);
+    api.get('/getbarangterbaru', { params }).then(({ data }) => {
+      setLoading(false);
+      setProducts(data?.Barang ?? []);
+    });
   };
 
   return (
@@ -64,7 +68,17 @@ export default function SearchProduct({ navigation }) {
         </View>
       </View>
       <View>
-        <FlatList data={products} numColumns={2} renderItem={renderProducts} />
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : (
+          <FlatList
+            data={products}
+            numColumns={2}
+            renderItem={renderProducts}
+          />
+        )}
       </View>
     </View>
   );

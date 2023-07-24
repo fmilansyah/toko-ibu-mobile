@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../../styles/global.style';
 import ChangePasswordStyle from '../../styles/ChangePassword.style';
 import { TextInput, Validation } from '../../components/Form';
-import { Snackbar } from 'react-native-paper';
+import { ActivityIndicator, Snackbar } from 'react-native-paper';
 import { validEmail } from '../../helpers/validation';
 import api from '../../config/api';
 import { Button } from 'react-native-paper';
@@ -29,6 +29,7 @@ export default function AddCategory({ navigation }) {
     visible: false,
     message: null,
   });
+  const [saving, setSaving] = useState(false);
 
   const descriptionRef = useRef();
 
@@ -47,11 +48,13 @@ export default function AddCategory({ navigation }) {
         ...photo[0],
       });
     }
+    setSaving(true);
     api
       .post('/tambahkategori', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(({ data }) => {
+        setSaving(false);
         if (data.Error === 0) {
           ToastAndroid.show('Data Berhasil Disimpan', ToastAndroid.SHORT);
           navigation.goBack();
@@ -60,6 +63,7 @@ export default function AddCategory({ navigation }) {
         }
       })
       .catch(() => {
+        setSaving(false);
         setSnackbarInfo({ visible: true, message: 'Gagal Menyimpan Data' });
       });
   };
@@ -167,7 +171,17 @@ export default function AddCategory({ navigation }) {
               <TouchableOpacity
                 style={globalStyle.submitBtn}
                 onPress={() => handleSave()}>
-                <Feather name="save" style={globalStyle.submitBtnIcon} />
+                {saving ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={COLOR_SETTINGS.WHITE}
+                    style={{
+                      marginRight: 5,
+                    }}
+                  />
+                ) : (
+                  <Feather name="save" style={globalStyle.submitBtnIcon} />
+                )}
                 <Text style={globalStyle.submitBtnText}>Simpan</Text>
               </TouchableOpacity>
             </View>

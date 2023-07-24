@@ -18,6 +18,7 @@ import api from '../config/api';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import AddItemStyle from '../styles/AddItem.style';
 import { ALLOWED_COURIER } from '../database/AppData';
+import Loading from './Loading';
 
 const MyCart = ({ navigation }) => {
   const [carts, setCarts] = useState([]);
@@ -34,6 +35,8 @@ const MyCart = ({ navigation }) => {
 
   const [shippingDetailVisible, setShippingDetailVisible] = useState(false);
   const [courierListDetail, setCourierListDetail] = useState([]);
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -57,11 +60,15 @@ const MyCart = ({ navigation }) => {
 
       const formData = new FormData();
       formData.append('kd_user', user?.kd_user);
+      setLoading(true);
       api
         .post('/getdatakeranjang', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
-        .then(({ data }) => setCarts(data?.Keranjang ?? []));
+        .then(({ data }) => {
+          setLoading(false);
+          setCarts(data?.Keranjang ?? []);
+        });
     }
   };
 
@@ -327,7 +334,9 @@ const MyCart = ({ navigation }) => {
           <View style={MyCartStyle.sectionContainer}>
             <Text style={MyCartStyle.sectionTitle}>Daftar Produk</Text>
             <View>
-              {carts && carts.length > 0 ? (
+              {loading ? (
+                <Loading />
+              ) : carts && carts.length > 0 ? (
                 carts.map((data, index) => (
                   <ProductCartItem
                     key={index}

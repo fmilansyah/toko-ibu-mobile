@@ -5,30 +5,60 @@ import Feather from 'react-native-vector-icons/Feather';
 import globalStyle, { itemWidth, sliderWidth } from '../styles/global.style';
 import HomeStyle from '../styles/Home.style';
 import { Carousel } from 'react-native-snap-carousel-v4';
-import { SliderData } from '../database/Database';
 import { CategoryItem } from '../components/Category';
 import { ProductItem } from '../components/Product';
 import api from '../config/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loading from './Loading';
+import { useNavigation } from '@react-navigation/native';
 
-const renderSliderItem = ({ item }) => {
-  return <SliderItem data={item} />;
+const renderSliderItem = (item, navigation) => {
+  return (
+    <SliderItem
+      data={item}
+      onPress={() => {
+        navigation.navigate('ProductInfo', {
+          kd_barang: item?.kd_barang,
+          kd_detail_barang: item?.kd_detail_barang,
+        });
+      }}
+    />
+  );
 };
 
 const Home = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [categoryAndItem, setCategoryAndItem] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [lastItem, setLastItem] = useState([]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getCategories();
       getCategoryAndItem();
       getUserData();
+      getLastItem();
     });
 
     return unsubscribe;
   }, [navigation]);
+
+  const getLastItem = () => {
+    api.get('/getbarangterbaru').then(({ data }) =>
+      setLastItem(
+        data?.Barang
+          ? data?.Barang.filter(
+              obj => obj.file !== null && obj.file !== undefined,
+            ).map(item => ({
+              illustration: item.file,
+              kd_barang: item.kd_barang,
+              kd_detail_barang: item.kd_detail_barang,
+            }))
+          : [],
+      ),
+    );
+  };
 
   const getCategories = () => {
     api
@@ -37,9 +67,11 @@ const Home = ({ navigation }) => {
   };
 
   const getCategoryAndItem = () => {
-    api
-      .get('/getkategoridanbarang')
-      .then(({ data }) => setCategoryAndItem(data?.Kategori ?? []));
+    setLoading(true);
+    api.get('/getkategoridanbarang').then(({ data }) => {
+      setLoading(false);
+      setCategoryAndItem(data?.Kategori ?? []);
+    });
   };
 
   const getUserData = async () => {
@@ -65,7 +97,9 @@ const Home = ({ navigation }) => {
 
   const renderCategoryProduct = ({ item, index }) => {
     return (
-      <View key={index}>
+      <View
+        key={index}
+        style={{ marginBottom: index === categoryAndItem.length - 1 ? 16 : 0 }}>
         <View
           style={[
             globalStyle.paddingContainer,
@@ -110,8 +144,8 @@ const Home = ({ navigation }) => {
       <View>
         <View>
           <Carousel
-            data={SliderData}
-            renderItem={renderSliderItem}
+            data={lastItem}
+            renderItem={({ item }) => renderSliderItem(item, navigation)}
             sliderWidth={sliderWidth}
             itemWidth={itemWidth}
             containerCustomStyle={HomeStyle.slider}
@@ -163,11 +197,17 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={categoryAndItem}
-        renderItem={renderCategoryProduct}
-        ListHeaderComponent={renderHead}
-      />
+      {loading ? (
+        <View style={{ paddingVertical: 16 }}>
+          <Loading />
+        </View>
+      ) : (
+        <FlatList
+          data={categoryAndItem}
+          renderItem={renderCategoryProduct}
+          ListHeaderComponent={renderHead}
+        />
+      )}
       {/* <Footer /> */}
     </View>
   );

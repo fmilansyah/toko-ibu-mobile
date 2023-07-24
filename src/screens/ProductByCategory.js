@@ -5,11 +5,13 @@ import globalStyle from '../styles/global.style';
 import Feather from 'react-native-vector-icons/Feather';
 import api from '../config/api';
 import { ProductItem } from '../components/Product';
+import Loading from './Loading';
 
 export default function ProductByCategory({ route, navigation }) {
   const { id, name } = route.params;
 
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -23,9 +25,11 @@ export default function ProductByCategory({ route, navigation }) {
     const params = {
       kd_kategori: id,
     };
-    api
-      .get('/getdatabarangperkategori', { params })
-      .then(({ data }) => setProducts(data?.Barang ?? []));
+    setLoading(true);
+    api.get('/getdatabarangperkategori', { params }).then(({ data }) => {
+      setLoading(false);
+      setProducts(data?.Barang ?? []);
+    });
   };
 
   const renderProducts = ({ item, index }) => {
@@ -52,7 +56,17 @@ export default function ProductByCategory({ route, navigation }) {
         </View>
       </View>
       <View style={ProductByCategoryStyle.productList}>
-        <FlatList data={products} numColumns={2} renderItem={renderProducts} />
+        {loading ? (
+          <View style={{ paddingVertical: 16 }}>
+            <Loading />
+          </View>
+        ) : (
+          <FlatList
+            data={products}
+            numColumns={2}
+            renderItem={renderProducts}
+          />
+        )}
       </View>
     </View>
   );

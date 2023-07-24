@@ -33,6 +33,7 @@ import { default as OrderListAdmin } from './src/screens/Admin/OrderList';
 import { default as OrderDetailAdmin } from './src/screens/Admin/OrderDetail';
 import OrderDetail from './src/screens/OrderDetail';
 import ReportAdmin from './src/screens/Admin/ReportAdmin';
+import Eula from './src/screens/Eula';
 
 const OrderScreen = () => {
   const OrderStack = createNativeStackNavigator();
@@ -205,6 +206,7 @@ const App = () => {
                 <Stack.Screen name="ProductInfo" component={ProductInfo} />
                 <Stack.Screen name="SignIn" component={SignIn} />
                 <Stack.Screen name="SignUp" component={SignUp} />
+                <Stack.Screen name="Eula" component={Eula} />
                 <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
                 <Stack.Screen name="OrderList" component={OrderList} />
                 <Stack.Screen

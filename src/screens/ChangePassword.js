@@ -11,9 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyle from '../styles/global.style';
 import ChangePasswordStyle from '../styles/ChangePassword.style';
 import { TextInput, Validation } from '../components/Form';
-import { Snackbar } from 'react-native-paper';
+import { ActivityIndicator, Snackbar } from 'react-native-paper';
 import { containsNumbers, containsUppercase } from '../helpers/validation';
 import api from '../config/api';
+import { COLOR_SETTINGS } from '../database/AppData';
 
 export default function ChangePassword({ navigation }) {
   const [user, setUser] = useState(null);
@@ -29,6 +30,7 @@ export default function ChangePassword({ navigation }) {
     visible: false,
     message: null,
   });
+  const [saving, setSaving] = useState(false);
 
   const newPasswordRef = useRef();
   const confirmNewPasswordRef = useRef();
@@ -63,11 +65,13 @@ export default function ChangePassword({ navigation }) {
     formData.append('kd_user', user?.kd_user);
     formData.append('old_password', oldPassword);
     formData.append('new_password', newPassword);
+    setSaving(true);
     api
       .post('/change-user-password', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       .then(({ data }) => {
+        setSaving(false);
         if (data.Error === 0) {
           navigation.goBack();
           ToastAndroid.show('Data Berhasil Disimpan', ToastAndroid.SHORT);
@@ -76,6 +80,7 @@ export default function ChangePassword({ navigation }) {
         }
       })
       .catch(() => {
+        setSaving(false);
         setSnackbarInfo({ visible: true, message: 'Gagal Menyimpan Data' });
       });
   };
@@ -253,7 +258,17 @@ export default function ChangePassword({ navigation }) {
               <TouchableOpacity
                 style={globalStyle.submitBtn}
                 onPress={() => handleSave()}>
-                <Feather name="save" style={globalStyle.submitBtnIcon} />
+                {saving ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={COLOR_SETTINGS.WHITE}
+                    style={{
+                      marginRight: 5,
+                    }}
+                  />
+                ) : (
+                  <Feather name="save" style={globalStyle.submitBtnIcon} />
+                )}
                 <Text style={globalStyle.submitBtnText}>Simpan</Text>
               </TouchableOpacity>
             </View>
