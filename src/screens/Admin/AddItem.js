@@ -18,6 +18,7 @@ import {
   Modal,
   Divider,
   Button,
+  ActivityIndicator,
 } from 'react-native-paper';
 import api from '../../config/api';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -25,7 +26,7 @@ import DocumentPicker, { types } from 'react-native-document-picker';
 import { COLOR_SETTINGS, USER_PICTURE_DEFAULT } from '../../database/AppData';
 import ImageView from 'react-native-image-viewing';
 
-export default function AddItem({ navigation }) {
+export default function AddItem({ route, navigation }) {
   const [validation, setValidation] = useState({
     name: [],
     variants: [
@@ -38,7 +39,8 @@ export default function AddItem({ navigation }) {
     ],
   });
   const [name, setName] = useState(null);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState(route?.params?.categoryName ?? null);
+  const [categoryCode, setCategoryCode] = useState(route?.params?.categoryCode ?? null);
   const [description, setDescription] = useState(null);
   const [files, setFiles] = useState([]);
   const [variants, setVariants] = useState([
@@ -78,10 +80,7 @@ export default function AddItem({ navigation }) {
     }
     const formData = new FormData();
     formData.append('nama', name);
-    if (category) {
-      const arrCategory = category.split(' - ');
-      formData.append('kd_kategori', arrCategory[0]);
-    }
+    formData.append('kd_kategori', categoryCode);
     files.forEach(item => {
       formData.append('images[]', {
         ...item,
@@ -274,7 +273,8 @@ export default function AddItem({ navigation }) {
               <TouchableOpacity
                 style={AddItemStyle.categoryItem}
                 onPress={() => {
-                  setCategory(cat?.kd_kategori + ' - ' + cat?.nama);
+                  setCategory(cat?.nama);
+                  setCategoryCode(cat?.kd_kategori);
                   handleCloseCategories();
                 }}>
                 <Text style={AddItemStyle.categoryName}>{cat?.nama}</Text>

@@ -23,6 +23,7 @@ import UserList from './src/screens/Admin/UserList';
 import AddUser from './src/screens/Admin/AddUser';
 import UserDetail from './src/screens/Admin/UserDetail';
 import ItemList from './src/screens/Admin/ItemList';
+import ItemByCategory from './src/screens/Admin/ItemByCategory';
 import ItemDetail from './src/screens/Admin/ItemDetail';
 import AddItem from './src/screens/Admin/AddItem';
 import EditItem from './src/screens/Admin/EditItem';
@@ -56,6 +57,7 @@ const ItemScreen = () => {
         headerShown: false,
       }}>
       <ItemStack.Screen name="ItemList" component={ItemList} />
+      <ItemStack.Screen name="ItemByCategory" component={ItemByCategory} />
       <ItemStack.Screen name="ItemDetail" component={ItemDetail} />
       <ItemStack.Screen name="AddItem" component={AddItem} />
       <ItemStack.Screen name="EditItem" component={EditItem} />

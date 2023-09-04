@@ -6,9 +6,11 @@ import {
   ScrollView,
   Image,
   Alert,
+  ToastAndroid,
+  Linking,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { STATUS_ORDER } from '../database/AppData';
+import { PICK_UP_CODE, STATUS_ORDER, WA_NUMBER } from '../database/AppData';
 import globalStyle from '../styles/global.style';
 import api from '../config/api';
 import Loading from './Loading';
@@ -111,6 +113,31 @@ export default function OrderDetail({ route, navigation }) {
         setLoading(true);
         getOrder();
       });
+  };
+
+  const changePaymentMethod = () => {
+    const formData = new FormData();
+    formData.append('kd_order', kd_order);
+    formData.append('total', order?.total_akhir + order?.ongkir);
+    console.log(order?.total_akhir + order?.ongkir);
+    console.log(kd_order);
+    api
+      .post('/midtrans-createtoken', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(({ data }) => {
+        if (data.Error === 0) {
+          navigation.navigate('PaymentView', {
+            token: data?.data?.token,
+            kd_order: kd_order,
+          });
+        } else {
+          ToastAndroid.show(data.Message, ToastAndroid.SHORT);
+        }
+      })
+      .catch(() =>
+        ToastAndroid.show('Gagal menambahkan transaksi', ToastAndroid.SHORT),
+      );
   };
 
   const trackOrder = () => {
@@ -284,20 +311,25 @@ export default function OrderDetail({ route, navigation }) {
                   </View>
                   <View>
                     <Text style={OrderListStyle.valueText}>
-                      {order?.jasa_pengiriman} - {order?.jenis_pengiriman}
+                      {order?.jasa_pengiriman}
+                      {order?.jenis_pengiriman
+                        ? ' - ' + order?.jenis_pengiriman
+                        : ''}
                     </Text>
                   </View>
                 </View>
-                <View style={OrderListStyle.labelColumn}>
-                  <View>
-                    <Text style={OrderListStyle.labelText}>No. Resi</Text>
+                {order?.kode_jasa_pengiriman !== PICK_UP_CODE && (
+                  <View style={OrderListStyle.labelColumn}>
+                    <View>
+                      <Text style={OrderListStyle.labelText}>No. Resi</Text>
+                    </View>
+                    <View>
+                      <Text style={OrderListStyle.valueText}>
+                        {order?.no_resi ?? 'Belum Ada No. Resi'}
+                      </Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text style={OrderListStyle.valueText}>
-                      {order?.no_resi ?? 'Belum Ada No. Resi'}
-                    </Text>
-                  </View>
-                </View>
+                )}
                 <View style={OrderListStyle.labelColumn}>
                   <View>
                     <Text style={OrderListStyle.labelText}>
@@ -373,6 +405,20 @@ export default function OrderDetail({ route, navigation }) {
                     </Text>
                   </TouchableOpacity>
                 )}
+                {order?.status_order === STATUS_ORDER.WAITING_FOR_PAYMENT && (
+                  <TouchableOpacity
+                    onPress={() => changePaymentMethod()}
+                    style={[
+                      globalStyle.submitBtn,
+                      {
+                        marginTop: 0,
+                      },
+                    ]}>
+                    <Text style={globalStyle.submitBtnText}>
+                      Ganti Metode Pembayaran
+                    </Text>
+                  </TouchableOpacity>
+                )}
                 {order?.status_order === STATUS_ORDER.DELIVERY && (
                   <TouchableOpacity
                     onPress={() => trackOrder()}
@@ -382,7 +428,7 @@ export default function OrderDetail({ route, navigation }) {
                     </Text>
                   </TouchableOpacity>
                 )}
-                {order?.status_order === STATUS_ORDER.DELIVERY && (
+                {(order?.status_order === STATUS_ORDER.DELIVERY || order?.status_order === STATUS_ORDER.READY_TO_PICK_UP) && (
                   <TouchableOpacity
                     onPress={() => finishOrder()}
                     style={[
@@ -412,6 +458,20 @@ export default function OrderDetail({ route, navigation }) {
                     </Text>
                   </TouchableOpacity>
                 )}
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      `https://wa.me/${WA_NUMBER}?text=Halo saya memiliki pertanyaan untuk pesanan ${order?.kd_order}`,
+                    )
+                  }
+                  style={[
+                    globalStyle.submitBtn,
+                    {
+                      marginTop: 0,
+                    },
+                  ]}>
+                  <Text style={globalStyle.submitBtnText}>Hubungi Penjual</Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}

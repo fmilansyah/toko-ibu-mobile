@@ -21,18 +21,29 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../../config/api';
 import dayjs from 'dayjs';
-import { Chip } from 'react-native-paper';
+import { Chip, TextInput as Input } from 'react-native-paper';
 import AddItemStyle from '../../styles/AddItem.style';
 import Loading from '../Loading';
+import ItemListStyle from '../../styles/ItemList.style';
+import { TextInput } from '../../components/Form';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 export default function OrderList({ navigation }) {
   const [orders, setOrders] = useState([]);
   const [statusOrder, setStatusOrder] = useState('ALL');
   const [loading, setLoading] = useState(false);
+  const [startDate, setStartDate] = useState(
+    new Date(dayjs().format('YYYY-MM-DD')),
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(dayjs().format('YYYY-MM-DD')),
+  );
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getOrders();
+      setStartDate(new Date(dayjs().format('YYYY-MM-DD')));
+      setEndDate(new Date(dayjs().format('YYYY-MM-DD')));
     });
 
     return unsubscribe;
@@ -40,11 +51,19 @@ export default function OrderList({ navigation }) {
 
   useEffect(() => {
     getOrders();
-  }, [statusOrder]);
+  }, [statusOrder, startDate, endDate]);
 
   const getOrders = () => {
     const formData = new FormData();
     formData.append('status_order', statusOrder);
+    formData.append(
+      'start_date',
+      startDate ? dayjs(startDate).format('YYYY-MM-DD') : '',
+    );
+    formData.append(
+      'end_date',
+      endDate ? dayjs(endDate).format('YYYY-MM-DD') : '',
+    );
     setLoading(true);
     api
       .post('/getlistorder', formData, {
@@ -56,6 +75,30 @@ export default function OrderList({ navigation }) {
       });
   };
 
+  const showStartDate = () => {
+    DateTimePickerAndroid.open({
+      value: startDate,
+      onChange: (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setStartDate(currentDate);
+      },
+      mode: 'date',
+      is24Hour: true,
+    });
+  };
+
+  const showEndDate = () => {
+    DateTimePickerAndroid.open({
+      value: endDate,
+      onChange: (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setEndDate(currentDate);
+      },
+      mode: 'date',
+      is24Hour: true,
+    });
+  };
+
   return (
     <View style={[globalStyle.container, globalStyle.pRelative]}>
       <View style={globalStyle.headerContainer}>
@@ -64,6 +107,46 @@ export default function OrderList({ navigation }) {
         </View>
       </View>
       <View>
+        <View style={ItemListStyle.filterContainer}>
+          <TouchableOpacity onPress={() => showStartDate()} style={{ flex: 1 }}>
+            <TextInput
+              inputProps={{
+                placeholder: 'Mulai Dari',
+                value: dayjs(startDate).format('DD/MM/YYYY'),
+                editable: false,
+                left: (
+                  <Input.Icon
+                    icon="calendar"
+                    color={isTextInputFocused =>
+                      isTextInputFocused
+                        ? COLOR_SETTINGS.PRIMARY
+                        : COLOR_SETTINGS.DARKGRAY
+                    }
+                  />
+                ),
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => showEndDate()} style={{ flex: 1 }}>
+            <TextInput
+              inputProps={{
+                placeholder: 'Sampai Dengan',
+                value: dayjs(endDate).format('DD/MM/YYYY'),
+                editable: false,
+                left: (
+                  <Input.Icon
+                    icon="calendar"
+                    color={isTextInputFocused =>
+                      isTextInputFocused
+                        ? COLOR_SETTINGS.PRIMARY
+                        : COLOR_SETTINGS.DARKGRAY
+                    }
+                  />
+                ),
+              }}
+            />
+          </TouchableOpacity>
+        </View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View style={OrderListStyle.filterContainer}>
             <Chip

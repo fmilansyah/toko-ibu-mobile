@@ -9,7 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { STATUS_ORDER } from '../../database/AppData';
+import { PICK_UP_CODE, STATUS_ORDER } from '../../database/AppData';
 import globalStyle from '../../styles/global.style';
 import api from '../../config/api';
 import Loading from '../Loading';
@@ -83,6 +83,19 @@ export default function OrderDetail({ route, navigation }) {
         style: 'cancel',
       },
       { text: 'Ya', onPress: () => handleUpdateStatus(STATUS_ORDER.PROCESS) },
+    ]);
+  };
+
+  const readyToPickUp = () => {
+    Alert.alert('Pesanan Siap Diambil', 'Apakah anda yakin?', [
+      {
+        text: 'Batal',
+        style: 'cancel',
+      },
+      {
+        text: 'Ya',
+        onPress: () => handleUpdateStatus(STATUS_ORDER.READY_TO_PICK_UP),
+      },
     ]);
   };
 
@@ -351,20 +364,25 @@ export default function OrderDetail({ route, navigation }) {
                   </View>
                   <View>
                     <Text style={OrderListStyle.valueText}>
-                      {order?.jasa_pengiriman} - {order?.jenis_pengiriman}
+                      {order?.jasa_pengiriman}
+                      {order?.jenis_pengiriman
+                        ? ' - ' + order?.jenis_pengiriman
+                        : ''}
                     </Text>
                   </View>
                 </View>
-                <View style={OrderListStyle.labelColumn}>
-                  <View>
-                    <Text style={OrderListStyle.labelText}>No. Resi</Text>
+                {order?.kode_jasa_pengiriman !== PICK_UP_CODE && (
+                  <View style={OrderListStyle.labelColumn}>
+                    <View>
+                      <Text style={OrderListStyle.labelText}>No. Resi</Text>
+                    </View>
+                    <View>
+                      <Text style={OrderListStyle.valueText}>
+                        {order?.no_resi ?? 'Belum Ada No. Resi'}
+                      </Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text style={OrderListStyle.valueText}>
-                      {order?.no_resi ?? 'Belum Ada No. Resi'}
-                    </Text>
-                  </View>
-                </View>
+                )}
                 <View style={OrderListStyle.labelColumn}>
                   <View>
                     <Text style={OrderListStyle.labelText}>
@@ -455,21 +473,32 @@ export default function OrderDetail({ route, navigation }) {
               {(order?.status_order === STATUS_ORDER.WAITING_FOR_CONFIRMATION ||
                 order?.status_order === STATUS_ORDER.PROCESS) && (
                 <View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      order?.status_order ===
-                      STATUS_ORDER.WAITING_FOR_CONFIRMATION
-                        ? confirmOrder()
-                        : showDeliveryModal()
-                    }
-                    style={globalStyle.submitBtn}>
-                    <Text style={globalStyle.submitBtnText}>
-                      {order?.status_order ===
-                      STATUS_ORDER.WAITING_FOR_CONFIRMATION
-                        ? 'Proses Pesanan'
-                        : 'Kirim Pesanan'}
-                    </Text>
-                  </TouchableOpacity>
+                  {order?.status_order === STATUS_ORDER.PROCESS &&
+                  order?.kode_jasa_pengiriman === PICK_UP_CODE ? (
+                    <TouchableOpacity
+                      onPress={() => readyToPickUp()}
+                      style={globalStyle.submitBtn}>
+                      <Text style={globalStyle.submitBtnText}>
+                        Siap Diambil
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() =>
+                        order?.status_order ===
+                        STATUS_ORDER.WAITING_FOR_CONFIRMATION
+                          ? confirmOrder()
+                          : showDeliveryModal()
+                      }
+                      style={globalStyle.submitBtn}>
+                      <Text style={globalStyle.submitBtnText}>
+                        {order?.status_order ===
+                        STATUS_ORDER.WAITING_FOR_CONFIRMATION
+                          ? 'Proses Pesanan'
+                          : 'Kirim Pesanan'}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                   <TouchableOpacity
                     onPress={() => cancelOrder()}
                     style={[

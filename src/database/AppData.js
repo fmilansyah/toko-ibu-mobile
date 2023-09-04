@@ -41,6 +41,7 @@ export const STATUS_ORDER = {
   DELIVERY: 'Dikirim',
   FINISHED: 'Selesai',
   CANCELLED: 'Batal',
+  READY_TO_PICK_UP: 'Siap Diambil',
 };
 export const ALLOWED_COURIER = [
   'jne',
@@ -51,3 +52,5 @@ export const ALLOWED_COURIER = [
   'pos',
   'anteraja',
 ];
+export const WA_NUMBER = '62816841846'
+export const PICK_UP_CODE = 'ADT'

@@ -42,6 +42,7 @@ export default function EditItem({ route, navigation }) {
   });
   const [name, setName] = useState(null);
   const [category, setCategory] = useState(null);
+  const [categoryCode, setCategoryCode] = useState(null);
   const [description, setDescription] = useState(null);
   const [files, setFiles] = useState([]);
   const [variants, setVariants] = useState([
@@ -88,10 +89,9 @@ export default function EditItem({ route, navigation }) {
       })
       .then(({ data }) => {
         setName(data?.barang?.nama ?? null);
-        setCategory(
-          data?.kategori_barang
-            ? data?.barang?.kd_kategori + ' - ' + data?.kategori_barang?.nama
-            : null,
+        setCategory(data?.kategori_barang ? data?.kategori_barang?.nama : null);
+        setCategoryCode(
+          data?.barang?.kd_kategori ? data?.barang?.kd_kategori : null,
         );
         setDescription(data?.barang?.deskripsi ?? null);
         setFiles(
@@ -135,10 +135,7 @@ export default function EditItem({ route, navigation }) {
     const formData = new FormData();
     formData.append('kd_barang', kd_barang);
     formData.append('nama', name);
-    if (category) {
-      const arrCategory = category.split(' - ');
-      formData.append('kd_kategori', arrCategory[0]);
-    }
+    formData.append('kd_kategori', categoryCode ?? '');
     files
       .filter(item => item?.kd_file === undefined || item?.kd_file === null)
       .forEach(item => {
@@ -359,7 +356,8 @@ export default function EditItem({ route, navigation }) {
                   <TouchableOpacity
                     style={AddItemStyle.categoryItem}
                     onPress={() => {
-                      setCategory(cat?.kd_kategori + ' - ' + cat?.nama);
+                      setCategory(cat?.nama);
+                      setCategoryCode(cat?.kd_kategori);
                       handleCloseCategories();
                     }}>
                     <Text style={AddItemStyle.categoryName}>{cat?.nama}</Text>

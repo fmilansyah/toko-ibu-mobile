@@ -186,6 +186,16 @@ export default function ItemList({ navigation }) {
                   </View>
                   <View style={ItemListStyle.btnContainer}>
                     <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('ItemByCategory', {
+                          kd_kategori: item?.kd_kategori,
+                          nama: item?.nama,
+                        })
+                      }}
+                      style={ItemListStyle.btnPrimaryOutline}>
+                      <Text style={ItemListStyle.btnTextPrimary}>Produk</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                       onPress={() =>
                         navigation.navigate('EditCategory', {
                           kd_kategori: item?.kd_kategori,
@@ -194,14 +204,12 @@ export default function ItemList({ navigation }) {
                         })
                       }
                       style={ItemListStyle.btnPrimaryOutline}>
-                      <Text style={ItemListStyle.btnTextPrimary}>
-                        Ubah Kategori
-                      </Text>
+                      <Text style={ItemListStyle.btnTextPrimary}>Ubah</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={ItemListStyle.btn}
                       onPress={() => confirmDelete(item)}>
-                      <Text style={ItemListStyle.btnText}>Hapus Kategori</Text>
+                      <Text style={ItemListStyle.btnText}>Hapus</Text>
                     </TouchableOpacity>
                   </View>
                   {categories.length !== index + 1 && (

@@ -9,17 +9,19 @@ import {
   Dimensions,
   Animated,
   ToastAndroid,
+  Linking,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProductInfoStyle from '../styles/ProductInfo.style';
-import { COLOR_SETTINGS } from '../database/AppData';
+import { COLOR_SETTINGS, WA_NUMBER } from '../database/AppData';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { sliderWidth } from '../styles/global.style';
 import { rupiahFormatter } from '../helpers/formatter';
 import api from '../config/api';
 import { nominalDiscount } from '../helpers/math';
 import { VariantItem } from '../components/Product';
+import ImageView from 'react-native-image-viewing';
 
 const ProductInfo = ({ route, navigation }) => {
   const { kd_barang, kd_detail_barang } = route.params;
@@ -29,6 +31,10 @@ const ProductInfo = ({ route, navigation }) => {
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [files, setFiles] = useState([]);
   const [category, setCategory] = useState([]);
+  const [imageViewer, setImageViewer] = useState({
+    currentIndex: 0,
+    visible: false,
+  });
 
   const width = Dimensions.get('window').width;
 
@@ -66,7 +72,7 @@ const ProductInfo = ({ route, navigation }) => {
       });
   };
 
-  const addToCart = async () => {
+  const addToCart = async (redirect = false) => {
     let userData = await AsyncStorage.getItem('user_data');
     if (userData !== null) {
       const user = JSON.parse(userData);
@@ -82,12 +88,24 @@ const ProductInfo = ({ route, navigation }) => {
         .post('/tambahkeranjang', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         })
-        .then(() =>
-          ToastAndroid.show(
-            'Produk Berhasil Ditambahkan Ke Keranjang',
-            ToastAndroid.SHORT,
-          ),
-        )
+        .then(() => {
+          if (redirect) {
+            if (user?.biteship_area_id) {
+              navigation.navigate('MyCart');
+            } else {
+              ToastAndroid.show(
+                'Harap lengkapi data diri terlebih dahulu',
+                ToastAndroid.SHORT,
+              );
+              navigation.navigate('AccountDetails');
+            }
+          } else {
+            ToastAndroid.show(
+              'Produk Berhasil Ditambahkan Ke Keranjang',
+              ToastAndroid.SHORT,
+            );
+          }
+        })
         .catch(() =>
           ToastAndroid.show(
             'Gagal Menambahkan Produk Ke Keranjang',
@@ -99,14 +117,16 @@ const ProductInfo = ({ route, navigation }) => {
     }
   };
 
-  const renderProductImage = ({ item }) => {
+  const renderProductImage = ({ item }, index) => {
     return (
-      <View style={ProductInfoStyle.imageContainer}>
+      <TouchableOpacity
+        style={ProductInfoStyle.imageContainer}
+        onPress={() => setImageViewer({ currentIndex: index, visible: true })}>
         <Image
           source={{ uri: item?.file }}
           style={ProductInfoStyle.productImage}
         />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -133,6 +153,14 @@ const ProductInfo = ({ route, navigation }) => {
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
               { useNativeDriver: false },
             )}
+          />
+          <ImageView
+            images={files.map(data => ({ uri: data?.file }))}
+            imageIndex={imageViewer.currentIndex}
+            visible={imageViewer.visible}
+            onRequestClose={() =>
+              setImageViewer({ currentIndex: 0, visible: false })
+            }
           />
           <View style={ProductInfoStyle.productIndicatorContainer}>
             {files
@@ -165,9 +193,7 @@ const ProductInfo = ({ route, navigation }) => {
             </Text>
           </View>
           <View style={ProductInfoStyle.productNameContainer}>
-            <Text style={ProductInfoStyle.productName}>
-              {product?.nama} - {selectedDetail?.varian}
-            </Text>
+            <Text style={ProductInfoStyle.productName}>{product?.nama}</Text>
           </View>
           <View style={ProductInfoStyle.productPriceContainer}>
             <Text style={ProductInfoStyle.productPrice}>
@@ -209,6 +235,11 @@ const ProductInfo = ({ route, navigation }) => {
                 />
               ))}
             </ScrollView>
+            <View style={ProductInfoStyle.productVariantTitleContainer}>
+              <Text style={ProductInfoStyle.productStock}>
+                Stok : {selectedDetail?.stok}
+              </Text>
+            </View>
           </View>
           <Text style={ProductInfoStyle.productDescription}>
             {product?.deskripsi}
@@ -219,6 +250,20 @@ const ProductInfo = ({ route, navigation }) => {
       <View style={ProductInfoStyle.addToCartContainer}>
         <TouchableOpacity
           onPress={() => (selectedDetail?.stok > 0 ? addToCart() : null)}
+          style={ProductInfoStyle.buyNowBtn}>
+          <MaterialCommunityIcons
+            name="cart"
+            style={[
+              ProductInfoStyle.addToCartIcon,
+              {
+                marginRight: 0,
+                color: COLOR_SETTINGS.PRIMARY,
+              },
+            ]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => (selectedDetail?.stok > 0 ? addToCart(true) : null)}
           style={[
             ProductInfoStyle.addToCartBtn,
             {
@@ -229,12 +274,36 @@ const ProductInfo = ({ route, navigation }) => {
             },
           ]}>
           <MaterialCommunityIcons
-            name="plus"
+            name="wallet-plus-outline"
             style={ProductInfoStyle.addToCartIcon}
           />
           <Text style={ProductInfoStyle.addToCartLabel}>
-            {selectedDetail?.stok > 0 ? 'Keranjang' : 'Stok Habis'}
+            {selectedDetail?.stok > 0 ? 'Beli Sekarang' : 'Stok Habis'}
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            Linking.openURL(
+              `https://wa.me/${WA_NUMBER}?text=Halo saya memiliki pertanyaan untuk produk ${product?.nama}`,
+            )
+          }
+          style={[
+            ProductInfoStyle.buyNowBtn,
+            {
+              marginRight: 0,
+              marginLeft: 5,
+            },
+          ]}>
+          <MaterialCommunityIcons
+            name="whatsapp"
+            style={[
+              ProductInfoStyle.addToCartIcon,
+              {
+                marginRight: 0,
+                color: COLOR_SETTINGS.PRIMARY,
+              },
+            ]}
+          />
         </TouchableOpacity>
       </View>
     </View>

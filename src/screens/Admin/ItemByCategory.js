@@ -27,7 +27,8 @@ import ItemListStyle from '../../styles/ItemList.style';
 import Loading from '../Loading';
 import AddItemStyle from '../../styles/AddItem.style';
 
-export default function ItemList({ navigation }) {
+export default function ItemByCategory({ route, navigation }) {
+  const { kd_kategori, nama } = route.params;
   const [items, setItems] = useState([]);
   const [name, setName] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,6 +44,7 @@ export default function ItemList({ navigation }) {
   const getItems = () => {
     const params = {
       nama: name ?? '',
+      kd_kategori: kd_kategori ?? '',
     };
     setLoading(true);
     api.get('/getdatabarang', { params }).then(({ data }) => {
@@ -82,8 +84,13 @@ export default function ItemList({ navigation }) {
   return (
     <View style={[globalStyle.container, globalStyle.pRelative]}>
       <View style={globalStyle.headerContainer}>
-        <View style={globalStyle.paddingContainer}>
-          <Text style={globalStyle.appName}>Daftar Produk</Text>
+        <TouchableOpacity
+          style={globalStyle.paddingContainer}
+          onPress={() => navigation.goBack()}>
+          <Feather name="arrow-left" style={globalStyle.iconBtn} />
+        </TouchableOpacity>
+        <View>
+          <Text style={globalStyle.appName}>{nama}</Text>
         </View>
       </View>
       <View style={ItemListStyle.topContainer}>
@@ -186,7 +193,12 @@ export default function ItemList({ navigation }) {
       <FAB
         icon="plus"
         style={globalStyle.fab}
-        onPress={() => navigation.navigate('AddItem')}
+        onPress={() =>
+          navigation.navigate('AddItem', {
+            categoryCode: kd_kategori,
+            categoryName: nama,
+          })
+        }
         theme={{ colors: { onPrimaryContainer: COLOR_SETTINGS.PRIMARY } }}
       />
     </View>

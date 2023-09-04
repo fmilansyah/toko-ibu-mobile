@@ -17,7 +17,7 @@ import { Divider } from '../components/Basic';
 import api from '../config/api';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import AddItemStyle from '../styles/AddItem.style';
-import { ALLOWED_COURIER } from '../database/AppData';
+import { ALLOWED_COURIER, PICK_UP_CODE } from '../database/AppData';
 import Loading from './Loading';
 
 const MyCart = ({ navigation }) => {
@@ -83,36 +83,45 @@ const MyCart = ({ navigation }) => {
   };
 
   const checkOut = () => {
-    if (courierCode) {
-      const orders = carts.map(item => ({
-        kd_detail_barang: item?.kd_detail_barang,
-        jumlah_barang: item?.jumlah_barang,
-        harga_total: item?.harga_total,
-      }));
-      const formData = new FormData();
-      formData.append('kd_user', userData?.kd_user);
-      formData.append('orders', JSON.stringify(orders));
-      formData.append('jenis_order', 'keranjang');
-      formData.append('jasa_pengiriman', courierName);
-      formData.append('jenis_pengiriman', courierService);
-      formData.append('ongkir', shippingCost);
-      formData.append('kode_jasa_pengiriman', courierCode);
-      api
-        .post('/orderbarang', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        })
-        .then(({ data }) =>
-          navigation.navigate('PaymentView', {
-            token: data?.token,
-            kd_order: data?.kd_order,
-          }),
-        )
-        .catch(e => {
-          ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
-        });
+    const emptyStock = carts.find(obj => obj.stok < 1);
+    if (emptyStock === undefined) {
+      if (courierCode) {
+        const orders = carts.map(item => ({
+          kd_detail_barang: item?.kd_detail_barang,
+          jumlah_barang: item?.jumlah_barang,
+          harga_total: item?.harga_total,
+        }));
+        const formData = new FormData();
+        formData.append('kd_user', userData?.kd_user);
+        formData.append('orders', JSON.stringify(orders));
+        formData.append('jenis_order', 'keranjang');
+        formData.append('jasa_pengiriman', courierName);
+        formData.append('jenis_pengiriman', courierService ?? '');
+        formData.append('ongkir', shippingCost);
+        formData.append('kode_jasa_pengiriman', courierCode);
+        api
+          .post('/orderbarang', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          })
+          .then(({ data }) =>
+          console.log(data)
+            // navigation.navigate('PaymentView', {
+            //   token: data?.token,
+            //   kd_order: data?.kd_order,
+            // }),
+          )
+          .catch(e => {
+            ToastAndroid.show('Pemesanan Gagal', ToastAndroid.SHORT);
+          });
+      } else {
+        ToastAndroid.show(
+          'Harap pilih pengiriman terlebih dahulu',
+          ToastAndroid.SHORT,
+        );
+      }
     } else {
       ToastAndroid.show(
-        'Harap pilih pengiriman terlebih dahulu',
+        'Harap hapus produk yang stoknya sudah habis',
         ToastAndroid.SHORT,
       );
     }
@@ -132,14 +141,25 @@ const MyCart = ({ navigation }) => {
   };
 
   const updateCart = async (kd_detail_barang, qty) => {
-    const formData = new FormData();
-    formData.append('kd_user', userData?.kd_user);
-    formData.append('kd_detail_barang', kd_detail_barang);
-    formData.append('jumlah_barang', qty);
-    await api.post('/tambahkeranjang', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    await getCartsAndUser();
+    const variant = carts.find(
+      obj => obj.kd_detail_barang === kd_detail_barang,
+    );
+    if (variant !== undefined) {
+      if (variant?.stok >= variant?.jumlah_barang + qty) {
+        const formData = new FormData();
+        formData.append('kd_user', userData?.kd_user);
+        formData.append('kd_detail_barang', kd_detail_barang);
+        formData.append('jumlah_barang', qty);
+        await api.post('/tambahkeranjang', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        await getCartsAndUser();
+      } else {
+        ToastAndroid.show('Stok tidak cukup', ToastAndroid.SHORT);
+      }
+    } else {
+      ToastAndroid.show('Produk tidak ditemukan', ToastAndroid.SHORT);
+    }
   };
 
   const getCourier = () => {
@@ -177,23 +197,25 @@ const MyCart = ({ navigation }) => {
     setCourierName(courier?.courier_name);
     setCourierCode(courier?.courier_code);
     handleCloseShipping();
-    setShippingDetailVisible(true);
-    const items = carts.map(item => ({
-      name: item?.nama + ' - ' + item?.varian,
-      value: item?.harga_total,
-      quantity: item?.jumlah_barang,
-      weight: item?.berat_satuan,
-    }));
-    const formData = new FormData();
-    formData.append('destination_area_id', userData?.biteship_area_id);
-    formData.append('couriers', courier?.courier_code);
-    formData.append('items', JSON.stringify(items));
-    api
-      .post('/biteshiprates', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-      .then(({ data }) => setCourierListDetail(data?.data))
-      .catch(e => console.log(e));
+    if (courier?.courier_code !== PICK_UP_CODE) {
+      setShippingDetailVisible(true);
+      const items = carts.map(item => ({
+        name: item?.nama + ' - ' + item?.varian,
+        value: item?.harga_total,
+        quantity: item?.jumlah_barang,
+        weight: item?.berat_satuan,
+      }));
+      const formData = new FormData();
+      formData.append('destination_area_id', userData?.biteship_area_id);
+      formData.append('couriers', courier?.courier_code);
+      formData.append('items', JSON.stringify(items));
+      api
+        .post('/biteshiprates', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(({ data }) => setCourierListDetail(data?.data))
+        .catch(e => console.log(e));
+    }
   };
 
   const handleCloseShippingDetail = () => {
@@ -228,6 +250,19 @@ const MyCart = ({ navigation }) => {
             </View>
           ) : (
             <View>
+              <View>
+                <TouchableOpacity
+                  style={AddItemStyle.categoryItem}
+                  onPress={() => {
+                    handleOpenShippingDetail({
+                      courier_code: PICK_UP_CODE,
+                      courier_name: 'Ambil Di Toko',
+                    });
+                  }}>
+                  <Text style={AddItemStyle.categoryName}>Ambil Di Toko</Text>
+                </TouchableOpacity>
+                <Divider />
+              </View>
               {courierList.map((data, index) => (
                 <View key={index}>
                   <TouchableOpacity
@@ -369,9 +404,10 @@ const MyCart = ({ navigation }) => {
                 {courierName ? (
                   <View>
                     <Text style={MyCartStyle.boxTitle}>{courierName}</Text>
+                    {courierService && (
                     <Text style={MyCartStyle.boxDesc} numberOfLines={1}>
                       {courierService}
-                    </Text>
+                    </Text>)}
                   </View>
                 ) : (
                   <View>

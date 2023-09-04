@@ -14,6 +14,7 @@ import { STATUS_ORDER } from '../database/AppData';
 
 const PaymentView = ({ route, navigation }) => {
   const { token, kd_order } = route.params;
+  console.log(token)
   const [isLoading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -77,7 +78,7 @@ const PaymentView = ({ route, navigation }) => {
         onMessage={receiveMessage}
         onNavigationStateChange={request => {
           const { url } = request;
-          if (url.startsWith('https://gojek.link')) {
+          if (url.startsWith('https://gopay.co.id')) {
             navigation.reset({
               index: 0,
               routes: [{ name: 'Home' }],

@@ -2,6 +2,7 @@ import { TouchableOpacity, View, Image, Text } from 'react-native';
 import ProductCartItemStyle from '../../styles/ProductCartItem.style';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { rupiahFormatter } from '../../helpers/formatter';
+import { COLOR_SETTINGS } from '../../database/AppData';
 
 const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
   return (
@@ -27,27 +28,35 @@ const ProductCartItem = ({ data, onDelete, onUpdateQty }) => {
         </View>
         <View style={ProductCartItemStyle.productActionContainer}>
           <View style={ProductCartItemStyle.productQtyContainer}>
-            <TouchableOpacity
-              onPress={() =>
-                data?.jumlah_barang < 2
-                  ? onDelete(data?.kd_detail_barang)
-                  : onUpdateQty(data?.kd_detail_barang, -1)
-              }
-              style={ProductCartItemStyle.productQtyActionMin}>
-              <MaterialCommunityIcons
-                name="minus"
-                style={ProductCartItemStyle.productQtyActionIcon}
-              />
-            </TouchableOpacity>
-            <Text style={{ fontSize: 14 }}>{data?.jumlah_barang}</Text>
-            <TouchableOpacity
-              onPress={() => onUpdateQty(data?.kd_detail_barang, 1)}
-              style={ProductCartItemStyle.productQtyActionPlus}>
-              <MaterialCommunityIcons
-                name="plus"
-                style={ProductCartItemStyle.productQtyActionIcon}
-              />
-            </TouchableOpacity>
+            {data?.stok > 0 ? (
+              <>
+                <TouchableOpacity
+                  onPress={() =>
+                    data?.jumlah_barang < 2
+                      ? onDelete(data?.kd_detail_barang)
+                      : onUpdateQty(data?.kd_detail_barang, -1)
+                  }
+                  style={ProductCartItemStyle.productQtyActionMin}>
+                  <MaterialCommunityIcons
+                    name="minus"
+                    style={ProductCartItemStyle.productQtyActionIcon}
+                  />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 14 }}>{data?.jumlah_barang}</Text>
+                <TouchableOpacity
+                  onPress={() => onUpdateQty(data?.kd_detail_barang, 1)}
+                  style={ProductCartItemStyle.productQtyActionPlus}>
+                  <MaterialCommunityIcons
+                    name="plus"
+                    style={ProductCartItemStyle.productQtyActionIcon}
+                  />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <Text style={{ fontSize: 14, color: COLOR_SETTINGS.PRIMARY }}>
+                Stok sudah habis
+              </Text>
+            )}
           </View>
           <TouchableOpacity onPress={() => onDelete(data?.kd_detail_barang)}>
             <MaterialCommunityIcons
